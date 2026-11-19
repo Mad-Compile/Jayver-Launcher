@@ -1,0 +1,49 @@
+name: Jayver Dev Windows Installer
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: jayver-dev-installer
+  cancel-in-progress: false
+
+jobs:
+  build-windows-installer:
+    name: Build Windows NSIS setup
+    runs-on: windows-latest
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install frontend dependencies
+        run: npm install
+
+      - name: Set up stable Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Build and publish dev setup.exe
+        uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tagName: jayver-dev-${{ github.run_number }}
+          releaseName: Jayver Dev Build ${{ github.run_number }}
+          releaseBody: |
+            Automated unsigned development build from main.
+
+            Commit: ${{ github.sha }}
+
+            This is a testing build, not a production release.
+          releaseDraft: false
+          prerelease: true
+          args: --bundles nsis
