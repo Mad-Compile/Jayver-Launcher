@@ -99,15 +99,16 @@ function ParticleField() {
       gl.deleteShader(vertex);
       gl.deleteShader(fragment);
       if (!gl.getProgramParameter(program, gl.LINK_STATUS)) throw new Error("Unable to link WebGL program");
+      const activeProgram = program;
       buffer = gl.createBuffer();
       if (!buffer) throw new Error("Unable to create particle buffer");
       gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
       gl.bufferData(gl.ARRAY_BUFFER, particles, gl.STATIC_DRAW);
-      gl.useProgram(program);
+      gl.useProgram(activeProgram);
       const location = gl.getAttribLocation(program, "aParticle");
       gl.enableVertexAttribArray(location);
       gl.vertexAttribPointer(location, 3, gl.FLOAT, false, 0, 0);
-      gl.uniform2f(gl.getUniformLocation(program, "uResolution"), canvas.clientWidth, canvas.clientHeight);
+      gl.uniform2f(gl.getUniformLocation(activeProgram, "uResolution"), canvas.clientWidth, canvas.clientHeight);
       gl.enable(gl.BLEND);
       gl.blendFunc(gl.SRC_ALPHA, gl.ONE);
       gl.clearColor(0.018, 0.019, 0.021, 1);
