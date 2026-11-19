@@ -10,25 +10,44 @@
     "frontendDist": "../dist"
   },
   "app": {
-    "windows": [{
-      "label": "main",
-      "title": "Jayver",
-      "width": 1280,
-      "height": 800,
-      "minWidth": 960,
-      "minHeight": 640,
-      "resizable": true,
-      "fullscreen": false
-    }],
+    "windows": [
+      {
+        "label": "main",
+        "title": "Jayver",
+        "width": 1280,
+        "height": 800,
+        "minWidth": 960,
+        "minHeight": 640,
+        "resizable": true,
+        "fullscreen": false
+      }
+    ],
     "security": {
       "csp": "default-src 'self'; img-src 'self' asset: http://asset.localhost data: https:; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src ipc: http://ipc.localhost https: http://localhost:5173"
     }
   },
   "bundle": {
     "active": true,
-    "targets": ["nsis", "msi", "dmg", "deb", "appimage"],
+    "targets": [
+      "nsis",
+      "msi",
+      "dmg",
+      "deb",
+      "appimage"
+    ],
     "category": "Game",
     "shortDescription": "A premium Minecraft launcher",
     "longDescription": "Jayver is a fast, modular Minecraft launcher."
+  },
+  "plugins": {
+    "updater": {
+      "pubkey": "REPLACE_WITH_TAURI_UPDATER_PUBLIC_KEY",
+      "endpoints": [
+        "https://raw.githubusercontent.com/Mad-Compile/Jayver-Launcher/main/latest-dev.json"
+      ],
+      "windows": {
+        "installMode": "passive"
+      }
+    }
   }
 }
