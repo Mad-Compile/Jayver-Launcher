@@ -258,8 +258,8 @@ export default function StartupScreen() {
           <p>{availableUpdate.body || "A new version of Jayver is ready to install."}</p>
           {installingUpdate ? (
             <div className="startup-update-progress">
-              <span style={{ width: \`\${updateProgress}%\` }} />
-              <small>{updateProgress > 0 ? \`\${updateProgress}% downloaded\` : "Preparing update"}</small>
+              <span style={{ width: `${updateProgress}%` }} />
+              <small>{updateProgress > 0 ? `${updateProgress}% downloaded` : "Preparing update"}</small>
             </div>
           ) : (
             <div className="startup-update-actions">
