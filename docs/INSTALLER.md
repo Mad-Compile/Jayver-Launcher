@@ -1,21 +1,26 @@
 # Jayver Windows installer
 
-Jayver uses Tauri 2's custom NSIS template hook so the Windows setup is branded and maintained in-repository.
+## Stable baseline
 
-## Design
+Jayver currently uses Tauri 2's maintained built-in NSIS template. The project keeps only supported NSIS configuration in `src-tauri/tauri.conf.json`:
 
-- Dark graphite welcome and finish surfaces with high-contrast text.
-- Native Windows controls and keyboard navigation.
-- Current-user installation by default; no elevation required for the default location.
-- Tauri's standard directory selection, progress, shortcut, upgrade, uninstall, and silent-install behavior is retained.
-- NSIS details remain available during installation for diagnostics.
+- Per-user installation by default
+- English installer language
+- LZMA compression
+- Tauri-managed install, upgrade, shortcut, uninstall, and silent-install behavior
 
-## Build
+A custom NSIS template is intentionally not enabled until it can be pinned to and validated against the exact Tauri CLI/bundler version used by the build. Tauri's template is a Handlebars input, not a standalone NSIS script; compiling it directly with `makensis` is not a valid template test.
 
-The Windows installer workflow builds the NSIS bundle from `src-tauri/tauri.conf.json` and the template at `src-tauri/windows/installer.nsi`.
+## Build verification
 
-The template is based on the upstream Tauri 2 NSIS template. When upgrading Tauri's bundler, compare this file with the upstream template and port upstream installer fixes before release.
+The authoritative check is the Windows workflow running:
 
-## Branding assets
+```powershell
+npm run tauri build -- --bundles nsis
+```
 
-The standalone Mad Compile mark and mascot supplied in the project conversation are the approved brand references. The NSIS wizard currently uses the branded dark theme; bitmap sidebar/header artwork can be added as generated BMP assets in a follow-up without altering the installer flow.
+A successful frontend build or Rust check alone does not prove that the Windows installer bundles successfully.
+
+## Custom branding follow-up
+
+The Mad Compile logo and mascot are approved brand references. They should be integrated as NSIS bitmap assets only after the stable baseline builds. Any future custom template must be copied from the exact upstream Tauri version resolved by the build, minimally patched, and validated by building the actual NSIS bundle on Windows.

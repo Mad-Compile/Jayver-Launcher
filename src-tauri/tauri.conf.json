@@ -44,8 +44,7 @@
         "languages": [
           "English"
         ],
-        "compression": "lzma",
-        "template": "./windows/installer.nsi"
+        "compression": "lzma"
       }
     }
   },
