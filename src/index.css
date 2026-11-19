@@ -191,3 +191,90 @@ button { font: inherit; }
 @media (prefers-reduced-motion: reduce) {
   .startup-track span { transition: none; }
 }
+
+
+.startup-update {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 3;
+  width: min(420px, calc(100vw - 40px));
+  padding: 25px 26px 22px;
+  transform: translate(-50%, -50%);
+  border: 1px solid #414141;
+  background: rgba(9, 9, 9, .96);
+  color: #ededed;
+  box-shadow: 0 22px 80px rgba(0,0,0,.48);
+}
+
+.startup-update-kicker {
+  margin: 0 0 13px;
+  color: #929292;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: .12em;
+}
+
+.startup-update h1 {
+  margin: 0 0 9px;
+  font-size: 23px;
+  line-height: 1.2;
+  font-weight: 500;
+  letter-spacing: -.035em;
+}
+
+.startup-update > p:not(.startup-update-kicker) {
+  margin: 0;
+  color: #a5a5a5;
+  font-size: 13px;
+  line-height: 1.55;
+  white-space: pre-wrap;
+}
+
+.startup-update-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 9px;
+  margin-top: 24px;
+}
+
+.startup-update-actions button {
+  min-height: 35px;
+  padding: 0 13px;
+  border: 1px solid #555;
+  border-radius: 2px;
+  background: transparent;
+  color: #dedede;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.startup-update-actions button:last-child {
+  border-color: #dedede;
+  background: #dedede;
+  color: #090909;
+}
+
+.startup-update-actions button:hover { opacity: .82; }
+.startup-update-actions button:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
+
+.startup-update-progress {
+  position: relative;
+  height: 3px;
+  margin-top: 24px;
+  background: #303030;
+}
+
+.startup-update-progress span {
+  display: block;
+  height: 100%;
+  background: #ededed;
+  transition: width 180ms linear;
+}
+
+.startup-update-progress small {
+  display: block;
+  padding-top: 9px;
+  color: #999;
+  font-size: 11px;
+}
