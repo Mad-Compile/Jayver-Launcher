@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Box, ChevronDown, CircleHelp, Download, Gamepad2, Settings2, ShieldCheck, Sparkles } from "lucide-react";
+import { Box, CircleHelp, Download, Gamepad2, Settings2, ShieldCheck, Sparkles } from "lucide-react";
 import ObsidianScene from "./ObsidianScene";
 import SkinHero from "./SkinHero";
 import type { Update } from "@tauri-apps/plugin-updater";
