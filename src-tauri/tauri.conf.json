@@ -1,0 +1,34 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "Jayver",
+  "version": "0.1.0",
+  "identifier": "com.madcompile.jayver",
+  "build": {
+    "beforeDevCommand": "npm run dev",
+    "devUrl": "http://localhost:5173",
+    "beforeBuildCommand": "npm run build",
+    "frontendDist": "../dist"
+  },
+  "app": {
+    "windows": [{
+      "label": "main",
+      "title": "Jayver",
+      "width": 1280,
+      "height": 800,
+      "minWidth": 960,
+      "minHeight": 640,
+      "resizable": true,
+      "fullscreen": false
+    }],
+    "security": {
+      "csp": "default-src 'self'; img-src 'self' asset: http://asset.localhost data: https:; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src ipc: http://ipc.localhost https: http://localhost:5173"
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": ["nsis", "msi", "dmg", "deb", "appimage"],
+    "category": "Game",
+    "shortDescription": "A premium Minecraft launcher",
+    "longDescription": "Jayver is a fast, modular Minecraft launcher."
+  }
+}
