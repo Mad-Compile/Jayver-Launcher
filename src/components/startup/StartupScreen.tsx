@@ -28,7 +28,7 @@ void main() {
   pos.x *= uResolution.y / uResolution.x;
   gl_Position = vec4(pos, 0.0, 1.0);
   gl_PointSize = (1.0 + seed * 2.1) * (0.72 + spread * 0.7);
-  vAlpha = smoothstep(0.0, 0.18, t) * (1.0 - smoothstep(0.88, 1.0, t)) * (0.22 + seed * 0.48);
+  vAlpha = 0.16 + seed * 0.48;
   vShade = 0.56 + seed * 0.38;
 }`;
 
