@@ -75,7 +75,7 @@ jobs:
           args: --bundles nsis
 
       - name: Publish latest dev update manifest
-        if: steps.signing.outputs.enabled == 'true'
+        if: success()
         uses: actions/github-script@v7
         env:
           RELEASE_TAG: jayver-dev-${{ github.run_number }}
