@@ -1,6 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { isTauri } from "@tauri-apps/api/core";
 import { jayver } from "@/lib/jayver";
+import type { Update } from "@tauri-apps/plugin-updater";
+import { checkForJayverUpdate, installJayverUpdate } from "@/lib/updates";
 
 type StartupState = "starting" | "ready" | "error" | "preview";
 
@@ -178,6 +180,9 @@ export default function StartupScreen() {
   const [progress, setProgress] = useState(4);
   const [status, setStatus] = useState("Starting Jayver");
   const [error, setError] = useState("");
+  const [availableUpdate, setAvailableUpdate] = useState<Update | null>(null);
+  const [installingUpdate, setInstallingUpdate] = useState(false);
+  const [updateProgress, setUpdateProgress] = useState(0);
 
   const initialize = useCallback(async () => {
     setState("starting");
@@ -197,6 +202,14 @@ export default function StartupScreen() {
       setProgress(48);
       setStatus("Reading local instances");
       await jayver.listInstances();
+      setProgress(82);
+      setStatus("Checking for updates");
+      try {
+        const update = await checkForJayverUpdate();
+        setAvailableUpdate(update);
+      } catch {
+        // Update checks are best-effort and must never block startup.
+      }
       setProgress(100);
       setStatus("Ready");
       setState("ready");
@@ -237,6 +250,33 @@ export default function StartupScreen() {
         )}
         {state === "preview" && <p className="startup-note">Open the desktop build to run startup checks.</p>}
       </section>
+
+      {availableUpdate && (
+        <section className="startup-update" aria-live="polite">
+          <p className="startup-update-kicker">UPDATE AVAILABLE</p>
+          <h1>Jayver {availableUpdate.version}</h1>
+          <p>{availableUpdate.body || "A new version of Jayver is ready to install."}</p>
+          {installingUpdate ? (
+            <div className="startup-update-progress">
+              <span style={{ width: \`\${updateProgress}%\` }} />
+              <small>{updateProgress > 0 ? \`\${updateProgress}% downloaded\` : "Preparing update"}</small>
+            </div>
+          ) : (
+            <div className="startup-update-actions">
+              <button type="button" onClick={() => setAvailableUpdate(null)}>Later</button>
+              <button type="button" onClick={() => {
+                setInstallingUpdate(true);
+                void installJayverUpdate(availableUpdate, ({ downloaded, total }) => {
+                  setUpdateProgress(total ? Math.min(100, Math.round(downloaded / total * 100)) : 0);
+                }).catch((cause) => {
+                  setInstallingUpdate(false);
+                  setError(cause instanceof Error ? cause.message : "Update installation failed.");
+                });
+              }}>Install & restart</button>
+            </div>
+          )}
+        </section>
+      )}
 
       <footer className="startup-copyright">© Mad Compile</footer>
     </main>
