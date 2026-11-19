@@ -8,7 +8,7 @@ export default function SkinHero(){
   const element=canvas.current;if(!element)return;
   let viewer:SkinViewer|undefined;let disposed=false;
   try{
-   viewer=new SkinViewer({canvas:element,width:520,height:650,skin:DEFAULT_SKIN_URL,alpha:true,zoom:0.86,pixelRatio:1.25,enableControls:true});
+   viewer=new SkinViewer({canvas:element,width:520,height:650,skin:DEFAULT_SKIN_URL,zoom:0.86,pixelRatio:1.25,enableControls:true});
    viewer.background=null;viewer.autoRotate=true;viewer.autoRotateSpeed=.42;
    viewer.globalLight.intensity=2.1;viewer.cameraLight.intensity=.55;
    viewer.animation=new IdleAnimation();
