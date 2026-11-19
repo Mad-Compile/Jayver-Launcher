@@ -1,0 +1,15 @@
+{
+  "version": "0.1.31",
+  "notes": "Signed automated development build from main.\n\nCommit: 2db97c52a7021a78ff2b44048a9924654f61cdd3\n\nThis is a testing build, not a production release.",
+  "pub_date": "2026-11-19T17:44:46.661Z",
+  "platforms": {
+    "windows-x86_64": {
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVSWUw5YXJETXBjTGhSaVRFMHI4QTcvT3A2ZGErY3BwQkFzMGU4N3FLSWJKSlFyeEJKSVdNRHE1YUNKeG9yK3l2dFJJeExFQ2xCUEhkVmtBTXJsMlVnRXI1U05SdHVwUkEwPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzk1MTEwMjgyCWZpbGU6SmF5dmVyIExhdW5jaGVyXzAuMS4zMV94NjQtc2V0dXAuZXhlCXZlcnNpb246MC4xLjMxClYrMUN3S1dKWGtyaWhSZFJXTzNSVWdzUmZZWjlpNm1uN3BnZ3AzYnBoZzdVMTdsZXlsRVVlZHVpZzh2ekJDMHVMcTB2ekRhYXJ5bzdSam9tQlRGM0F3PT0K",
+      "url": "https://api.github.com/repos/Mad-Compile/Jayver-Launcher/releases/assets/768649748"
+    },
+    "windows-x86_64-nsis": {
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVSWUw5YXJETXBjTGhSaVRFMHI4QTcvT3A2ZGErY3BwQkFzMGU4N3FLSWJKSlFyeEJKSVdNRHE1YUNKeG9yK3l2dFJJeExFQ2xCUEhkVmtBTXJsMlVnRXI1U05SdHVwUkEwPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzk1MTEwMjgyCWZpbGU6SmF5dmVyIExhdW5jaGVyXzAuMS4zMV94NjQtc2V0dXAuZXhlCXZlcnNpb246MC4xLjMxClYrMUN3S1dKWGtyaWhSZFJXTzNSVWdzUmZZWjlpNm1uN3BnZ3AzYnBoZzdVMTdsZXlsRVVlZHVpZzh2ekJDMHVMcTB2ekRhYXJ5bzdSam9tQlRGM0F3PT0K",
+      "url": "https://api.github.com/repos/Mad-Compile/Jayver-Launcher/releases/assets/768649748"
+    }
+  }
+}
