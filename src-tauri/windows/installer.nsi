@@ -28,6 +28,12 @@ ManifestDPIAwareness PerMonitorV2
 !define MUI_BGCOLOR "111111"
 !define MUI_TEXTCOLOR "F2F2F2"
 !define MUI_INSTFILESPAGE_COLORS "F2F2F2 111111"
+!define MUI_WELCOMEPAGE_TITLE "Welcome to Jayver Launcher"
+!define MUI_WELCOMEPAGE_TEXT "A clean, reliable way to manage your Minecraft installations.$\r$\n$\r$\nThis wizard will guide you through installing Jayver Launcher."
+!define MUI_FINISHPAGE_TITLE "Jayver is ready to go"
+!define MUI_FINISHPAGE_TEXT "Jayver Launcher has been installed successfully.$\r$\n$\r$\nSelect Finish to close this setup wizard."
+!define MUI_FINISHPAGE_RUN_TEXT "Launch Jayver Launcher"
+!define MUI_ABORTWARNING
 !include MUI2.nsh
 !include FileFunc.nsh
 !include x64.nsh
