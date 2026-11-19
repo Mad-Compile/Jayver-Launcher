@@ -182,6 +182,7 @@ export default function StartupScreen() {
   const [availableUpdate, setAvailableUpdate] = useState<Update | null>(null);
   const [installingUpdate, setInstallingUpdate] = useState(false);
   const [updateProgress, setUpdateProgress] = useState(0);
+  const [updateError, setUpdateError] = useState("");
 
   const initialize = useCallback(async () => {
     setState("starting");
@@ -255,21 +256,23 @@ export default function StartupScreen() {
           <p className="startup-update-kicker">UPDATE AVAILABLE</p>
           <h1>Jayver {availableUpdate.version}</h1>
           <p>{availableUpdate.body || "A new version of Jayver is ready to install."}</p>
-          {installingUpdate ? (
+          {updateError && <p className="startup-update-error" role="alert">{updateError}</p>}
+        {installingUpdate ? (
             <div className="startup-update-progress">
               <span style={{ width: `${updateProgress}%` }} />
               <small>{updateProgress > 0 ? `${updateProgress}% downloaded` : "Preparing update"}</small>
             </div>
           ) : (
             <div className="startup-update-actions">
-              <button type="button" onClick={() => setAvailableUpdate(null)}>Later</button>
+              <button type="button" onClick={() => { void availableUpdate.close(); setAvailableUpdate(null); setUpdateError(""); }}>Later</button>
               <button type="button" onClick={() => {
                 setInstallingUpdate(true);
+                setUpdateError("");
                 void installJayverUpdate(availableUpdate, ({ downloaded, total }) => {
                   setUpdateProgress(total ? Math.min(100, Math.round(downloaded / total * 100)) : 0);
                 }).catch((cause) => {
                   setInstallingUpdate(false);
-                  setError(cause instanceof Error ? cause.message : "Update installation failed.");
+                  setUpdateError(cause instanceof Error ? cause.message : "Update installation failed.");
                 });
               }}>Install & restart</button>
             </div>
