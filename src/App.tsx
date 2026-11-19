@@ -1,5 +1,5 @@
-import { DemoFluidParticlesBackground } from "@/components/demos/demo";
+import StartupScreen from "@/components/startup/StartupScreen";
 
 export default function App() {
-  return <DemoFluidParticlesBackground />;
+  return <StartupScreen />;
 }
