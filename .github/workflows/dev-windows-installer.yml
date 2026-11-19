@@ -33,17 +33,15 @@ jobs:
       - name: Set up stable Rust
         uses: dtolnay/rust-toolchain@stable
 
-      - name: Detect updater signing configuration
-        id: signing
+      - name: Require updater signing configuration
         shell: bash
         env:
           SIGNING_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
           PUBLIC_KEY: ${{ vars.TAURI_UPDATER_PUBLIC_KEY }}
         run: |
-          if [[ -n "$SIGNING_KEY" && -n "$PUBLIC_KEY" ]]; then
-            echo "enabled=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "enabled=false" >> "$GITHUB_OUTPUT"
+          if [[ -z "$SIGNING_KEY" || -z "$PUBLIC_KEY" ]]; then
+            echo "::error::Signed updater builds require TAURI_SIGNING_PRIVATE_KEY (Actions secret) and TAURI_UPDATER_PUBLIC_KEY (Actions variable). Refusing to publish an install that cannot self-update."
+            exit 1
           fi
 
       - name: Set unique development version
@@ -53,7 +51,7 @@ jobs:
         run: node scripts/set-dev-version.mjs "${{ github.run_number }}"
 
       - name: Build and publish signed dev updater
-        if: steps.signing.outputs.enabled == 'true'
+        if: success()
         uses: tauri-apps/tauri-action@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -74,25 +72,6 @@ jobs:
           prerelease: true
           uploadUpdaterJson: true
           updaterJsonPreferNsis: true
-          args: --bundles nsis
-
-      - name: Build unsigned dev installer (updater disabled)
-        if: steps.signing.outputs.enabled != 'true'
-        uses: tauri-apps/tauri-action@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          VITE_JAYVER_UPDATER_ENABLED: "false"
-        with:
-          tagName: jayver-dev-${{ github.run_number }}
-          releaseName: Jayver Dev Build ${{ github.run_number }}
-          releaseBody: |
-            Unsigned development installer from main.
-            In-app updates are disabled until updater signing keys are configured.
-
-            Commit: ${{ github.sha }}
-          releaseDraft: false
-          prerelease: true
-          uploadUpdaterJson: false
           args: --bundles nsis
 
       - name: Publish latest dev update manifest

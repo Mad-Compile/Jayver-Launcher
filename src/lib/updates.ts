@@ -33,9 +33,5 @@ export async function installJayverUpdate(
     }
   });
 
-  // On Windows, Tauri launches the NSIS updater and exits the current process
-  // after the installer starts. Calling relaunch() here races that hand-off.
-  if (!navigator.userAgent.includes("Windows")) {
-    await relaunch();
-  }
+  await relaunch();
 }

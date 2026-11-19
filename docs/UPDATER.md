@@ -13,7 +13,7 @@ When both signing values are configured, the Windows dev workflow:
 
 The manifest-only commit is excluded from re-triggering the installer workflow.
 
-If signing is not configured, the workflow still publishes an ordinary unsigned testing installer, but compiles the app with in-app update checks disabled. It does not publish an update manifest.
+The workflow now fails closed if signing is not configured. It will not publish an installer that cannot receive signed updates.
 
 ## One-time signing setup
 
@@ -38,7 +38,7 @@ To generate a passwordless key, omit the password option when generating it. Sto
 
 - The startup screen checks the dev endpoint after local app/instance initialization.
 - A found update is presented to the user; it is never installed without consent.
-- Download progress is reported by Tauri. On Windows, Tauri hands off to the NSIS updater and exits the running process; the app must not race that hand-off with a second relaunch call.
+- Download progress is reported by Tauri. After the signed update is installed, the app relaunches using Tauri’s documented process plugin flow.
 - Update checks are best-effort and never block startup.
 - The updater checks only the configured dev channel in these builds.
 - Production/SAM should use its own signing key and update endpoint; never reuse the dev key for production.
@@ -61,4 +61,4 @@ A green compile is not proof that updates work. Validate with two separate Windo
 7. Confirm a tampered or incorrectly signed artifact is rejected; never bypass signature verification.
 8. Confirm a build with missing signing configuration is explicitly marked unsigned and has update checks compiled out.
 
-The first unsigned development installer is installable, but it cannot be upgraded through the signed updater channel. Once users install a signed build, retain the same private key for all future releases.
+The first install must be a signed baseline. Subsequent signed NSIS updates install over the existing per-user app installation; they do not require manually uninstalling Jayver. Keep the same private key for every future release. User data should live outside the application installation directory so installer replacement does not remove it.
