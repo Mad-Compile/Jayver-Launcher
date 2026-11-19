@@ -37,17 +37,17 @@ jobs:
         shell: bash
         env:
           SIGNING_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
-          PUBLIC_KEY: ${{ vars.TAURI_UPDATER_PUBLIC_KEY }}
+          PUBLIC_KEY: ${{ vars.TAURI_UPDATER_PUBLIC_KEY || secrets.TAURI_UPDATER_PUBLIC_KEY }}
         run: |
           if [[ -z "$SIGNING_KEY" || -z "$PUBLIC_KEY" ]]; then
-            echo "::error::Signed updater builds require TAURI_SIGNING_PRIVATE_KEY (Actions secret) and TAURI_UPDATER_PUBLIC_KEY (Actions variable). Refusing to publish an install that cannot self-update."
+            echo "::error::Missing signing configuration. Set TAURI_SIGNING_PRIVATE_KEY as a repository secret and TAURI_UPDATER_PUBLIC_KEY as a repository variable (or secret). The public key was empty in this run; no installer was published."
             exit 1
           fi
 
       - name: Set unique development version
         shell: bash
         env:
-          TAURI_UPDATER_PUBLIC_KEY: ${{ vars.TAURI_UPDATER_PUBLIC_KEY }}
+          TAURI_UPDATER_PUBLIC_KEY: ${{ vars.TAURI_UPDATER_PUBLIC_KEY || secrets.TAURI_UPDATER_PUBLIC_KEY }}
         run: node scripts/set-dev-version.mjs "${{ github.run_number }}"
 
       - name: Build and publish signed dev updater
