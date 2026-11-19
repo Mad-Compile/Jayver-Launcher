@@ -3,7 +3,7 @@ name: Jayver CI
 on:
   pull_request:
   push:
-    branches: [main, "feat/**"]
+    branches: [main]
 
 permissions:
   contents: read
@@ -16,7 +16,6 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: npm
       - run: npm install
       - run: npm run build
 
@@ -28,6 +27,6 @@ jobs:
       - name: Install Tauri Linux dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y             libwebkit2gtk-4.1-dev             build-essential             curl             wget             file             libxdo-dev             libssl-dev             librsvg2-dev             patchelf
+          sudo apt-get install -y libwebkit2gtk-4.1-dev build-essential curl wget file libxdo-dev libssl-dev librsvg2-dev patchelf
       - name: Check Rust backend
         run: cargo check --manifest-path src-tauri/Cargo.toml
