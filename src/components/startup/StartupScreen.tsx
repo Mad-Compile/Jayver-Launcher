@@ -107,7 +107,7 @@ function ParticleField() {
       gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
       gl.bufferData(gl.ARRAY_BUFFER, particles, gl.STATIC_DRAW);
       gl.useProgram(activeProgram);
-      const location = gl.getAttribLocation(program, "aParticle");
+      const location = gl.getAttribLocation(activeProgram, "aParticle");
       gl.enableVertexAttribArray(location);
       gl.vertexAttribPointer(location, 3, gl.FLOAT, false, 0, 0);
       gl.uniform2f(gl.getUniformLocation(activeProgram, "uResolution"), canvas.clientWidth, canvas.clientHeight);
@@ -120,17 +120,16 @@ function ParticleField() {
         canvas.width = Math.max(1, Math.floor(canvas.clientWidth * dpr));
         canvas.height = Math.max(1, Math.floor(canvas.clientHeight * dpr));
         gl.viewport(0, 0, canvas.width, canvas.height);
-        gl.useProgram(program);
-        gl.uniform2f(gl.getUniformLocation(program, "uResolution"), canvas.clientWidth, canvas.clientHeight);
+        gl.useProgram(activeProgram);
+        gl.uniform2f(gl.getUniformLocation(activeProgram, "uResolution"), canvas.clientWidth, canvas.clientHeight);
         draw(performance.now());
       };
 
       const draw = (now: number) => {
-        if (!program) return;
         gl.clear(gl.COLOR_BUFFER_BIT);
-        gl.useProgram(program);
-        gl.uniform1f(gl.getUniformLocation(program, "uTime"), (now - start) / 1000);
-        gl.uniform1f(gl.getUniformLocation(program, "uReducedMotion"), reduced.matches ? 1 : 0);
+        gl.useProgram(activeProgram);
+        gl.uniform1f(gl.getUniformLocation(activeProgram, "uTime"), (now - start) / 1000);
+        gl.uniform1f(gl.getUniformLocation(activeProgram, "uReducedMotion"), reduced.matches ? 1 : 0);
         gl.drawArrays(gl.POINTS, 0, count);
       };
 
