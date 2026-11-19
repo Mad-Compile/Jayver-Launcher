@@ -37,7 +37,17 @@
     ],
     "category": "Game",
     "shortDescription": "A premium Minecraft launcher",
-    "longDescription": "Jayver is a fast, modular Minecraft launcher."
+    "longDescription": "Jayver is a fast, modular Minecraft launcher.",
+    "windows": {
+      "nsis": {
+        "installMode": "currentUser",
+        "languages": [
+          "English"
+        ],
+        "compression": "lzma",
+        "template": "./windows/installer.nsi"
+      }
+    }
   },
   "plugins": {
     "updater": {
