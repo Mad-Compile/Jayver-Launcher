@@ -81,6 +81,7 @@ JayverData/
     game/
     mods/
     config/
+    saves/
   assets/
   libraries/
   runtimes/
@@ -100,3 +101,7 @@ JayverData/
 ## Current implementation status
 
 This branch establishes the Tauri host, configuration, minimal capabilities, IPC examples, domain contracts, bounded download gate and launch event bus. It does NOT yet implement Minecraft manifest resolution, downloads, Java installation, Microsoft auth, loader installation, process launch, persistence, updater signing or installers. Those are subsequent feature milestones.
+
+## Default player skin
+
+The bundled fallback Minecraft skin texture is stored at `public/skins/default.png` (64×64 RGBA). Frontend features that need a fallback texture should import `DEFAULT_SKIN_URL` from `src/lib/skin.ts`. Replace it with the authenticated player's skin only after that texture has loaded successfully; never treat the fallback as an account identity.
