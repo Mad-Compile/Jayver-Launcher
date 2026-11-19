@@ -1,7 +1,7 @@
 import { readFile, writeFile } from "node:fs/promises";
 
 const runNumber = process.argv[2];
-if (!/^\\d+$/.test(runNumber ?? "")) {
+if (!/^\d+$/.test(runNumber ?? "")) {
   throw new Error("Pass the GitHub Actions run number as the only argument.");
 }
 
@@ -21,7 +21,7 @@ if (publicKey) {
   config.plugins.updater.pubkey = publicKey;
   config.bundle.createUpdaterArtifacts = true;
 }
-await writeFile(configPath, JSON.stringify(config, null, 2) + "\\n");
+await writeFile(configPath, JSON.stringify(config, null, 2) + "\n");
 
 let cargo = await readFile(cargoPath, "utf8");
 cargo = cargo.replace(/^version = "[^"]+"/m, `version = "${version}"`);
@@ -29,6 +29,6 @@ await writeFile(cargoPath, cargo);
 
 const pkg = JSON.parse(await readFile(packagePath, "utf8"));
 pkg.version = version;
-await writeFile(packagePath, JSON.stringify(pkg, null, 2) + "\\n");
+await writeFile(packagePath, JSON.stringify(pkg, null, 2) + "\n");
 
 console.log(`Building Jayver ${version}; updater signing ${publicKey ? "enabled" : "disabled"}.`);
