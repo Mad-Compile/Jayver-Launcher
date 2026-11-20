@@ -799,3 +799,142 @@ button { font: inherit; }
 @media (prefers-reduced-motion: reduce) {
   .jayver-loader-value { transition: none; }
 }
+
+
+/* Update dialog refinement: hierarchy from type and spacing, not decorative UI. */
+.jayver-dialog-scrim {
+  background: rgba(0,0,0,.82);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+.jayver-update-dialog {
+  width: min(500px, calc(100vw - 36px));
+  padding: 24px 28px 22px;
+  border: 1px solid #3a3a3a;
+  border-radius: 3px;
+  background: #090909;
+  box-shadow: 0 24px 72px rgba(0,0,0,.72);
+}
+.jayver-update-dialog::before { display: none; }
+.jayver-dialog-topline {
+  padding-bottom: 17px;
+  border-bottom-color: #292929;
+}
+.jayver-dialog-brand { gap: 10px; }
+.jayver-dialog-mark {
+  width: 22px;
+  height: 22px;
+  border-color: #555;
+  background: transparent;
+}
+.jayver-dialog-context,
+.jayver-dialog-brand i { display: none; }
+.jayver-dialog-close {
+  width: 28px;
+  height: 28px;
+  color: #a0a0a0;
+}
+.jayver-dialog-heading {
+  display: block;
+  padding: 23px 0 21px;
+}
+.jayver-dialog-heading h2 {
+  color: #f0f0f0;
+  font-size: 22px;
+  line-height: 1.25;
+  font-weight: 560;
+  letter-spacing: -.04em;
+}
+.jayver-dialog-heading p {
+  margin-top: 7px;
+  color: #929292;
+  font-size: 12px;
+  line-height: 1.55;
+}
+.jayver-version-comparison {
+  min-height: 88px;
+  padding: 15px 16px;
+  border: 1px solid #303030;
+  background: #050505;
+}
+.jayver-version-cell { gap: 8px; }
+.jayver-version-cell span {
+  color: #858585;
+  font-size: 8px;
+  font-weight: 600;
+  letter-spacing: .12em;
+}
+.jayver-version-cell strong {
+  color: #d4d4d4;
+  font-size: 23px;
+  font-weight: 420;
+  letter-spacing: -.045em;
+}
+.jayver-version-cell.is-latest strong { color: #f5f5f5; }
+.jayver-version-divider { color: #777; }
+.jayver-update-meta {
+  min-height: 39px;
+  padding: 10px 1px 11px;
+  color: #858585;
+  font-size: 10px;
+}
+.jayver-signed-note {
+  color: #b8b8b8;
+  gap: 6px;
+}
+.jayver-signed-note svg { color: #c9c9c9; }
+.jayver-release-notes {
+  border-top: 1px solid #2d2d2d;
+  border-bottom: 1px solid #2d2d2d;
+}
+.jayver-release-notes > button {
+  padding: 12px 1px;
+  color: #d8d8d8;
+  font-size: 11px;
+}
+.jayver-release-notes p {
+  color: #a0a0a0;
+  font-size: 11px;
+  line-height: 1.65;
+}
+.jayver-preservation-note {
+  margin: 14px 0 0;
+  color: #a0a0a0;
+  font-size: 10px;
+}
+.jayver-preservation-note svg { color: #d0d0d0; }
+.jayver-dialog-actions {
+  padding-top: 22px;
+  gap: 9px;
+}
+.jayver-dialog-actions button {
+  height: 40px;
+  min-width: 104px;
+  border-radius: 2px;
+  font-size: 11px;
+  font-weight: 550;
+}
+.jayver-button-secondary {
+  border-color: #505050;
+  background: transparent;
+  color: #d0d0d0;
+}
+.jayver-button-secondary:hover {
+  border-color: #858585;
+  background: #141414;
+}
+.jayver-button-primary {
+  border: 1px solid #e5e5e5 !important;
+  background: #e5e5e5 !important;
+  color: #101010 !important;
+  box-shadow: none !important;
+}
+.jayver-button-primary:hover {
+  background: #fff !important;
+  border-color: #fff !important;
+}
+@media(max-width:520px) {
+  .jayver-update-dialog { padding: 19px 18px 17px; }
+  .jayver-dialog-heading h2 { font-size: 20px; }
+  .jayver-version-cell strong { font-size: 20px; }
+}
