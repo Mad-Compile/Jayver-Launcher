@@ -129,7 +129,22 @@ function ParticleField() {
     }
 
     try {
-      const bgVertex = compileShader(gl, gl.VERTEX_SHADER, BACKGROUND_VERTEX_SHADER);\n      const bgFragment = compileShader(gl, gl.FRAGMENT_SHADER, BACKGROUND_FRAGMENT_SHADER);\n      backgroundProgram = gl.createProgram();\n      if (!backgroundProgram) throw new Error("Unable to create fluid shader program");\n      gl.attachShader(backgroundProgram, bgVertex);\n      gl.attachShader(backgroundProgram, bgFragment);\n      gl.linkProgram(backgroundProgram);\n      gl.deleteShader(bgVertex);\n      gl.deleteShader(bgFragment);\n      if (!gl.getProgramParameter(backgroundProgram, gl.LINK_STATUS)) throw new Error("Unable to link fluid shader program");\n      quadBuffer = gl.createBuffer();\n      if (!quadBuffer) throw new Error("Unable to create fluid quad");\n      gl.bindBuffer(gl.ARRAY_BUFFER, quadBuffer);\n      gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1,1,-1,-1,1,1,1]), gl.STATIC_DRAW);\n\n      const vertex = compileShader(gl, gl.VERTEX_SHADER, VERTEX_SHADER);
+      const bgVertex = compileShader(gl, gl.VERTEX_SHADER, BACKGROUND_VERTEX_SHADER);
+      const bgFragment = compileShader(gl, gl.FRAGMENT_SHADER, BACKGROUND_FRAGMENT_SHADER);
+      backgroundProgram = gl.createProgram();
+      if (!backgroundProgram) throw new Error("Unable to create fluid shader program");
+      gl.attachShader(backgroundProgram, bgVertex);
+      gl.attachShader(backgroundProgram, bgFragment);
+      gl.linkProgram(backgroundProgram);
+      gl.deleteShader(bgVertex);
+      gl.deleteShader(bgFragment);
+      if (!gl.getProgramParameter(backgroundProgram, gl.LINK_STATUS)) throw new Error("Unable to link fluid shader program");
+      quadBuffer = gl.createBuffer();
+      if (!quadBuffer) throw new Error("Unable to create fluid quad");
+      gl.bindBuffer(gl.ARRAY_BUFFER, quadBuffer);
+      gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1,1,-1,-1,1,1,1]), gl.STATIC_DRAW);
+
+      const vertex = compileShader(gl, gl.VERTEX_SHADER, VERTEX_SHADER);
       const fragment = compileShader(gl, gl.FRAGMENT_SHADER, FRAGMENT_SHADER);
       program = gl.createProgram();
       if (!program) throw new Error("Unable to create WebGL program");
