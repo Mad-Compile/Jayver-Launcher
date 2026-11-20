@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import { getVersion } from "@tauri-apps/api/app";
-import { Home, LibraryBig, Puzzle, Server, Palette, Settings, ChevronDown, Download } from "lucide-react";
+import { Home, LibraryBig, Puzzle, Server, Palette, Settings, ChevronDown, Download, UserRound, LogOut, Users } from "lucide-react";
 import ObsidianScene from "./ObsidianScene";
 import SkinHero from "./SkinHero";
+import ProfileExperience from "./ProfileExperience";
 import type { Update } from "@tauri-apps/plugin-updater";
 import { downloadJayverUpdate, installDownloadedJayverUpdate } from "@/lib/updates";
 import UpdateDialog from "./UpdateDialog";
@@ -16,6 +17,19 @@ export default function HomeScreen({ update, onDismissUpdate }: Props) {
   const [percent, setPercent] = useState(0);
   const [updateError, setUpdateError] = useState("");
   const [updatePhase, setUpdatePhase] = useState<"idle" | "charging" | "installing" | "error">("idle");
+  const [profileOpen, setProfileOpen] = useState(false);
+  const [accountMenuOpen, setAccountMenuOpen] = useState(false);
+  const [profileName, setProfileName] = useState("Local profile");
+
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem("jayver.player-profile.v1");
+      if (stored) {
+        const profile = JSON.parse(stored) as { name?: string };
+        if (profile.name) setProfileName(profile.name);
+      }
+    } catch { /* Keep the local profile label if stored data is unavailable. */ }
+  }, [profileOpen]);
 
   useEffect(() => {
     void getVersion().then(setCurrentVersion).catch(() => setCurrentVersion("Unknown"));
@@ -41,11 +55,24 @@ export default function HomeScreen({ update, onDismissUpdate }: Props) {
         <div className="home-account">
           <span className="home-updater-indicator" title={update ? "Update available" : "Updater ready"}><Download size={21} strokeWidth={1.8} /></span>
           <span className="home-account-divider" />
-          <span className="account-avatar">J</span>
-          <span className="home-account-name">Local profile</span>
-          <ChevronDown size={14} className="home-account-chevron" />
+          <div className="home-account-menu-wrap">
+            <button className="home-account-trigger" type="button" aria-haspopup="menu" aria-expanded={accountMenuOpen} onClick={() => setAccountMenuOpen(value => !value)}>
+              <span className="home-account-avatar"><UserRound size={17} strokeWidth={1.7} /></span>
+              <span className="home-account-name">{profileName}</span>
+              <ChevronDown size={14} className={`home-account-chevron ${accountMenuOpen ? "is-open" : ""}`} />
+            </button>
+            {accountMenuOpen && <div className="home-account-dropdown" role="menu">
+              <div className="home-account-dropdown-heading"><span>PLAYER ACCOUNT</span><strong>{profileName}</strong></div>
+              <button type="button" role="menuitem" onClick={() => { setProfileOpen(true); setAccountMenuOpen(false); }}><UserRound size={15} /> View profile</button>
+              <button type="button" role="menuitem" onClick={() => { setProfileOpen(true); setAccountMenuOpen(false); }}><Users size={15} /> Switch account</button>
+              <div className="home-account-dropdown-rule" />
+              <button type="button" role="menuitem" disabled title="No Microsoft account is connected"><LogOut size={15} /> Log out <small>No account connected</small></button>
+            </div>}
+          </div>
         </div>
       </header>
+
+      {profileOpen && <ProfileExperience onClose={() => setProfileOpen(false)} />}
 
       <section className="home-hero home-skin-stage" aria-label="Player skin">
         <div className="home-character"><SkinHero /></div>
