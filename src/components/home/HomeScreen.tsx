@@ -55,7 +55,7 @@ export default function HomeScreen({ update, onDismissUpdate }: Props) {
               <ChevronDown size={14} className={`home-account-chevron ${accountMenuOpen ? "is-open" : ""}`} />
             </button>
             {accountMenuOpen && <div className="home-account-dropdown" aria-label="Account actions">
-              <div className="home-account-dropdown-heading"><span>PLAYER ACCOUNT</span><strong>{profileName}</strong></div>
+              <div className="home-account-dropdown-heading"><strong>{profileName}</strong></div>
               <button type="button"  onClick={() => { setProfileOpen(true); setAccountMenuOpen(false); }}><UserRound size={15} /> View profile</button>
               <button type="button"  onClick={() => { setOpenSwitcherOnProfile(true); setProfileOpen(true); setAccountMenuOpen(false); }}><Users size={15} /> Switch account</button>
               <div className="home-account-dropdown-rule" />
