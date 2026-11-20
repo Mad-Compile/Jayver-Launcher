@@ -56,59 +56,87 @@ export default function HomeScreen({ update, onDismissUpdate }: Props) {
           currentVersion={currentVersion}
           onLater={() => { void update.close(); onDismissUpdate(); }}
           onInstall={() => {
+            // Commit the screen change first so the progress page is visible
+            // before the updater starts any native download work.
             setPercent(0);
             setUpdateError("");
             setUpdatePhase("charging");
-            void downloadJayverUpdate(update, ({ downloaded, total }) => setPercent(total ? Math.min(100, downloaded / total * 100) : 0))
-              .then(() => {
+            window.setTimeout(() => {
+              void downloadJayverUpdate(update, ({ downloaded, total }) => {
+                setPercent(total ? Math.min(100, downloaded / total * 100) : 0);
+              }).then(async () => {
                 setUpdatePhase("installing");
-                void installDownloadedJayverUpdate(update).catch(error => {
-                  setUpdatePhase("error");
-                  setUpdateError(error instanceof Error ? error.message : "Update installation failed.");
-                });
-              })
-              .catch(error => {
+                await installDownloadedJayverUpdate(update);
+              }).catch(error => {
+                setUpdateError(error instanceof Error ? error.message : "The update could not be downloaded or installed.");
                 setUpdatePhase("error");
-                setUpdateError(error instanceof Error ? error.message : "Update download failed.");
               });
+            }, 0);
           }}
         />
       )}
 
-      {update && (updatePhase === "charging" || updatePhase === "installing") && (
+      {update && updatePhase !== "idle" && (
         <div className="jayver-download-progress" role="status" aria-live="polite">
           <div className="jayver-download-progress-panel">
-            <div className="jayver-loader" aria-hidden="true">
-              <svg viewBox="0 0 100 100">
-                <circle className="jayver-loader-track" cx="50" cy="50" r="42" />
-                <circle
-                  className="jayver-loader-value"
-                  cx="50"
-                  cy="50"
-                  r="42"
-                  strokeDasharray="263.9"
-                  strokeDashoffset={263.9 * (1 - (updatePhase === "charging" ? percent : 100) / 100)}
-                />
-                <circle className="jayver-loader-inner" cx="50" cy="50" r="34" />
-              </svg>
-              <span className="jayver-loader-core" />
-            </div>
-            <strong>{updatePhase === "charging" ? "Downloading your update..." : "Preparing installation..."}</strong>
-            <small>{updatePhase === "charging" ? `${Math.round(percent)}% · Secure download` : "Download complete · Installing update"}</small>
+            {updatePhase !== "error" ? (
+              <div className="jayver-loader" aria-hidden="true">
+                <svg viewBox="0 0 100 100">
+                  <circle className="jayver-loader-track" cx="50" cy="50" r="42" />
+                  <circle
+                    className="jayver-loader-value"
+                    cx="50"
+                    cy="50"
+                    r="42"
+                    strokeDasharray="263.9"
+                    strokeDashoffset={263.9 * (1 - (updatePhase === "charging" ? percent : 100) / 100)}
+                  />
+                  <circle className="jayver-loader-inner" cx="50" cy="50" r="34" />
+                </svg>
+                <span className="jayver-loader-core" />
+              </div>
+            ) : (
+              <div className="jayver-download-error-mark" aria-hidden="true">!</div>
+            )}
+            <strong>
+              {updatePhase === "charging" ? "Downloading your update..." :
+               updatePhase === "installing" ? "Preparing installation..." :
+               "Update couldn't complete"}
+            </strong>
+            <small>
+              {updatePhase === "charging" ? `${Math.round(percent)}% · Secure download` :
+               updatePhase === "installing" ? "Download complete · Installing update" :
+               updateError}
+            </small>
+            {updatePhase === "error" && (
+              <div className="jayver-download-error-actions">
+                <button type="button" onClick={() => {
+                  setUpdateError("");
+                  setPercent(0);
+                  setUpdatePhase("idle");
+                }}>Back</button>
+                <button type="button" onClick={() => {
+                  setUpdateError("");
+                  setPercent(0);
+                  setUpdatePhase("charging");
+                  window.setTimeout(() => {
+                    void downloadJayverUpdate(update, ({ downloaded, total }) => {
+                      setPercent(total ? Math.min(100, downloaded / total * 100) : 0);
+                    }).then(async () => {
+                      setUpdatePhase("installing");
+                      await installDownloadedJayverUpdate(update);
+                    }).catch(error => {
+                      setUpdateError(error instanceof Error ? error.message : "The update could not be downloaded or installed.");
+                      setUpdatePhase("error");
+                    });
+                  }, 0);
+                }}>Retry update</button>
+              </div>
+            )}
           </div>
         </div>
       )}
 
-      {update && updatePhase === "error" && (
-        <UpdateDialog
-          update={update}
-          currentVersion={currentVersion}
-          error={updateError}
-          errorMode
-          onLater={() => { void update.close(); onDismissUpdate(); }}
-          onInstall={() => { setUpdateError(""); setUpdatePhase("idle"); }}
-        />
-      )}
     </main>
   );
 }
