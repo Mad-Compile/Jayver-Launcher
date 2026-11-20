@@ -30,7 +30,8 @@ async function resolveMinecraftProfile(name: string) {
   if (response.status === 403 || response.status === 404) {
     response = await fetch(`https://api.minecraftservices.com/minecraft/profile/lookup/name/${encodeURIComponent(safeName)}`);
   }
-  if (!response.ok) throw new Error(response.status === 204 || response.status === 404 ? "No Minecraft profile was found for that name." : "Mojang's profile service is unavailable. Try again shortly.");
+  if (response.status === 204 || response.status === 404) throw new Error("No Minecraft profile was found for that name.");
+  if (!response.ok) throw new Error("Mojang's profile service is unavailable. Try again shortly.");
   const identity = await response.json() as { id?: string; name?: string };
   if (!identity.id || !identity.name) throw new Error("The profile response was incomplete.");
   const uuid = formatUuid(identity.id);
