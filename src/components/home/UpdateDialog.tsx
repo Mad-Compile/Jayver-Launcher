@@ -84,7 +84,6 @@ export default function UpdateDialog({ update, currentVersion, onLater, onInstal
           <button className="jayver-button-secondary" type="button" onClick={onLater}>{errorMode ? "Close" : "Later"}</button>
           <button className="jayver-button-primary" type="button" onClick={onInstall}>{errorMode ? "Review update" : "Install update"}{!errorMode && <ArrowDownToLine size={15}/>}</button>
         </div>
-        <div className="jayver-dialog-footer"><span>© MAD COMPILE</span><span>JAYVER LAUNCHER</span></div>
       </section>
     </div>
   );
