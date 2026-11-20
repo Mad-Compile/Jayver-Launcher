@@ -1857,3 +1857,12 @@ button { font: inherit; }
 @media(prefers-reduced-motion:reduce) {
   .jayver-obsidian-shard { animation: none; }
 }
+
+
+/* Version comparison: paired columns, separated by the latest-version bevel. */
+.jayver-version-comparison { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+.jayver-version-cell.is-latest { padding-left: 16px; }
+@media (max-width: 520px) {
+  .jayver-version-comparison { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+  .jayver-version-cell.is-latest { padding-left: 12px; }
+}
