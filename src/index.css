@@ -1270,3 +1270,23 @@ button { font: inherit; }
   .jayver-update-glyph { animation:none; }
   .jayver-dialog-actions button::after,.jayver-dialog-close::before { transition:none; }
 }
+
+.jayver-button-webgl {
+  position:absolute;
+  z-index:0;
+  inset:0;
+  width:100%;
+  height:100%;
+  border-radius:inherit;
+  pointer-events:none;
+  opacity:.95;
+}
+.jayver-dialog-actions button > span,
+.jayver-dialog-actions button > svg {
+  position:relative;
+  z-index:2;
+}
+.jayver-dialog-actions button > svg { flex:none; }
+@media(prefers-reduced-motion:reduce) {
+  .jayver-button-webgl { display:none; }
+}
