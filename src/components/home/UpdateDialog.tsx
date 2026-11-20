@@ -44,7 +44,7 @@ function UpdateMaterial() {
         float edge=exp(-length(p-m)*8.0)*.10;
         float core=exp(-r*r*8.0)*.12;
         float grain=fract(sin(dot(gl_FragCoord.xy+time,vec2(12.9898,78.233)))*43758.5453)*.012;
-        float vignette=smoothstep(.78,.12,r);
+        float vignette=1.0-smoothstep(.12,.78,r);
         vec3 silver=vec3(.72,.77,.81)*(ripple+edge+core)*vignette;
         gl_FragColor=vec4(silver+grain*vignette, (ripple+edge+core+grain)*.78*vignette);
       }
