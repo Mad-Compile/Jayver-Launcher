@@ -18,6 +18,7 @@ export default function HomeScreen({ update, onDismissUpdate }: Props) {
   const [updateError, setUpdateError] = useState("");
   const [updatePhase, setUpdatePhase] = useState<"idle" | "charging" | "installing" | "error">("idle");
   const [profileOpen, setProfileOpen] = useState(false);
+  const [openSwitcherOnProfile, setOpenSwitcherOnProfile] = useState(false);
   const [accountMenuOpen, setAccountMenuOpen] = useState(false);
   const [profileName, setProfileName] = useState("Local profile");
 
@@ -61,10 +62,10 @@ export default function HomeScreen({ update, onDismissUpdate }: Props) {
               <span className="home-account-name">{profileName}</span>
               <ChevronDown size={14} className={`home-account-chevron ${accountMenuOpen ? "is-open" : ""}`} />
             </button>
-            {accountMenuOpen && <div className="home-account-dropdown" role="menu">
+            {accountMenuOpen && <div className="home-account-dropdown" aria-label="Account actions">
               <div className="home-account-dropdown-heading"><span>PLAYER ACCOUNT</span><strong>{profileName}</strong></div>
-              <button type="button" role="menuitem" onClick={() => { setProfileOpen(true); setAccountMenuOpen(false); }}><UserRound size={15} /> View profile</button>
-              <button type="button" role="menuitem" onClick={() => { setProfileOpen(true); setAccountMenuOpen(false); }}><Users size={15} /> Switch account</button>
+              <button type="button"  onClick={() => { setProfileOpen(true); setAccountMenuOpen(false); }}><UserRound size={15} /> View profile</button>
+              <button type="button" role="menuitem" onClick={() => { setOpenSwitcherOnProfile(true); setProfileOpen(true); setAccountMenuOpen(false); }}><Users size={15} /> Switch account</button>
               <div className="home-account-dropdown-rule" />
               <button type="button" role="menuitem" disabled title="No Microsoft account is connected"><LogOut size={15} /> Log out <small>No account connected</small></button>
             </div>}
@@ -72,7 +73,7 @@ export default function HomeScreen({ update, onDismissUpdate }: Props) {
         </div>
       </header>
 
-      {profileOpen && <ProfileExperience onClose={() => setProfileOpen(false)} />}
+      {profileOpen && <ProfileExperience initialSwitcher={openSwitcherOnProfile} onClose={() => { setProfileOpen(false); setOpenSwitcherOnProfile(false); }} />}
 
       <section className="home-hero home-skin-stage" aria-label="Player skin">
         <div className="home-character"><SkinHero /></div>
