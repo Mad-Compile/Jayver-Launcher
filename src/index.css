@@ -1413,3 +1413,72 @@ button { font: inherit; }
 @media(prefers-reduced-motion:reduce) {
   .jayver-dialog-actions button { transition:none!important; }
 }
+
+
+/* Supplied animated loader, adapted to the updater's live percentage and dark glass surface. */
+.jayver-loader-wrap {
+  display:grid;
+  place-items:center;
+  width:100%;
+  margin:0 0 24px;
+}
+.jayver-loader-core {
+  position:relative;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:#f2f4f5;
+  font-variant-numeric:tabular-nums;
+  user-select:none;
+}
+.jayver-loader-letters {
+  position:relative;
+  z-index:2;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:#f2f4f5;
+  font-size:29px;
+  font-weight:350;
+  letter-spacing:-.055em;
+  text-shadow:0 0 14px rgba(238,244,248,.22);
+}
+.jayver-loader-letters span {
+  display:inline-block;
+  opacity:.42;
+  animation:jayver-loader-letter 2.8s ease-in-out infinite;
+}
+.jayver-loader-circle {
+  position:absolute;
+  inset:0;
+  border-radius:50%;
+  animation:jayver-loader-circle 5s linear infinite;
+  box-shadow:
+    0 6px 12px 0 rgba(220,230,238,.48) inset,
+    0 12px 18px 0 rgba(145,160,174,.36) inset,
+    0 36px 36px 0 rgba(83,100,116,.24) inset,
+    0 0 4px 1px rgba(224,235,244,.18),
+    0 0 12px 2px rgba(180,199,216,.12);
+}
+.jayver-loader-circle::before {
+  content:"";
+  position:absolute;
+  inset:8px;
+  border:1px solid rgba(238,244,248,.10);
+  border-radius:50%;
+  box-shadow:0 0 20px rgba(225,235,242,.07) inset;
+}
+@keyframes jayver-loader-circle {
+  0% { transform:rotate(90deg); }
+  50% { transform:rotate(270deg); }
+  100% { transform:rotate(450deg); }
+}
+@keyframes jayver-loader-letter {
+  0%,100% { opacity:.42;transform:translateY(0) scale(1); }
+  20% { opacity:1;transform:translateY(-1px) scale(1.12); }
+  40% { opacity:.72;transform:translateY(0) scale(1); }
+}
+@media(prefers-reduced-motion:reduce) {
+  .jayver-loader-circle,.jayver-loader-letters span { animation:none; }
+  .jayver-loader-letters span { opacity:.85; }
+}
