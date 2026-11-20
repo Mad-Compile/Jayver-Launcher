@@ -85,7 +85,7 @@ export default function UpdateDialog({ update, currentVersion, onLater, onInstal
         </>}
         <div className="jayver-dialog-actions">
           <button className="jayver-button-secondary" type="button" onClick={onLater}><span>{errorMode ? "Close" : "Not now"}</span></button>
-          <button className="jayver-button-primary" type="button" onClick={onInstall}><ButtonLight /><span>{errorMode ? "Try again" : "Install update"}</span>{!errorMode && <ArrowDownToLine size={16} />}</button>
+          <button className="jayver-button-primary" type="button" onClick={onInstall}><span>{errorMode ? "Try again" : "Install update"}</span>{!errorMode && <ArrowDownToLine size={16} />}</button>
         </div>
       </section>
     </div>
