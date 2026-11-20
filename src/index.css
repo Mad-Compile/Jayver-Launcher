@@ -964,7 +964,7 @@ button { font: inherit; }
 }
 
 
-/* Full-black updater surface and precision progress instrument. */
+/* Layered charcoal updater surface, matched to the Jayver startup atmosphere. */
 .jayver-download-progress {
   position:fixed;
   z-index:60;
@@ -973,16 +973,27 @@ button { font: inherit; }
   place-items:center;
   padding:24px;
   overflow:hidden;
-  background:#000;
+  background:
+    radial-gradient(ellipse at 50% 42%, rgba(255,255,255,.055) 0%, rgba(255,255,255,.018) 22%, transparent 52%),
+    linear-gradient(180deg, #080808 0%, #030303 58%, #050505 100%);
   isolation:isolate;
 }
 .jayver-download-progress::before {
   content:"";
   position:absolute;
-  width:min(560px,80vw);
-  aspect-ratio:1;
-  border-radius:50%;
-  background:radial-gradient(circle,rgba(255,255,255,.018) 0%,rgba(255,255,255,.006) 35%,transparent 68%);
+  inset:0;
+  background:
+    radial-gradient(ellipse 38% 25% at 50% 42%, rgba(220,220,220,.055), transparent 72%),
+    radial-gradient(ellipse 62% 42% at 50% 110%, rgba(255,255,255,.025), transparent 72%);
+  pointer-events:none;
+}
+.jayver-download-progress::after {
+  content:"";
+  position:absolute;
+  inset:0;
+  background:
+    radial-gradient(ellipse at 50% 45%, transparent 0%, rgba(0,0,0,.10) 48%, rgba(0,0,0,.66) 100%),
+    linear-gradient(180deg, rgba(0,0,0,.18), transparent 26%, transparent 72%, rgba(0,0,0,.48));
   pointer-events:none;
 }
 .jayver-download-progress-panel {
