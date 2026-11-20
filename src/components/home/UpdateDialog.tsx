@@ -129,7 +129,8 @@ function ButtonLight() {
     const resize=()=>{const r=button.getBoundingClientRect(),d=Math.min(devicePixelRatio||1,1.5),w=Math.max(1,Math.floor(r.width*d)),h=Math.max(1,Math.floor(r.height*d));if(canvas.width!==w||canvas.height!==h){canvas.width=w;canvas.height=h;gl.viewport(0,0,w,h);}};
     const move=(e:PointerEvent)=>{const r=button.getBoundingClientRect();cursor=[(e.clientX-r.left)/r.width,1-(e.clientY-r.top)/r.height];};
     const draw=(now:number)=>{if(dead||!active){raf=0;return;}resize();gl.clearColor(0,0,0,0);gl.clear(gl.COLOR_BUFFER_BIT);gl.uniform2f(res,canvas.width,canvas.height);gl.uniform2f(mouse,cursor[0],cursor[1]);gl.uniform1f(time,(now-start)/1000);gl.uniform1f(on,1);gl.uniform1f(pulseLoc,clickAt?Math.max(0,1-(now-clickAt)/680):0);gl.drawArrays(gl.TRIANGLES,0,3);raf=requestAnimationFrame(draw);};
-    const enter=()=>{active=true;start=performance.now();if(!raf)raf=requestAnimationFrame(draw);};\n    const press=()=>{clickAt=performance.now();if(active&&!raf)raf=requestAnimationFrame(draw);};
+    const enter=()=>{active=true;start=performance.now();if(!raf)raf=requestAnimationFrame(draw);};
+    const press=()=>{clickAt=performance.now();if(active&&!raf)raf=requestAnimationFrame(draw);};
     const leave=()=>{active=false;cancelAnimationFrame(raf);raf=0;gl.clear(gl.COLOR_BUFFER_BIT);};
     button.addEventListener("pointerenter",enter);button.addEventListener("pointermove",move);button.addEventListener("pointerleave",leave);button.addEventListener("pointerdown",press);
     const observer=new ResizeObserver(resize);observer.observe(button);resize();
