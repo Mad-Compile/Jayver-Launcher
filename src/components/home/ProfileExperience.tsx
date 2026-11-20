@@ -118,7 +118,7 @@ function SkinStage({ skin, model }: { skin: string; model: "classic" | "slim" })
     let active = true;
     let instance: SkinViewer | null = null;
     try {
-      instance = new SkinViewer({ canvas: element, width: 520, height: 620, skin, zoom: 0.86, pixelRatio: Math.min(window.devicePixelRatio || 1, 1.5), enableControls: true });
+      instance = new SkinViewer({ canvas: element, width: 520, height: 620, skin, model: model === "slim" ? "slim" : "default", zoom: 0.86, pixelRatio: Math.min(window.devicePixelRatio || 1, 1.5), enableControls: true });
       viewer.current = instance;
       instance.background = null;
       instance.autoRotate = true;
@@ -126,7 +126,7 @@ function SkinStage({ skin, model }: { skin: string; model: "classic" | "slim" })
       instance.globalLight.intensity = 2.1;
       instance.cameraLight.intensity = 0.48;
       instance.animation = new IdleAnimation();
-      instance.loadSkin(skin, { model }).catch(() => { if (active) setSkinError(true); });
+      instance.loadSkin(skin, { model: model === "slim" ? "slim" : "default" }).catch(() => { if (active) setSkinError(true); });
       const resize = () => {
         if (!instance) return;
         const rect = element.getBoundingClientRect();
