@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Check, ChevronDown, ChevronLeft, CircleUserRound, Copy, ImagePlus, Link2, LogOut, MoreHorizontal, RotateCcw, Search, ShieldCheck, Users, X } from "lucide-react";
+import { Check, ChevronDown, ChevronLeft, CircleUserRound, Copy, ImagePlus, Link2, LogOut, MoreHorizontal, Pencil, RotateCcw, Search, ShieldCheck, Users, X } from "lucide-react";
 import { IdleAnimation, SkinViewer } from "skinview3d";
 import { DEFAULT_SKIN_URL } from "@/lib/skin";
 
@@ -69,22 +69,22 @@ function ProfileLightField() {
       uniform float t;
       float hash(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
       float noise(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);return mix(mix(hash(i),hash(i+vec2(1.,0.)),f.x),mix(hash(i+vec2(0.,1.)),hash(i+1.),f.x),f.y);}
-      float fbm(vec2 p){float v=0.,a=.5;for(int i=0;i<4;i++){v+=a*noise(p);p=p*1.8+vec2(3.1,-2.4);a*=.5;}return v;}
       void main(){
         vec2 p=(uv-.5)*vec2(res.x/max(res.y,1.),1.);
-        float n=fbm(p*4.+vec2(t*.045,-t*.032));
-        float a=atan(p.y,p.x);
-        float r=length(p);
-        float wave=sin(a*2.+t*.22+n*4.)*.035+sin(a*5.-t*.13)*.014+(n-.5)*.09;
-        float d=abs(r-(.30+wave));
-        float rim=exp(-d*34.);
-        float haze=exp(-d*8.);
-        float center=exp(-dot(p,p)*7.);
-        float vertical=exp(-pow((p.x+sin(t*.12)*.025)*3.2,2.))*exp(-pow(p.y*1.5,2.));
-        float vignette=1.-smoothstep(.28,.82,length(p));
-        float alpha=(rim*.095+haze*.027+center*.028+vertical*.018)*vignette;
-        vec3 silver=vec3(.76,.82,.88)*(rim*.7+haze*.4)+vec3(.91,.94,.97)*(center*.3+vertical*.4);
-        gl_FragColor=vec4(silver*alpha,alpha);
+        float time=t*.12;
+        float grain=noise(p*vec2(18.,31.)+time);
+        float seamA=abs(p.x-(.19*sin(p.y*3.2+time)+.055*p.y));
+        float seamB=abs(p.x-(-.27+.12*cos(p.y*4.1-time*.7)));
+        float seamC=abs(p.x-(.34-.08*sin(p.y*5.3+time*.6)));
+        float edgeA=exp(-seamA*115.)*smoothstep(-.72,.52,p.y);
+        float edgeB=exp(-seamB*145.)*smoothstep(-.58,.62,p.y);
+        float edgeC=exp(-seamC*125.)*smoothstep(-.35,.7,p.y);
+        float plane= smoothstep(.02,.0,abs(p.x+.12*p.y-.02))*.025;
+        float scan=pow(max(0.,sin((p.y*res.y)*.075+time*2.)),18.)*.012;
+        float vignette=1.-smoothstep(.42,.86,length(p*vec2(.9,1.)));
+        float light=(edgeA*.075+edgeB*.052+edgeC*.035+plane+scan+grain*.006)*vignette;
+        vec3 silver=vec3(.72,.79,.84)*(edgeA*.7+edgeB*.48+edgeC*.34)+vec3(.42,.51,.58)*(plane+scan);
+        gl_FragColor=vec4(silver*light,light);
       }`;
     const compile=(type:number,source:string)=>{const shader=gl.createShader(type);if(!shader)return null;gl.shaderSource(shader,source);gl.compileShader(shader);if(!gl.getShaderParameter(shader,gl.COMPILE_STATUS)){gl.deleteShader(shader);return null;}return shader;};
     const vs=compile(gl.VERTEX_SHADER,vertexSource),fs=compile(gl.FRAGMENT_SHADER,fragmentSource);
@@ -122,6 +122,9 @@ function SkinStage({ skin, model }: { skin: string; model: "classic" | "slim" })
       instance = new SkinViewer({ canvas: element, width: 520, height: 620, skin, model: model === "slim" ? "slim" : "default", zoom: 0.86, pixelRatio: Math.min(window.devicePixelRatio || 1, 1.5), enableControls: true });
       viewer.current = instance;
       instance.background = null;
+      instance.camera.position.set(0, 0, 40);
+      instance.camera.lookAt(0, 0, 0);
+      instance.playerObject.position.set(0, 0, 0);
       instance.autoRotate = true;
       instance.autoRotateSpeed = 0.34;
       instance.globalLight.intensity = 2.1;
@@ -165,6 +168,8 @@ export default function ProfileExperience({ onClose, initialSwitcher = false }: 
   const [editing, setEditing] = useState(false);
   const [switcherOpen, setSwitcherOpen] = useState(initialSwitcher);
   const [nameInput, setNameInput] = useState("");
+  const [nameEditing, setNameEditing] = useState(false);
+  const [nameDraft, setNameDraft] = useState(profile.name);
   const [urlInput, setUrlInput] = useState("");
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState("");
@@ -172,6 +177,13 @@ export default function ProfileExperience({ onClose, initialSwitcher = false }: 
   const fileInput = useRef<HTMLInputElement>(null);
 
   useEffect(() => { localStorage.setItem(STORAGE_KEY, JSON.stringify(profile)); }, [profile]);
+
+  const saveDisplayName = () => {
+    const nextName = nameDraft.trim();
+    if (!nextName) { setNameDraft(profile.name); setNameEditing(false); return; }
+    setProfile(current => ({ ...current, name: nextName.slice(0, 16) }));
+    setNameEditing(false);
+  };
 
   const updateSkin = async (source: string, model: "classic" | "slim" = profile.model) => {
     setBusy(true); setMessage(""); setMessageError(false);
@@ -258,15 +270,15 @@ export default function ProfileExperience({ onClose, initialSwitcher = false }: 
           <SkinStage skin={profile.skin} model={profile.model} />
           <div className="jayver-player-card-info">
             <div className="jayver-player-name-row">
-              <h1>{profile.name}</h1>
+              {nameEditing ? <input className="jayver-player-name-input" autoFocus aria-label="Gamertag" value={nameDraft} maxLength={16} onChange={event => setNameDraft(event.target.value)} onBlur={saveDisplayName} onKeyDown={event => { if (event.key === "Enter") saveDisplayName(); if (event.key === "Escape") { setNameDraft(profile.name); setNameEditing(false); } }} /> : <button className="jayver-player-name-edit" type="button" onClick={() => { setNameDraft(profile.name); setNameEditing(true); }} aria-label="Change gamertag"><h1>{profile.name}</h1><Pencil size={14} /></button>}
               {profile.uuid && <span className="jayver-profile-verified" title="Resolved Minecraft profile"><ShieldCheck size={17} /></span>}
             </div>
-            <div className="jayver-player-uuid-label">MINECRAFT UUID</div>
+            <div className="jayver-player-uuid-label">Minecraft UUID</div>
             <button className="jayver-player-uuid" type="button" onClick={() => void copyUuid()} disabled={!profile.uuid}>
               <span>{profile.uuid || "Not linked to a Minecraft account"}</span>
               {profile.uuid && <Copy size={13} />}
             </button>
-            <div className="jayver-player-card-footer"><span>JAVA EDITION PROFILE</span><span>{profile.model === "slim" ? "ALEX MODEL" : "CLASSIC MODEL"}</span></div>
+            <div className="jayver-player-card-footer"><span>Java Edition profile</span><span>{profile.model === "slim" ? "Slim model" : "Classic model"}</span></div>
           </div>
         </section>
 
