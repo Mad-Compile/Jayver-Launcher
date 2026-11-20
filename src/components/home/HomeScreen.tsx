@@ -5,7 +5,6 @@ import ObsidianScene from "./ObsidianScene";
 import SkinHero from "./SkinHero";
 import type { Update } from "@tauri-apps/plugin-updater";
 import { downloadJayverUpdate, installDownloadedJayverUpdate } from "@/lib/updates";
-import UpdateReactor from "./UpdateReactor";
 import UpdateDialog from "./UpdateDialog";
 import type { MinecraftInstance } from "@/lib/jayver";
 
@@ -15,7 +14,7 @@ export default function HomeScreen({ update, onDismissUpdate }: Props) {
   const [currentVersion, setCurrentVersion] = useState("—");
   const [percent, setPercent] = useState(0);
   const [updateError, setUpdateError] = useState("");
-  const [updatePhase, setUpdatePhase] = useState<"idle" | "charging" | "ready" | "installing" | "error">("idle");
+  const [updatePhase, setUpdatePhase] = useState<"idle" | "charging" | "installing" | "error">("idle");
 
   useEffect(() => {
     void getVersion().then(setCurrentVersion).catch(() => setCurrentVersion("Unknown"));
@@ -61,7 +60,13 @@ export default function HomeScreen({ update, onDismissUpdate }: Props) {
             setUpdateError("");
             setUpdatePhase("charging");
             void downloadJayverUpdate(update, ({ downloaded, total }) => setPercent(total ? Math.min(100, downloaded / total * 100) : 0))
-              .then(() => setUpdatePhase("ready"))
+              .then(() => {
+                setUpdatePhase("installing");
+                void installDownloadedJayverUpdate(update).catch(error => {
+                  setUpdatePhase("error");
+                  setUpdateError(error instanceof Error ? error.message : "Update installation failed.");
+                });
+              })
               .catch(error => {
                 setUpdatePhase("error");
                 setUpdateError(error instanceof Error ? error.message : "Update download failed.");
@@ -70,26 +75,18 @@ export default function HomeScreen({ update, onDismissUpdate }: Props) {
         />
       )}
 
-      {update && ["charging", "ready", "installing"].includes(updatePhase) && (
-        <div className="update-cinematic">
-          <UpdateReactor
-            progress={percent}
-            ready={updatePhase === "ready"}
-            onWhiteoutComplete={() => {
-              setUpdatePhase("installing");
-              void installDownloadedJayverUpdate(update).catch(error => {
-                setUpdatePhase("error");
-                setUpdateError(error instanceof Error ? error.message : "Update installation failed.");
-              });
-            }}
-          />
-          {updatePhase === "installing" && (
-            <div className="update-install-status">
-              <span>JAYVER · UPDATE</span>
-              <strong>Preparing installation</strong>
-              <small>PACKAGE DOWNLOADED · SIGNATURE CHECKED</small>
-            </div>
-          )}
+      {update && (updatePhase === "charging" || updatePhase === "installing") && (
+        <div className="jayver-download-progress" role="status" aria-live="polite">
+          <div className="jayver-download-progress-panel">
+            <span className="jayver-download-kicker">JAYVER · UPDATE</span>
+            <strong>{updatePhase === "charging" ? "Downloading update" : "Preparing installation"}</strong>
+            {updatePhase === "charging" ? (
+              <>
+                <div className="jayver-download-track"><span style={{ width: `${percent}%` }} /></div>
+                <small>{Math.round(percent)}% · Downloading signed package</small>
+              </>
+            ) : <small>Download complete · Installing update</small>}
+          </div>
         </div>
       )}
 
