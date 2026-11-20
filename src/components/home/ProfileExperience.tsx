@@ -148,7 +148,7 @@ function SkinStage({ skin, model }: { skin: string; model: "classic" | "slim" })
     const instance = viewer.current;
     if (!instance) return;
     setSkinError(false);
-    instance.loadSkin(skin, { model }).catch(() => setSkinError(true));
+    instance.loadSkin(skin, { model: model === "slim" ? "slim" : "default" }).catch(() => setSkinError(true));
   }, [skin, model]);
 
   return <div className="jayver-profile-skin-stage">
