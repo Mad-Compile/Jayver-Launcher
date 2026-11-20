@@ -82,34 +82,15 @@ export default function HomeScreen({ update, onDismissUpdate }: Props) {
           <DownloadAtmosphere />
           <div className="jayver-download-progress-panel">
             {updatePhase !== "error" ? (
-              <div className="jayver-progress-engine" role="img" aria-label={`Downloading update: ${Math.round(percent)} percent`}>
-                <svg className="jayver-progress-svg" viewBox="0 0 180 180" aria-hidden="true">
-                  <defs>
-                    <linearGradient id="jayver-progress-metal" x1="0%" y1="0%" x2="100%" y2="100%">
-                      <stop offset="0%" stopColor="#ffffff" />
-                      <stop offset="48%" stopColor="#aeb4ba" />
-                      <stop offset="100%" stopColor="#f5f6f7" />
-                    </linearGradient>
-                    <linearGradient id="jayver-progress-edge" x1="0%" y1="0%" x2="100%" y2="0%">
-                      <stop offset="0%" stopColor="#555b61" stopOpacity=".08" />
-                      <stop offset="50%" stopColor="#dce1e5" stopOpacity=".8" />
-                      <stop offset="100%" stopColor="#555b61" stopOpacity=".08" />
-                    </linearGradient>
-                  </defs>
-                  <circle className="jayver-progress-hairline" cx="90" cy="90" r="77" />
-                  <circle className="jayver-progress-orbit" cx="90" cy="90" r="70" />
-                  <circle className="jayver-progress-track" cx="90" cy="90" r="57" />
-                  <circle className="jayver-progress-value" cx="90" cy="90" r="57"
-                    strokeDasharray="358.14"
-                    strokeDashoffset={358.14 * (1 - Math.min(100, Math.max(0, percent)) / 100)} />
-                  <circle className="jayver-progress-inner" cx="90" cy="90" r="47" />
-                  <circle className="jayver-progress-marker" cx="90" cy="33" r="2.1" />
-                </svg>
-                <div className="jayver-progress-core">
-                  <span className="jayver-progress-number">{Math.round(percent)}<i>%</i></span>
-                  <span className="jayver-progress-caption">DOWNLOADING</span>
+              <div className="jayver-loader-wrap" role="img" aria-label={`Downloading update: ${Math.round(percent)} percent`}>
+                <div className="jayver-loader-core" style={{ width: 180, height: 180 }}>
+                  <span className="jayver-loader-letters" aria-hidden="true">
+                    {`${Math.round(percent)}%`.split("").map((letter, index) => (
+                      <span key={index} style={{ animationDelay: `${index * 0.1}s` }}>{letter}</span>
+                    ))}
+                  </span>
+                  <span className="jayver-loader-circle" aria-hidden="true" />
                 </div>
-                <span className="jayver-progress-satellite" aria-hidden="true" />
               </div>
             ) : (
               <div className="jayver-download-error-mark" aria-hidden="true">!</div>
