@@ -1009,6 +1009,7 @@ button { font: inherit; }
 .jayver-download-progress-panel {
   position:relative;
   z-index:1;
+  z-index:1;
   width:min(420px,calc(100vw - 40px));
   min-height:340px;
   display:flex;
