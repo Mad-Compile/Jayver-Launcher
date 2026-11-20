@@ -65,7 +65,7 @@ export default function HomeScreen({ update, onDismissUpdate }: Props) {
             {accountMenuOpen && <div className="home-account-dropdown" aria-label="Account actions">
               <div className="home-account-dropdown-heading"><span>PLAYER ACCOUNT</span><strong>{profileName}</strong></div>
               <button type="button"  onClick={() => { setProfileOpen(true); setAccountMenuOpen(false); }}><UserRound size={15} /> View profile</button>
-              <button type="button" role="menuitem" onClick={() => { setOpenSwitcherOnProfile(true); setProfileOpen(true); setAccountMenuOpen(false); }}><Users size={15} /> Switch account</button>
+              <button type="button"  onClick={() => { setOpenSwitcherOnProfile(true); setProfileOpen(true); setAccountMenuOpen(false); }}><Users size={15} /> Switch account</button>
               <div className="home-account-dropdown-rule" />
               <button type="button" role="menuitem" disabled title="No Microsoft account is connected"><LogOut size={15} /> Log out <small>No account connected</small></button>
             </div>}
