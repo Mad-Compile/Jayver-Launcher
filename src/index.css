@@ -69,7 +69,9 @@ button { font: inherit; }
   transform: translate(-50%, -50%);
   display: grid;
   place-items: center;
-  pointer-events: none;
+  pointer-events: auto;
+  cursor: default;
+  outline: none;
 }
 
 .startup-mark img {
