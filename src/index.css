@@ -795,3 +795,30 @@ button { font: inherit; }
  .home-hero{inset:72px 0 48px}
 }
 @media(prefers-reduced-motion:reduce){.home-nav button,.home-nav button::after{transition:none}}
+
+
+/* Jayver's update sequence shares the startup loader's true Obsidian black. */
+.update-cinematic{
+  background:
+    radial-gradient(ellipse at 50% 42%, rgba(255,255,255,.055) 0%, rgba(255,255,255,.018) 22%, transparent 52%),
+    linear-gradient(180deg, #080808 0%, #030303 58%, #050505 100%);
+  animation:update-scene-in .65s ease-out both;
+}
+.jayver-dialog-scrim{
+  background:rgba(0,0,0,.84);
+  backdrop-filter:blur(5px);
+  -webkit-backdrop-filter:blur(5px);
+}
+.jayver-update-dialog{
+  background:#080808;
+  border-color:#383838;
+  box-shadow:0 28px 84px rgba(0,0,0,.78),0 1px 0 rgba(255,255,255,.035) inset;
+}
+.jayver-update-dialog::before{
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.2),transparent);
+}
+.jayver-dialog-symbol{background:#0b0b0b;border-color:#383838;box-shadow:none}
+.jayver-version-comparison{background:#050505;border-color:#303030}
+.jayver-dialog-topline{border-bottom-color:#292929}
+.jayver-dialog-footer{border-top-color:#242424}
+@media(prefers-reduced-motion:reduce){.update-cinematic{animation:none}}
