@@ -3,6 +3,7 @@ import { Check, ChevronDown, ChevronLeft, CircleUserRound, Copy, ImagePlus, Link
 import { IdleAnimation, SkinViewer } from "skinview3d";
 import { DEFAULT_SKIN_URL } from "@/lib/skin";
 import { DEFAULT_PLAYER_PROFILE, updatePlayerProfile, usePlayerProfile } from "@/lib/player-profile";
+import FluidParticlesBackground from "./FluidParticlesBackground";
 
 function formatUuid(uuid: string) {
   const clean = uuid.replace(/-/g, "");
@@ -40,60 +41,6 @@ async function resolveMinecraftProfile(name: string) {
     }
   } catch { /* A valid identity can still use the bundled fallback skin. */ }
   return { name: identity.name, uuid, skin, model } satisfies import("@/lib/player-profile").PlayerProfile;
-}
-
-function ProfileLightField() {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const gl = canvas.getContext("webgl", { alpha: true, antialias: false, depth: false, powerPreference: "low-power" });
-    if (!gl) return;
-    const vertexSource = "attribute vec2 p; varying vec2 uv; void main(){uv=p*.5+.5;gl_Position=vec4(p,0.,1.);}";
-    const fragmentSource = `
-      precision mediump float;
-      varying vec2 uv;
-      uniform vec2 res;
-      uniform float t;
-      float hash(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
-      float noise(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);return mix(mix(hash(i),hash(i+vec2(1.,0.)),f.x),mix(hash(i+vec2(0.,1.)),hash(i+1.),f.x),f.y);}
-      void main(){
-        vec2 p=(uv-.5)*vec2(res.x/max(res.y,1.),1.);
-        float time=t*.12;
-        float grain=noise(p*vec2(18.,31.)+time);
-        float seamA=abs(p.x-(.19*sin(p.y*3.2+time)+.055*p.y));
-        float seamB=abs(p.x-(-.27+.12*cos(p.y*4.1-time*.7)));
-        float seamC=abs(p.x-(.34-.08*sin(p.y*5.3+time*.6)));
-        float edgeA=exp(-seamA*115.)*smoothstep(-.72,.52,p.y);
-        float edgeB=exp(-seamB*145.)*smoothstep(-.58,.62,p.y);
-        float edgeC=exp(-seamC*125.)*smoothstep(-.35,.7,p.y);
-        float plane= (1.-smoothstep(0.,.02,abs(p.x+.12*p.y-.02)))*.025;
-        float scan=pow(max(0.,sin((p.y*res.y)*.075+time*2.)),18.)*.012;
-        float vignette=1.-smoothstep(.42,.86,length(p*vec2(.9,1.)));
-        float light=(edgeA*.075+edgeB*.052+edgeC*.035+plane+scan+grain*.006)*vignette;
-        vec3 silver=vec3(.72,.79,.84)*(edgeA*.7+edgeB*.48+edgeC*.34)+vec3(.42,.51,.58)*(plane+scan);
-        gl_FragColor=vec4(silver*light,light);
-      }`;
-    const compile=(type:number,source:string)=>{const shader=gl.createShader(type);if(!shader)return null;gl.shaderSource(shader,source);gl.compileShader(shader);if(!gl.getShaderParameter(shader,gl.COMPILE_STATUS)){gl.deleteShader(shader);return null;}return shader;};
-    const vs=compile(gl.VERTEX_SHADER,vertexSource),fs=compile(gl.FRAGMENT_SHADER,fragmentSource);
-    if(!vs||!fs){if(vs)gl.deleteShader(vs);if(fs)gl.deleteShader(fs);return;}
-    const program=gl.createProgram();if(!program)return;
-    gl.attachShader(program,vs);gl.attachShader(program,fs);gl.linkProgram(program);gl.deleteShader(vs);gl.deleteShader(fs);
-    if(!gl.getProgramParameter(program,gl.LINK_STATUS)){gl.deleteProgram(program);return;}
-    const buffer=gl.createBuffer();if(!buffer){gl.deleteProgram(program);return;}
-    gl.bindBuffer(gl.ARRAY_BUFFER,buffer);gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1,3,-1,-1,3]),gl.STATIC_DRAW);
-    gl.useProgram(program);const p=gl.getAttribLocation(program,"p");gl.enableVertexAttribArray(p);gl.vertexAttribPointer(p,2,gl.FLOAT,false,0,0);
-    const res=gl.getUniformLocation(program,"res"),time=gl.getUniformLocation(program,"t");
-    const reduced=window.matchMedia("(prefers-reduced-motion: reduce)");
-    let frame=0,start=0,disposed=false,visible=!document.hidden;
-    const resize=()=>{const ratio=Math.min(window.devicePixelRatio||1,1.5),w=Math.max(1,Math.floor(canvas.clientWidth*ratio)),h=Math.max(1,Math.floor(canvas.clientHeight*ratio));if(canvas.width!==w||canvas.height!==h){canvas.width=w;canvas.height=h;gl.viewport(0,0,w,h);}};
-    const draw=(now:number)=>{if(disposed||!visible)return;if(!start)start=now;resize();gl.clearColor(0,0,0,0);gl.clear(gl.COLOR_BUFFER_BIT);gl.uniform2f(res,canvas.width,canvas.height);gl.uniform1f(time,reduced.matches?0:(now-start)/1000);gl.drawArrays(gl.TRIANGLES,0,3);if(!reduced.matches)frame=requestAnimationFrame(draw);};
-    const onVisibility=()=>{visible=!document.hidden;if(visible){start=0;frame=requestAnimationFrame(draw);}else cancelAnimationFrame(frame);};
-    const onMotion=()=>{cancelAnimationFrame(frame);start=0;if(visible)frame=requestAnimationFrame(draw);};
-    const observer=new ResizeObserver(resize);observer.observe(canvas);document.addEventListener("visibilitychange",onVisibility);reduced.addEventListener("change",onMotion);resize();frame=requestAnimationFrame(draw);
-    return()=>{disposed=true;cancelAnimationFrame(frame);observer.disconnect();document.removeEventListener("visibilitychange",onVisibility);reduced.removeEventListener("change",onMotion);gl.deleteBuffer(buffer);gl.deleteProgram(program);};
-  },[]);
-  return <canvas ref={canvasRef} className="jayver-profile-webgl" aria-hidden="true" />;
 }
 
 function SkinStage({ skin, model }: { skin: string; model: "classic" | "slim" }) {
@@ -143,8 +90,8 @@ function SkinStage({ skin, model }: { skin: string; model: "classic" | "slim" })
   }, [skin, model]);
 
   return <div className="jayver-profile-skin-stage">
-    <div className="jayver-profile-skin-light" aria-hidden="true" /><ProfileLightField />
-    <canvas ref={canvas} aria-label="Rotating 3D Minecraft character preview" />
+    <FluidParticlesBackground particleCount={560} />
+    <canvas ref={canvas} className="jayver-profile-skin-canvas" aria-label="Rotating 3D Minecraft character preview" />
     {skinError && <span className="jayver-profile-skin-error">Skin preview unavailable</span>}
     <span className="jayver-profile-skin-floor" aria-hidden="true" />
   </div>;
