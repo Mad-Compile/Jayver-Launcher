@@ -58,7 +58,7 @@ export default function StartupScreen() {
 
   useEffect(() => {
     void initialize();
-    void getVersion().then((version) => getCurrentWindow().setTitle(`Jayver ${version}`)).catch(() => undefined);
+    void getVersion().then(async (version) => {\n      try { await getCurrentWindow().setTitle(`Jayver ${version}`); }\n      catch (cause) { console.error("Could not set Jayver window title:", cause); }\n    }).catch((cause) => console.error("Could not read Jayver version:", cause));
   }, [initialize]);
 
   if (state === "ready") {

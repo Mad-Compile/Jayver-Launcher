@@ -49,12 +49,36 @@ void main(){
  float discY=abs(lensed.y + .012*sin(la*2.+t*.12));
  float disc=exp(-discY*42.)*smoothstep(.13,.19,lr)*(1.-smoothstep(.58,.78,lr));
  float disc2=exp(-abs(lensed.y-.028*sin(la*3.-t*.08))*105.)*smoothstep(.19,.25,lr)*(1.-smoothstep(.46,.6,lr));
- float rings=0.;
- for(int i=0;i<5;i++){
-   float fi=float(i);
-   float rr=.19+fi*.064 + .009*sin(la*(3.+fi)+t*(.14-fi*.012));
-   rings+=exp(-abs(lr-rr)*190.)*(.12+fi*.025);
- }
+ // Perspective-correct Saturn ring plane: intersect the camera ray with a tilted 3D plane.
+ // The inclined plane produces a true foreshortened ellipse, not concentric screen-space circles.
+ vec3 rayOrigin=vec3(0.,0.,2.8);
+ vec3 rayDirection=normalize(vec3(p*1.45,-1.85));
+ float tiltAngle=.035*sin(t*.055);
+ vec3 ringNormal=normalize(vec3(sin(tiltAngle),.78, .625));
+ float planeDenom=dot(rayDirection,ringNormal);
+ float ringT=-dot(rayOrigin,ringNormal)/planeDenom;
+ vec3 ringPoint=rayOrigin+rayDirection*ringT;
+ float ringRadius=length(ringPoint.xz);
+ float ringFront=step(0.,planeDenom);
+ float ringValid=step(.01,ringT)*step(abs(planeDenom),.98);
+ // The central shadow occludes the far-side ring, creating real front/back layering.
+ float sphereB=dot(rayOrigin,rayDirection);
+ float sphereC=dot(rayOrigin,rayOrigin)-.105*.105;
+ float sphereDisc=sphereB*sphereB-sphereC;
+ float sphereHit=step(0.,sphereDisc)*step(0.,-sphereB-sqrt(max(sphereDisc,0.)));
+ float ringOccluded=sphereHit*step(-sphereB-sqrt(max(sphereDisc,0.)),ringT);
+ float radialMask=smoothstep(.205,.218,ringRadius)*(1.-smoothstep(.61,.635,ringRadius));
+ float bandA=.5+.5*sin(ringRadius*310.+sin(ringRadius*47.)*2.2);
+ float bandB=.5+.5*sin(ringRadius*690.+sin(ringRadius*83.)*1.4);
+ float cassini=1.-.82*smoothstep(.006,.014,abs(ringRadius-.425));
+ float innerGap=1.-.88*smoothstep(.004,.012,abs(ringRadius-.315));
+ float ringDensity=radialMask*(.28+.36*bandA+.22*bandB)*cassini*innerGap;
+ float ringEdge=exp(-abs(ringRadius-.218)*125.)*.25+exp(-abs(ringRadius-.625)*100.)*.18;
+ float ringLit=ringDensity+ringEdge;
+ float ringFacing=mix(.78,1.0,ringFront);
+ float ringVisible=ringValid*(1.-ringOccluded)*ringFacing;
+ float ringShadow=exp(-abs(ringRadius-.19)*18.)*.18;
+ float rings=ringLit*ringVisible;
  float filaments=0.;
  for(int i=0;i<54;i++){
    float fi=float(i);
@@ -70,7 +94,8 @@ void main(){
  float halo=exp(-abs(lr-.29)*7.)*.08;
  float pulse=exp(-pow((fract(t*.075)-.5)*2.,2.)*24.)*smoothstep(.12, .8, uProgress/100.);
  vec3 col=vec3(0.);
- col+=vec3(.8,.82,.86)*(disc*.13+disc2*.22+rings*.11);
+ col+=vec3(.82,.84,.88)*(disc*.13+disc2*.22+rings*.24);
+ col+=vec3(.42,.45,.50)*ringShadow*ringVisible*.12;
  col+=vec3(.56,.59,.64)*(filaments*1.4+halo);
  col+=vec3(.7,.73,.78)*(jets*jetNoise*.22);
  col+=vec3(.8)*pulse*exp(-abs(lr-(.2+fract(t*.075)*.52))*35.)*.16;
@@ -108,7 +133,7 @@ void main(){
  float dt=clamp(uDelta,0.,.025);
  float r2=dot(p,p)+.035;
  vec3 gravity=-p*(.018/pow(r2,1.5));
- vec3 tangent=normalize(vec3(-p.z,0.,p.x)+vec3(.0001,0.,.0001));
+ vec3 ringNormal=normalize(vec3(0.,.78,.625));\n vec3 tangent=normalize(cross(ringNormal,p)+vec3(.0001,0.,.0001));
  float orbit=1.0/(.35+length(p.xz));
  vec3 orbital=tangent*(.0008+orbit*.00055);
  vec3 turbulence=vec3(sin(p.y*8.+uTime*.7+seed*9.),cos(p.z*7.-uTime*.5+seed*4.),sin(p.x*9.+uTime*.6))*0.00045;

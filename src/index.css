@@ -348,3 +348,24 @@ button { font: inherit; }
 .startup-update-progress{margin-top:auto;padding-top:20px}
 .startup-update-progress small{display:block;margin-top:10px}
 .startup-update-actions{margin-top:auto;padding-top:22px}
+
+/* Update dialog: reserve breathing room for copy, errors and actions at every scale. */
+.startup-update{
+  box-sizing:border-box;
+  min-height:292px;
+  padding:30px 30px 28px;
+  display:flex;
+  flex-direction:column;
+  gap:0;
+}
+.startup-update-kicker{margin:0 0 16px;line-height:1.4}
+.startup-update h1{margin:0 0 12px;line-height:1.25}
+.startup-update>p:not(.startup-update-kicker){margin:0 0 12px;line-height:1.7;overflow-wrap:anywhere}
+.startup-update-error{color:#dedede!important}
+.startup-update-actions{margin-top:auto;padding-top:20px}
+.startup-update-progress{margin-top:auto;padding-top:24px}
+.startup-update-progress small{margin-top:12px;line-height:1.4}
+@media(max-height:560px){
+ .startup-update{max-height:calc(100vh - 32px);overflow-y:auto;min-height:0;padding:22px 24px}
+ .startup-update-actions{padding-top:16px}
+}
