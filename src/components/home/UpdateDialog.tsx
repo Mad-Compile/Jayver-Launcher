@@ -110,12 +110,17 @@ function ButtonLight() {
   useEffect(() => {
     const canvas=canvasRef.current, button=canvas?.parentElement;
     if(!canvas||!button)return;
-    const gl=canvas.getContext("webgl",{alpha:true,antialias:false,depth:false,stencil:false,powerPreference:"low-power"});
+    const gl=canvas.getContext("webgl2",{alpha:true,antialias:false,depth:false,stencil:false,powerPreference:"low-power"});
     if(!gl)return;
     const vs=gl.createShader(gl.VERTEX_SHADER),fs=gl.createShader(gl.FRAGMENT_SHADER);
     if(!vs||!fs)return;
-    gl.shaderSource(vs,"attribute vec2 p; varying vec2 uv; void main(){uv=p*.5+.5;gl_Position=vec4(p,0.,1.);}");
-    gl.shaderSource(fs,`precision mediump float; varying vec2 uv; uniform vec2 res; uniform vec2 mouse; uniform float t; uniform float on; uniform float pulse; void main(){vec2 d=uv-mouse;d.x*=res.x/max(res.y,1.);float dist=length(d);float bloom=exp(-dot(d,d)*34.);float sweepY=.5+sin(t*.62)*.12+(uv.x-.5)*.12;float sweep=exp(-pow((uv.y-sweepY)*34.,2.));float brushed=.5+.5*sin(uv.x*19.-uv.y*8.-t*1.25);float grain=fract(sin(dot(gl_FragCoord.xy,vec2(12.9898,78.233)))*43758.5453);float rim=pow(max(0.,1.-abs(uv.y-.5)*2.),7.);float ring=exp(-pow((dist-(.78-pulse*.62))*42.,2.))*pulse;float a=(bloom*.16+sweep*(.025+brushed*.035)+rim*.018+ring*.11)*on;vec3 metal=vec3(.78,.85,.91)*(0.84+brushed*.16)+vec3(.10,.13,.16)*grain*.025;gl_FragColor=vec4(metal*a,a);}`);
+    gl.shaderSource(vs,"#version 300 es\nin vec2 p; out vec2 uv; void main(){uv=p*.5+.5;gl_Position=vec4(p,0.,1.);}");
+    gl.shaderSource(fs,`#version 300 es
+precision highp float; in vec2 uv; out vec4 color; uniform vec2 res; uniform vec2 mouse; uniform float t; uniform float on; uniform float pulse;
+float hash(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
+float noise(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.0-2.0*f);return mix(mix(hash(i),hash(i+vec2(1,0)),f.x),mix(hash(i+vec2(0,1)),hash(i+1.0),f.x),f.y);}
+float fbm(vec2 p){float v=0.0,a=.5;mat2 m=mat2(1.6,1.2,-1.2,1.6);for(int i=0;i<4;i++){v+=a*noise(p);p=m*p;a*=.5;}return v;}
+void main(){vec2 p=(uv-.5)*vec2(res.x/max(res.y,1.),1.);vec2 mp=(mouse-.5)*vec2(res.x/max(res.y,1.),1.);float n=fbm(p*5.0+vec2(t*.18,-t*.12));vec2 warp=vec2(fbm(p*7.0+2.1+t*.12),fbm(p*7.0-3.4-t*.1))-.5;vec2 q=p+warp*.085+(mp-p)*.045;float angle=atan(q.y,q.x);float radius=length(q);float wave=sin(angle*2.0+t*.8+n*5.0)*.045+sin(angle*5.0-t*.45)*.018;float contour=radius-(.32+wave+(fbm(q*8.0+t*.16)-.5)*.11);float rim=exp(-abs(contour)*34.);float halo=exp(-abs(contour)*8.);float pointer=exp(-dot(uv-mouse,uv-mouse)*26.);float sweep=exp(-pow((uv.y-(.5+sin(t*.7)*.12+(uv.x-.5)*.1))*28.,2.));float ring=exp(-pow((length(uv-mouse)-(.72-pulse*.58))*46.,2.))*pulse;float alpha=(rim*.12+halo*.035+pointer*.09+sweep*.035+ring*.12)*on;vec3 silver=vec3(.72,.79,.86)*rim*.65+vec3(.58,.65,.72)*(halo*.35+pointer*.25)+vec3(.92,.95,.98)*(sweep*.45+ring*.55);color=vec4(silver*alpha,alpha);}`);
     for(const s of [vs,fs]){gl.compileShader(s);if(!gl.getShaderParameter(s,gl.COMPILE_STATUS)){gl.deleteShader(vs);gl.deleteShader(fs);return;}}
     const program=gl.createProgram();if(!program)return;
     gl.attachShader(program,vs);gl.attachShader(program,fs);gl.linkProgram(program);
@@ -125,6 +130,7 @@ function ButtonLight() {
     gl.bindBuffer(gl.ARRAY_BUFFER,buffer);gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1,3,-1,-1,3]),gl.STATIC_DRAW);
     gl.useProgram(program);const loc=gl.getAttribLocation(program,"p");gl.enableVertexAttribArray(loc);gl.vertexAttribPointer(loc,2,gl.FLOAT,false,0,0);
     const res=gl.getUniformLocation(program,"res"),mouse=gl.getUniformLocation(program,"mouse"),time=gl.getUniformLocation(program,"t"),on=gl.getUniformLocation(program,"on"),pulseLoc=gl.getUniformLocation(program,"pulse");
+    gl.enable(gl.BLEND);gl.blendFunc(gl.SRC_ALPHA,gl.ONE);
     let cursor:[number,number]=[.5,.5],active=false,raf=0,start=0,clickAt=0,dead=false;
     const resize=()=>{const r=button.getBoundingClientRect(),d=Math.min(devicePixelRatio||1,1.5),w=Math.max(1,Math.floor(r.width*d)),h=Math.max(1,Math.floor(r.height*d));if(canvas.width!==w||canvas.height!==h){canvas.width=w;canvas.height=h;gl.viewport(0,0,w,h);}};
     const move=(e:PointerEvent)=>{const r=button.getBoundingClientRect();cursor=[(e.clientX-r.left)/r.width,1-(e.clientY-r.top)/r.height];};
