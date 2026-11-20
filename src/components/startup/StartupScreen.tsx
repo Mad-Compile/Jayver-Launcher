@@ -60,7 +60,11 @@ export default function StartupScreen() {
   useEffect(() => {
     const minimumDisplay = window.setTimeout(() => setStartupElapsed(true), 2600);
     void initialize();
-    return () => window.clearTimeout(minimumDisplay);\n  }, [initialize]);\n\n  useEffect(() => {\n    void getVersion().then(async (version) => {
+    return () => window.clearTimeout(minimumDisplay);
+  }, [initialize]);
+
+  useEffect(() => {
+    void getVersion().then(async (version) => {
       try { await getCurrentWindow().setTitle(`Jayver ${version}`); }
       catch (cause) { console.error("Could not set Jayver window title:", cause); }
     }).catch((cause) => console.error("Could not read Jayver version:", cause));
