@@ -70,7 +70,6 @@ export default function UpdateDialog({ update, currentVersion, onLater, onInstal
         {errorMode ? <div className="jayver-dialog-error" role="alert">{error}</div> : <>
           <div className="jayver-version-comparison" aria-label={"Installed version " + currentVersion + "; available version " + update.version}>
             <div className="jayver-version-cell"><span>INSTALLED VERSION</span><strong>{currentVersion}</strong></div>
-            <span className="jayver-version-divider" aria-hidden="true">→</span>
             <div className="jayver-version-cell is-latest"><span>AVAILABLE VERSION</span><strong>{update.version}</strong></div>
           </div>
           <div className="jayver-update-meta">
