@@ -1168,3 +1168,105 @@ button { font: inherit; }
   .jayver-progress-engine::before { animation:none; }
   .jayver-download-error-actions button { transition:none; }
 }
+
+
+/* Brand mark, optical centering and pointer-lit metal controls. */
+.jayver-dialog-brand-mark {
+  display:block;
+  width:25px;
+  height:25px;
+  object-fit:contain;
+  padding:2px;
+  border:0;
+  border-radius:0;
+  background:transparent;
+  opacity:.96;
+  filter:drop-shadow(0 0 7px rgba(238,242,245,.12));
+}
+.jayver-dialog-brand { gap:11px; }
+.jayver-dialog-brand > span:first-of-type {
+  font-size:10px;
+  font-weight:680;
+  letter-spacing:.18em;
+}
+.jayver-update-visual-disc {
+  display:grid;
+  place-items:center;
+  transform:translateZ(0);
+}
+.jayver-update-glyph {
+  display:block;
+  width:57px;
+  height:57px;
+  overflow:visible;
+  stroke:currentColor;
+  stroke-width:2.5;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+  filter:drop-shadow(0 0 5px rgba(255,255,255,.25)) drop-shadow(0 0 16px rgba(225,234,240,.13));
+  animation:jayver-glyph-arrive 900ms cubic-bezier(.16,1,.3,1) both, jayver-glyph-breathe 5.8s ease-in-out 900ms infinite;
+}
+.jayver-update-glyph path { vector-effect:non-scaling-stroke; }
+.jayver-update-glyph-core { opacity:.34; stroke-width:1.15; }
+.jayver-update-visual-disc::after {
+  content:"";
+  position:absolute;
+  inset:7px;
+  border:1px solid rgba(255,255,255,.055);
+  border-radius:50%;
+  pointer-events:none;
+  box-shadow:0 0 18px rgba(255,255,255,.035) inset;
+}
+.jayver-dialog-actions button {
+  --pointer-x:50%;
+  --pointer-y:50%;
+  transform-style:preserve-3d;
+}
+.jayver-dialog-actions button::after {
+  content:"";
+  position:absolute;
+  z-index:-1;
+  inset:-1px;
+  border-radius:inherit;
+  opacity:0;
+  pointer-events:none;
+  background:radial-gradient(115px circle at var(--pointer-x) var(--pointer-y), rgba(255,255,255,.24), rgba(255,255,255,.065) 38%, transparent 72%);
+  transition:opacity 260ms ease;
+}
+.jayver-dialog-actions button:hover::after { opacity:1; }
+.jayver-button-primary::after {
+  background:radial-gradient(130px circle at var(--pointer-x) var(--pointer-y), rgba(255,255,255,.95), rgba(255,255,255,.18) 44%, transparent 76%) !important;
+  mix-blend-mode:soft-light;
+}
+.jayver-button-secondary:hover {
+  box-shadow:0 0 0 1px rgba(255,255,255,.035) inset, 0 10px 28px rgba(0,0,0,.28), 0 0 24px rgba(220,230,238,.055);
+}
+.jayver-button-primary:hover {
+  box-shadow:0 1px 0 rgba(255,255,255,.95) inset, 0 12px 32px rgba(235,240,245,.17), 0 0 22px rgba(235,240,245,.11) !important;
+}
+.jayver-dialog-close {
+  position:relative;
+  overflow:hidden;
+}
+.jayver-dialog-close::before {
+  content:"";
+  position:absolute;
+  inset:0;
+  border-radius:inherit;
+  background:radial-gradient(circle at 50% 50%, rgba(255,255,255,.15), transparent 70%);
+  opacity:0;
+  transition:opacity 240ms ease;
+}
+.jayver-dialog-close:hover::before { opacity:1; }
+@keyframes jayver-glyph-arrive {
+  from { opacity:0; transform:scale(.82) rotate(-18deg); filter:blur(4px); }
+  to { opacity:1; transform:scale(1) rotate(0); filter:drop-shadow(0 0 5px rgba(255,255,255,.25)) drop-shadow(0 0 16px rgba(225,234,240,.13)); }
+}
+@keyframes jayver-glyph-breathe {
+  0%,100% { transform:translateY(0); }
+  50% { transform:translateY(-1.5px); }
+}
+@media(prefers-reduced-motion:reduce) {
+  .jayver-update-glyph { animation:none; }
+  .jayver-dialog-actions button::after,.jayver-dialog-close::before { transition:none; }
+}
