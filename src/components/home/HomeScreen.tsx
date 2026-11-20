@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { getVersion } from "@tauri-apps/api/app";
-import { Home, LibraryBig, Puzzle, Server, Palette, Settings, ChevronDown, Download, Box, Gamepad2, Settings2, ShieldCheck, Sparkles } from "lucide-react";
+import { Home, LibraryBig, Puzzle, Server, Palette, Settings, ChevronDown, Download, Box, Gamepad2, ShieldCheck, Sparkles, CircleHelp } from "lucide-react";
 import ObsidianScene from "./ObsidianScene";
 import SkinHero from "./SkinHero";
 import type { Update } from "@tauri-apps/plugin-updater";
