@@ -20,6 +20,7 @@ export default function StartupScreen() {
   const [updateProgress, setUpdateProgress] = useState(0);
   const [updateError, setUpdateError] = useState("");
   const [startupElapsed, setStartupElapsed] = useState(false);
+  const [logoActivated, setLogoActivated] = useState(false);
 
   const initialize = useCallback(async () => {
     setState("starting");
@@ -76,9 +77,9 @@ export default function StartupScreen() {
 
   return (
     <main className="startup-screen">
-      <SingularityVortexBackground progress={progress} quality="auto" intensity={0.88} mouseInfluence={0.25} />
+      <SingularityVortexBackground intensity={0.9} activated={logoActivated} />
       <div className="startup-vignette" aria-hidden="true" />
-      <section className="startup-mark" aria-label="Jayver startup">
+      <section className="startup-mark" aria-label="Jayver startup" onPointerEnter={() => setLogoActivated(true)} onPointerLeave={() => setLogoActivated(false)} onFocus={() => setLogoActivated(true)} onBlur={() => setLogoActivated(false)} tabIndex={0}>
         <img src="/brand/jayver-mark.svg" alt="Jayver" draggable={false} />
       </section>
 
