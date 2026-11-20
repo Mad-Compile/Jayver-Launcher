@@ -107,11 +107,12 @@ function UpdateMaterial() {
 
 function UpdateGlyph() {
   return (
-    <svg className="jayver-update-glyph" viewBox="0 0 64 64" fill="none" aria-hidden="true">
-      <path d="M49 24A19 19 0 0 0 15.5 19L11 24" />
-      <path d="M11 13v11h11" />
-      <path d="M15 40a19 19 0 0 0 33.5 5L53 40" />
-      <path d="M53 51V40H42" />
+    <svg className="jayver-update-glyph" viewBox="0 0 80 80" fill="none" aria-hidden="true">
+      <path d="M61 29.5A23 23 0 0 0 20.2 21L15 27" />
+      <path d="M15 15V27H27" />
+      <path d="M19 50.5A23 23 0 0 0 59.8 59L65 53" />
+      <path d="M65 65V53H53" />
+      <path className="jayver-update-glyph-core" d="M29 40h22" />
     </svg>
   );
 }
@@ -144,7 +145,7 @@ export default function UpdateDialog({ update, currentVersion, onLater, onInstal
       <section className="jayver-update-dialog" role="dialog" aria-modal="true" aria-labelledby="jayver-update-title" aria-describedby="jayver-update-description" ref={dialogRef}>
         <div className="jayver-dialog-topline">
           <div className="jayver-dialog-brand">
-            <img className="jayver-dialog-brand-mark" src="/brand/jayver-mark.svg" alt="" />
+            <img className="jayver-dialog-brand-mark" src="/brand/jayver-mark.svg" alt="Jayver" />
             <span>JAYVER</span>
             <span className="jayver-dialog-context">SYSTEM UPDATE</span>
           </div>
