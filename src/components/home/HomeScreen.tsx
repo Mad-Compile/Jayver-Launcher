@@ -9,6 +9,7 @@ import { downloadJayverUpdate, installDownloadedJayverUpdate } from "@/lib/updat
 import UpdateDialog from "./UpdateDialog";
 import DownloadAtmosphere from "./DownloadAtmosphere";
 import type { MinecraftInstance } from "@/lib/jayver";
+import { usePlayerProfile } from "@/lib/player-profile";
 
 interface Props { update: Update | null; onDismissUpdate: () => void; instances: MinecraftInstance[]; }
 
@@ -20,17 +21,8 @@ export default function HomeScreen({ update, onDismissUpdate }: Props) {
   const [profileOpen, setProfileOpen] = useState(false);
   const [openSwitcherOnProfile, setOpenSwitcherOnProfile] = useState(false);
   const [accountMenuOpen, setAccountMenuOpen] = useState(false);
-  const [profileName, setProfileName] = useState("Local profile");
-
-  useEffect(() => {
-    try {
-      const stored = localStorage.getItem("jayver.player-profile.v1");
-      if (stored) {
-        const profile = JSON.parse(stored) as { name?: string };
-        if (profile.name) setProfileName(profile.name);
-      }
-    } catch { /* Keep the local profile label if stored data is unavailable. */ }
-  }, [profileOpen]);
+  const playerProfile = usePlayerProfile();
+  const profileName = playerProfile.name;
 
   useEffect(() => {
     void getVersion().then(setCurrentVersion).catch(() => setCurrentVersion("Unknown"));
@@ -76,7 +68,7 @@ export default function HomeScreen({ update, onDismissUpdate }: Props) {
       {profileOpen && <ProfileExperience initialSwitcher={openSwitcherOnProfile} onClose={() => { setProfileOpen(false); setOpenSwitcherOnProfile(false); }} />}
 
       <section className="home-hero home-skin-stage" aria-label="Player skin">
-        <div className="home-character"><SkinHero /></div>
+        <div className="home-character"><SkinHero skin={playerProfile.skin} model={playerProfile.model} /></div>
       </section>
 
       {update && updatePhase === "idle" && (
