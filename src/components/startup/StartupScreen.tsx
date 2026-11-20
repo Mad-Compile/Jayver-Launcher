@@ -28,7 +28,7 @@ void main() {
   vec2 pos = vec2(x, y);
   pos.x *= uResolution.y / uResolution.x;
   gl_Position = vec4(pos, 0.0, 1.0);
-  gl_PointSize = (1.0 + seed * 2.1) * (0.72 + spread * 0.7);
+  gl_PointSize = (1.0 + seed * 2.1) * (0.72 + aParticle.z * 0.7);
   vAlpha = 0.16 + seed * 0.48;
   vShade = 0.56 + seed * 0.38;
 }`;
@@ -44,6 +44,43 @@ void main() {
   float alpha = (1.0 - smoothstep(0.12, 0.5, d)) * vAlpha;
   float shade = vShade;
   outColor = vec4(vec3(shade), alpha);
+}`;
+
+
+const BACKGROUND_VERTEX_SHADER = `#version 300 es
+precision highp float;
+in vec2 aPosition;
+void main(){ gl_Position=vec4(aPosition,0.0,1.0); }`;
+
+const BACKGROUND_FRAGMENT_SHADER = `#version 300 es
+precision highp float;
+out vec4 outColor;
+uniform vec2 uResolution;
+uniform float uTime;
+uniform float uReducedMotion;
+float hash(vec2 p){ return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453123); }
+float noise(vec2 p){ vec2 i=floor(p),f=fract(p); f=f*f*(3.0-2.0*f); return mix(mix(hash(i),hash(i+vec2(1,0)),f.x),mix(hash(i+vec2(0,1)),hash(i+1.0),f.x),f.y); }
+float fbm(vec2 p){ float v=0.0,a=.5; mat2 m=mat2(1.6,1.2,-1.2,1.6); for(int i=0;i<5;i++){v+=a*noise(p);p=m*p;a*=.5;} return v; }
+void main(){
+ vec2 uv=gl_FragCoord.xy/uResolution;
+ vec2 p=(uv-vec2(.5,.54))*vec2(uResolution.x/uResolution.y,1.0);
+ float t=uTime*(1.0-uReducedMotion);
+ vec2 flow=vec2(fbm(p*3.0+vec2(t*.10,1.7)),fbm(p*3.0-vec2(2.3,t*.08)))-.5;
+ vec2 q=p+flow*.16;
+ float a=atan(q.y,q.x);
+ float r=length(q);
+ float distortion=sin(a*3.0+t*.18)*.035+sin(a*7.0-t*.12)*.012+(fbm(q*5.0+t*.06)-.5)*.075;
+ float d=r-(.355+distortion);
+ float core=exp(-abs(d)*34.0);
+ float halo=exp(-abs(d)*9.0);
+ float outer=1.0-smoothstep(.48,.82,r);
+ float grain=hash(gl_FragCoord.xy+floor(t*9.0))*.018;
+ vec3 silver=vec3(.78,.80,.84);
+ vec3 c=(silver*core*.20+vec3(.37,.40,.46)*halo*.18)*outer;
+ c+=grain*.20;
+ float vignette=1.0-smoothstep(.42,1.0,length(p*vec2(.9,1.0)));
+ c*=vignette;
+ outColor=vec4(c,1.0);
 }`;
 
 function compileShader(gl: WebGL2RenderingContext, type: number, source: string) {
@@ -92,7 +129,7 @@ function ParticleField() {
     }
 
     try {
-      const vertex = compileShader(gl, gl.VERTEX_SHADER, VERTEX_SHADER);
+      const bgVertex = compileShader(gl, gl.VERTEX_SHADER, BACKGROUND_VERTEX_SHADER);\n      const bgFragment = compileShader(gl, gl.FRAGMENT_SHADER, BACKGROUND_FRAGMENT_SHADER);\n      backgroundProgram = gl.createProgram();\n      if (!backgroundProgram) throw new Error("Unable to create fluid shader program");\n      gl.attachShader(backgroundProgram, bgVertex);\n      gl.attachShader(backgroundProgram, bgFragment);\n      gl.linkProgram(backgroundProgram);\n      gl.deleteShader(bgVertex);\n      gl.deleteShader(bgFragment);\n      if (!gl.getProgramParameter(backgroundProgram, gl.LINK_STATUS)) throw new Error("Unable to link fluid shader program");\n      quadBuffer = gl.createBuffer();\n      if (!quadBuffer) throw new Error("Unable to create fluid quad");\n      gl.bindBuffer(gl.ARRAY_BUFFER, quadBuffer);\n      gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1,1,-1,-1,1,1,1]), gl.STATIC_DRAW);\n\n      const vertex = compileShader(gl, gl.VERTEX_SHADER, VERTEX_SHADER);
       const fragment = compileShader(gl, gl.FRAGMENT_SHADER, FRAGMENT_SHADER);
       program = gl.createProgram();
       if (!program) throw new Error("Unable to create WebGL program");
