@@ -53,14 +53,14 @@ export default function DownloadAtmosphere() {
         float column = exp(-pow((p.x + sin(t) * 0.025) * 3.2, 2.0))
                      * exp(-pow((p.y - 0.02) * 1.35, 2.0));
 
-        float edge = smoothstep(1.05, 0.18, length(p * vec2(0.78, 1.0)));
+        float edge = 1.0 - smoothstep(0.18, 1.05, length(p * vec2(0.78, 1.0)));
         float grain = (hash(gl_FragCoord.xy + floor(time * 7.0)) - 0.5) * 0.012;
 
         float luminance = core * 0.095 + veil * 0.026 + column * 0.012;
         luminance = (luminance + grain * edge) * edge;
 
         vec3 silver = vec3(0.82, 0.86, 0.90);
-        gl_FragColor = vec4(silver * max(luminance, 0.0), max(luminance, 0.0) * 0.82);
+        gl_FragColor = vec4(silver * max(luminance, 0.0), max(luminance, 0.0));
       }
     `;
 
