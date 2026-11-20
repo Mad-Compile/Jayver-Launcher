@@ -5,7 +5,7 @@ import type { Update } from "@tauri-apps/plugin-updater";
 type Props = { update: Update; currentVersion: string; onLater: () => void; onInstall: () => void; error?: string; errorMode?: boolean; };
 
 function parseVersion(value: string) {
-  const match = value.trim().replace(/^v/i, "").match(/^(\\d+)\\.(\\d+)\\.(\\d+)(?:[-+].*)?$/);
+  const match = value.trim().replace(/^v/i, "").match(/^(\d+)\\.(\d+)\\.(\d+)(?:[-+].*)?$/);
   return match ? match.slice(1).map(Number) : null;
 }
 function buildsBehind(current: string, latest: string): number | null {
@@ -177,8 +177,8 @@ export default function UpdateDialog({ update, currentVersion, onLater, onInstal
           <p className="jayver-preservation-note"><Check size={14} /> Your launcher data and settings stay in place.</p>
         </>}
         <div className="jayver-dialog-actions">
-          <button className="jayver-button-secondary" type="button" onClick={onLater}>{errorMode ? "Close" : "Not now"}</button>
-          <button className="jayver-button-primary" type="button" onClick={onInstall}><span>{errorMode ? "Try again" : "Install update"}</span>{!errorMode && <ArrowDownToLine size={16} />}</button>
+          <button className="jayver-button-secondary" type="button" onPointerMove={(event) => { const r=event.currentTarget.getBoundingClientRect(); event.currentTarget.style.setProperty("--pointer-x", `${event.clientX-r.left}px`); event.currentTarget.style.setProperty("--pointer-y", `${event.clientY-r.top}px`); }} onPointerLeave={(event) => { event.currentTarget.style.setProperty("--pointer-x","50%"); event.currentTarget.style.setProperty("--pointer-y","50%"); }} onClick={onLater}>{errorMode ? "Close" : "Not now"}</button>
+          <button className="jayver-button-primary" type="button" onPointerMove={(event) => { const r=event.currentTarget.getBoundingClientRect(); event.currentTarget.style.setProperty("--pointer-x", `${event.clientX-r.left}px`); event.currentTarget.style.setProperty("--pointer-y", `${event.clientY-r.top}px`); }} onPointerLeave={(event) => { event.currentTarget.style.setProperty("--pointer-x","50%"); event.currentTarget.style.setProperty("--pointer-y","50%"); }} onClick={onInstall}><span>{errorMode ? "Try again" : "Install update"}</span>{!errorMode && <ArrowDownToLine size={16} />}</button>
         </div>
       </section>
     </div>
