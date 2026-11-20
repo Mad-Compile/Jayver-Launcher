@@ -715,74 +715,15 @@ button { font: inherit; }
 }
 
 
-/* Jayver update loader — restrained precision, no branding footer. */
-.jayver-download-progress {
-  position: fixed;
-  z-index: 40;
-  inset: 0;
-  display: grid;
-  place-items: center;
-  padding: 24px;
-  background:
-    radial-gradient(ellipse at 50% 46%, rgba(255,255,255,.035), transparent 27%),
-    #080808;
-}
-.jayver-download-progress-panel {
-  width: min(390px, calc(100vw - 40px));
-  min-height: 220px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  gap: 13px;
-  text-align: center;
-}
-.jayver-loader {
-  position: relative;
-  width: 96px;
-  height: 96px;
-  margin-bottom: 17px;
-  display: grid;
-  place-items: center;
-  filter: drop-shadow(0 0 18px rgba(220,225,232,.075));
-}
-.jayver-loader svg {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  overflow: visible;
-  transform: rotate(-90deg);
-}
-.jayver-loader-track,
-.jayver-loader-value,
-.jayver-loader-inner {
-  fill: none;
-  vector-effect: non-scaling-stroke;
-}
-.jayver-loader-track {
-  stroke: #292c30;
-  stroke-width: 1.45;
-}
-.jayver-loader-value {
-  stroke: url(#jayver-loader-metal);
-  stroke: #d9dde2;
-  stroke-width: 2.2;
-  stroke-linecap: round;
-  transition: stroke-dashoffset 220ms ease-out;
-  filter: drop-shadow(0 0 3px rgba(235,239,245,.3));
-}
-.jayver-loader-inner {
-  stroke: rgba(255,255,255,.055);
-  stroke-width: 1;
-}
-.jayver-loader-core {
-  width: 64px;
-  height: 64px;
-  border: 1px solid rgba(255,255,255,.035);
-  border-radius: 50%;
-  background: radial-gradient(circle at 36% 30%, rgba(255,255,255,.045), rgba(255,255,255,.008) 58%, transparent 72%);
-  box-shadow: inset 0 0 22px rgba(255,255,255,.018), 0 0 24px rgba(255,255,255,.018);
+/* Loading indicator follows the supplied source: Lucide LoaderCircle + animate-spin. */
+.jayver-source-loader {
+  width: 82px;
+  height: 82px;
+  margin: 0 0 28px;
+  color: #dfe2e5;
+  stroke-width: 1.15;
+  filter: drop-shadow(0 0 8px rgba(235,239,245,.12));
+  animation: spin 1s linear infinite;
 }
 .jayver-download-progress-panel strong {
   color: #ededed;
@@ -796,7 +737,12 @@ button { font: inherit; }
   font-weight: 400;
   letter-spacing: .015em;
 }
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
 @media (prefers-reduced-motion: reduce) {
+  .jayver-source-loader { animation-duration: 2.5s; }
+}
   .jayver-loader-value { transition: none; }
 }
 
