@@ -1,10 +1,13 @@
 import { useMemo, useState } from "react";
+import { getVersion } from "@tauri-apps/api/app";
+import { useEffect } from "react";
 import { Box, ChevronDown, Download, Gamepad2, Settings2, ShieldCheck, Clock3, Folder, HardDrive, AlertCircle } from "lucide-react";
 import SkinHero from "./SkinHero";
 import type { Update } from "@tauri-apps/plugin-updater";
 import type { MinecraftInstance } from "@/lib/jayver";
 import { downloadJayverUpdate, installDownloadedJayverUpdate } from "@/lib/updates";
 import UpdateReactor from "./UpdateReactor";
+import UpdateDialog from "./UpdateDialog";
 
 interface Props { update: Update | null; onDismissUpdate: () => void; instances: MinecraftInstance[]; }
 type Tab = "play" | "instances" | "settings";
@@ -14,6 +17,8 @@ export default function HomeScreen({update,onDismissUpdate,instances}:Props){
  const [selectedId,setSelectedId]=useState(instances[0]?.id ?? "");
  const selected=useMemo(()=>instances.find(item=>item.id===selectedId)??instances[0]??null,[instances,selectedId]);
  const [percent,setPercent]=useState(0);
+ const [currentVersion,setCurrentVersion]=useState("—");
+ useEffect(()=>{void getVersion().then(setCurrentVersion).catch(()=>setCurrentVersion("Unknown"));},[]);
  const [updateError,setUpdateError]=useState("");
  const [updatePhase,setUpdatePhase]=useState<"idle"|"charging"|"ready"|"installing"|"error">("idle");
  const [instanceMenu,setInstanceMenu]=useState(false);
@@ -66,8 +71,8 @@ export default function HomeScreen({update,onDismissUpdate,instances}:Props){
    <div className="dashboard-runtime"><div className="dashboard-title"><span>LAUNCHER</span><small>STATUS</small></div><div className="runtime-line"><ShieldCheck size={15}/><span>Desktop runtime</span><b>Connected</b></div><div className="runtime-line"><Download size={15}/><span>Updater</span><b>Ready</b></div></div>
   </section>
   <footer className="home-footer"><span>© MAD COMPILE</span><span>JAYVER LAUNCHER</span><span>DEVELOPMENT BUILD</span></footer>
-  {update&&updatePhase==="idle"&&<div className="update-shade"><section className="update-panel" role="dialog" aria-modal="true" aria-labelledby="update-title"><p className="card-kicker">JAYVER UPDATE</p><h2 id="update-title">A new build awaits.</h2><p>{update.body||"Version "+update.version+" is ready to install."}</p><div className="update-actions"><button onClick={()=>{void update.close();onDismissUpdate();}}>Later</button><button onClick={()=>{setPercent(0);setUpdateError("");setUpdatePhase("charging");void downloadJayverUpdate(update,({downloaded,total})=>setPercent(total?Math.min(100,downloaded/total*100):0)).then(()=>setUpdatePhase("ready")).catch(e=>{setUpdatePhase("error");setUpdateError(e instanceof Error?e.message:"Update download failed.");});}}>Begin update <Download size={14}/></button></div></section></div>}
-  {update&&["charging","ready","installing"].includes(updatePhase)&&<div className="update-cinematic"><UpdateReactor progress={percent} ready={updatePhase==="ready"} onWhiteoutComplete={()=>{setUpdatePhase("installing");void installDownloadedJayverUpdate(update).catch(e=>{setUpdatePhase("error");setUpdateError(e instanceof Error?e.message:"Update installation failed.");});}}/>{updatePhase==="installing"&&<div className="update-install-status"><span>JAYVER · UPDATE</span><strong>Preparing installation</strong><small>PACKAGE DOWNLOADED · SIGNATURE VERIFIED</small></div>}</div>}
-  {update&&updatePhase==="error"&&<div className="update-shade"><section className="update-panel" role="dialog" aria-modal="true"><p className="card-kicker">UPDATE INTERRUPTED</p><h2>Could not complete update.</h2><p role="alert" className="update-error">{updateError}</p><div className="update-actions"><button onClick={()=>{void update.close();onDismissUpdate();}}>Close</button><button onClick={()=>{setUpdateError("");setUpdatePhase("idle");}}>Try again</button></div></section></div>}
+  {update&&updatePhase==="idle"&&<UpdateDialog update={update} currentVersion={currentVersion} onLater={()=>{void update.close();onDismissUpdate();}} onInstall={()=>{setPercent(0);setUpdateError("");setUpdatePhase("charging");void downloadJayverUpdate(update,({downloaded,total})=>setPercent(total?Math.min(100,downloaded/total*100):0)).then(()=>setUpdatePhase("ready")).catch(e=>{setUpdatePhase("error");setUpdateError(e instanceof Error?e.message:"Update download failed.");});}}/>}
+  {update&&["charging","ready","installing"].includes(updatePhase)&&<div className="update-cinematic"><UpdateReactor progress={percent} ready={updatePhase==="ready"} onWhiteoutComplete={()=>{setUpdatePhase("installing");void installDownloadedJayverUpdate(update).catch(e=>{setUpdatePhase("error");setUpdateError(e instanceof Error?e.message:"Update installation failed.");});}}/>{updatePhase==="installing"&&<div className="update-install-status"><span>JAYVER · UPDATE</span><strong>Preparing installation</strong><small>PACKAGE DOWNLOADED · SIGNATURE CHECKED</small></div>}</div>}
+  {update&&updatePhase==="error"&&<UpdateDialog update={update} currentVersion={currentVersion} error={updateError} errorMode onLater={()=>{void update.close();onDismissUpdate();}} onInstall={()=>{setUpdateError("");setUpdatePhase("idle");}}/>}
  </main>;
 }

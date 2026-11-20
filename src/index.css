@@ -688,3 +688,50 @@ button { font: inherit; }
   .update-orbit-highlight { animation: none; }
   .update-cinematic { animation: none; }
 }
+
+
+/* Jayver dialog system — precise, quiet, consistent desktop interaction. */
+.jayver-dialog-scrim{position:fixed;inset:0;z-index:50;display:grid;place-items:center;padding:24px;background:rgba(0,0,0,.76);backdrop-filter:blur(7px);-webkit-backdrop-filter:blur(7px);animation:jayver-scrim-in 180ms ease-out both}
+.jayver-update-dialog{position:relative;width:min(486px,calc(100vw - 36px));max-height:min(720px,calc(100vh - 40px));overflow:auto;padding:25px 27px 18px;border:1px solid #45484b;border-radius:5px;background:linear-gradient(145deg,#17191b 0%,#111315 48%,#0d0f10 100%);color:#e9eaeb;box-shadow:0 30px 90px rgba(0,0,0,.72),0 1px 0 rgba(255,255,255,.055) inset;animation:jayver-dialog-in 220ms cubic-bezier(.2,.75,.25,1) both}
+.jayver-update-dialog::before{content:"";position:absolute;top:0;left:27px;right:27px;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.35),transparent);pointer-events:none}
+.jayver-dialog-topline{display:flex;align-items:center;justify-content:space-between;padding-bottom:20px;border-bottom:1px solid #303336}
+.jayver-dialog-brand{display:flex;align-items:center;gap:9px;color:#e7e8e9;font-size:10px;font-weight:650;letter-spacing:.16em}
+.jayver-dialog-mark{width:22px;height:22px;display:grid;place-items:center;border:1px solid #5a5d60;color:#f4f4f4;font-size:12px;font-weight:500;letter-spacing:0}
+.jayver-dialog-brand i{width:2px;height:2px;border-radius:50%;background:#696d70;margin:0 1px}
+.jayver-dialog-context{color:#888d91;font-size:8px;font-weight:550;letter-spacing:.12em}
+.jayver-dialog-close{width:30px;height:30px;display:grid;place-items:center;border:1px solid transparent;border-radius:3px;background:transparent;color:#858a8e;cursor:pointer;transition:color 140ms ease,border-color 140ms ease,background 140ms ease}
+.jayver-dialog-close:hover{border-color:#45494c;background:#222528;color:#fff}
+.jayver-dialog-heading{display:flex;align-items:flex-start;gap:15px;padding:25px 0 22px}
+.jayver-dialog-symbol{width:38px;height:38px;flex:none;display:grid;place-items:center;border:1px solid #484c50;background:linear-gradient(145deg,#25292c,#151719);color:#e5e7e8;box-shadow:0 1px 0 rgba(255,255,255,.05) inset}
+.jayver-dialog-heading h2{margin:0;color:#f0f1f2;font-size:21px;line-height:1.2;font-weight:520;letter-spacing:-.045em}
+.jayver-dialog-heading p{margin:8px 0 0;color:#92979b;font-size:12px;line-height:1.6}
+.jayver-version-comparison{display:grid;grid-template-columns:1fr 24px 1fr;align-items:center;min-height:91px;padding:15px 16px;border:1px solid #35393c;background:rgba(0,0,0,.18)}
+.jayver-version-cell{min-width:0;display:flex;flex-direction:column;gap:9px}
+.jayver-version-cell span{color:#83898d;font-size:8px;font-weight:600;letter-spacing:.13em}
+.jayver-version-cell strong{color:#d6d9db;font-size:22px;font-weight:450;letter-spacing:-.045em;font-variant-numeric:tabular-nums}
+.jayver-version-cell.is-latest strong{color:#fff}
+.jayver-version-divider{display:grid;place-items:center;color:#777d81;font-size:16px}
+.jayver-update-meta{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:13px 1px 14px;color:#a4a9ad;font-size:10px}
+.jayver-signed-note{display:flex;align-items:center;gap:6px;color:#b8bdc1}
+.jayver-signed-note svg{color:#d5d8da}
+.jayver-release-notes{border-top:1px solid #303437;border-bottom:1px solid #303437}
+.jayver-release-notes>button{width:100%;display:flex;align-items:center;justify-content:space-between;padding:12px 1px;border:0;background:transparent;color:#d4d7d9;font:inherit;font-size:11px;text-align:left;cursor:pointer}
+.jayver-release-notes>button svg{transition:transform 180ms ease}
+.jayver-release-notes.is-open>button svg{transform:rotate(180deg)}
+.jayver-release-notes p{max-height:180px;overflow:auto;margin:0;padding:0 0 13px;color:#999fa3;font-size:11px;line-height:1.65;white-space:pre-wrap}
+.jayver-preservation-note{display:flex;align-items:center;gap:8px;margin:15px 0 0;color:#a5aaad;font-size:10px}
+.jayver-preservation-note svg{color:#d6d9db}
+.jayver-dialog-error{padding:13px 14px;border:1px solid #4b4141;background:#1a1515;color:#d5c6c6;font-size:12px;line-height:1.6;overflow-wrap:anywhere}
+.jayver-dialog-actions{display:flex;justify-content:flex-end;gap:9px;padding-top:23px}
+.jayver-dialog-actions button{min-width:104px;height:40px;display:inline-flex;align-items:center;justify-content:center;gap:9px;padding:0 15px;border:1px solid #555a5e;border-radius:3px;font:inherit;font-size:11px;font-weight:550;cursor:pointer;transition:background 140ms ease,border-color 140ms ease,color 140ms ease,transform 100ms ease}
+.jayver-dialog-actions button:active{transform:translateY(1px)}
+.jayver-button-secondary{background:transparent;color:#c6cacc}
+.jayver-button-secondary:hover{border-color:#81878b;background:#202427;color:#fff}
+.jayver-button-primary{border-color:#e5e7e8!important;background:linear-gradient(180deg,#f1f2f2,#d9dcde)!important;color:#101214!important;box-shadow:0 1px 0 rgba(255,255,255,.55) inset}
+.jayver-button-primary:hover{background:#fff!important;border-color:#fff!important}
+.jayver-dialog-footer{display:flex;justify-content:space-between;gap:12px;margin-top:19px;padding-top:12px;border-top:1px solid #292d30;color:#62696d;font-size:7px;font-weight:550;letter-spacing:.14em}
+.jayver-dialog-actions button:focus-visible,.jayver-dialog-close:focus-visible,.jayver-release-notes button:focus-visible{outline:2px solid #e5e7e8;outline-offset:3px}
+@keyframes jayver-scrim-in{from{opacity:0}to{opacity:1}}
+@keyframes jayver-dialog-in{from{opacity:0;transform:translateY(7px) scale(.992)}to{opacity:1;transform:translateY(0) scale(1)}}
+@media(max-width:520px){.jayver-update-dialog{padding:20px 18px 15px}.jayver-dialog-heading h2{font-size:19px}.jayver-version-comparison{padding:13px 11px}.jayver-version-cell strong{font-size:19px}.jayver-dialog-actions button{min-width:0;flex:1}}
+@media(prefers-reduced-motion:reduce){.jayver-dialog-scrim,.jayver-update-dialog{animation:none}.jayver-dialog-close,.jayver-dialog-actions button,.jayver-release-notes>button svg{transition:none}}

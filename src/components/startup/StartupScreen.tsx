@@ -5,7 +5,7 @@ import { getCurrentWindow } from "@tauri-apps/api/window";
 import HomeScreen from "@/components/home/HomeScreen";
 import { jayver } from "@/lib/jayver";
 import type { Update } from "@tauri-apps/plugin-updater";
-import { checkForJayverUpdate, installJayverUpdate } from "@/lib/updates";
+import { checkForJayverUpdate } from "@/lib/updates";
 import type { MinecraftInstance } from "@/lib/jayver";
 
 type StartupState = "starting" | "ready" | "error" | "preview";
@@ -16,9 +16,6 @@ export default function StartupScreen() {
   const [status, setStatus] = useState("Starting Jayver");
   const [error, setError] = useState("");
   const [availableUpdate, setAvailableUpdate] = useState<Update | null>(null);
-  const [installingUpdate, setInstallingUpdate] = useState(false);
-  const [updateProgress, setUpdateProgress] = useState(0);
-  const [updateError, setUpdateError] = useState("");
   const [startupElapsed, setStartupElapsed] = useState(false);
   const [instances, setInstances] = useState<MinecraftInstance[]>([]);
 
@@ -105,34 +102,7 @@ export default function StartupScreen() {
         {state === "preview" && <p className="startup-note">Open the desktop build to run startup checks.</p>}
       </section>
 
-      {availableUpdate && (
-        <section className="startup-update" aria-live="polite">
-          <p className="startup-update-kicker">UPDATE AVAILABLE</p>
-          <h1>Jayver {availableUpdate.version}</h1>
-          <p>{availableUpdate.body || "A new version of Jayver is ready to install."}</p>
-          {updateError && <p className="startup-update-error" role="alert">{updateError}</p>}
-        {installingUpdate ? (
-            <div className="startup-update-progress">
-              <span style={{ width: `${updateProgress}%` }} />
-              <small>{updateProgress > 0 ? `${updateProgress}% downloaded` : "Preparing update"}</small>
-            </div>
-          ) : (
-            <div className="startup-update-actions">
-              <button type="button" onClick={() => { void availableUpdate.close(); setAvailableUpdate(null); setUpdateError(""); }}>Later</button>
-              <button type="button" onClick={() => {
-                setInstallingUpdate(true);
-                setUpdateError("");
-                void installJayverUpdate(availableUpdate, ({ downloaded, total }) => {
-                  setUpdateProgress(total ? Math.min(100, Math.round(downloaded / total * 100)) : 0);
-                }).catch((cause) => {
-                  setInstallingUpdate(false);
-                  setUpdateError(cause instanceof Error ? cause.message : "Update installation failed.");
-                });
-              }}>Install & restart</button>
-            </div>
-          )}
-        </section>
-      )}
+
 
       <footer className="startup-copyright">© Mad Compile</footer>
     </main>
