@@ -3,14 +3,16 @@ import { Box, CircleHelp, Download, Gamepad2, Settings2, ShieldCheck, Sparkles }
 import ObsidianScene from "./ObsidianScene";
 import SkinHero from "./SkinHero";
 import type { Update } from "@tauri-apps/plugin-updater";
-import { installJayverUpdate } from "@/lib/updates";
+import { downloadJayverUpdate, installDownloadedJayverUpdate } from "@/lib/updates";
+import UpdateReactor from "./UpdateReactor";
 
 interface Props { update: Update | null; onDismissUpdate: () => void; }
 export default function HomeScreen({update,onDismissUpdate}:Props){
  const [tab,setTab]=useState<"play"|"instances"|"settings">("play");
- const [installing,setInstalling]=useState(false);
+
  const [percent,setPercent]=useState(0);
  const [updateError,setUpdateError]=useState("");
+ const [updatePhase,setUpdatePhase]=useState<"idle"|"charging"|"ready"|"installing"|"error">("idle");
  return <main className="home-screen">
   <ObsidianScene/>
   <div className="home-grain" aria-hidden="true"/>
@@ -46,6 +48,8 @@ export default function HomeScreen({update,onDismissUpdate}:Props){
    </aside>
   </section>
   <footer className="home-footer"><span>JAYVER LAUNCHER</span><span>BUILT FOR THE WAY YOU PLAY.</span><span>v0.1.0 · DEVELOPMENT BUILD</span></footer>
-  {update&&<div className="update-shade"><section className="update-panel" role="dialog" aria-modal="true" aria-labelledby="update-title"><p className="card-kicker">JAYVER UPDATE</p><h2 id="update-title">A new build awaits.</h2><p>{update.body||`Version ${update.version} is ready to install.`}</p>{updateError&&<p role="alert" className="update-error">{updateError}</p>}{installing?<div className="update-progress"><span style={{width:`${percent}%`}}/></div>:<div className="update-actions"><button onClick={()=>{void update.close();onDismissUpdate();}}>Later</button><button onClick={()=>{setInstalling(true);void installJayverUpdate(update,({downloaded,total})=>setPercent(total?Math.min(100,Math.round(downloaded/total*100)):0)).catch(e=>{setInstalling(false);setUpdateError(e instanceof Error?e.message:"Update failed.");});}}>Install & restart <Download size={14}/></button></div>}</section></div>}
+  {update&&updatePhase==="idle"&&<div className="update-shade"><section className="update-panel" role="dialog" aria-modal="true" aria-labelledby="update-title"><p className="card-kicker">JAYVER UPDATE</p><h2 id="update-title">A new build awaits.</h2><p>{update.body||"Version "+update.version+" is ready to install."}</p><div className="update-actions"><button onClick={()=>{void update.close();onDismissUpdate();}}>Later</button><button onClick={()=>{setPercent(0);setUpdateError("");setUpdatePhase("charging");void downloadJayverUpdate(update,({downloaded,total})=>setPercent(total?Math.min(100,downloaded/total*100):0)).then(()=>setUpdatePhase("ready")).catch(e=>{setUpdatePhase("error");setUpdateError(e instanceof Error?e.message:"Update download failed.");});}}>Begin update <Download size={14}/></button></div></section></div>}
+  {update&&["charging","ready","installing"].includes(updatePhase)&&<div className="update-cinematic"><UpdateReactor progress={percent} ready={updatePhase==="ready"} onWhiteoutComplete={()=>{setUpdatePhase("installing");void installDownloadedJayverUpdate(update).catch(e=>{setUpdatePhase("error");setUpdateError(e instanceof Error?e.message:"Update installation failed.");});}}/>{updatePhase==="installing"&&<div className="update-install-status"><span>JAYVER · UPDATE</span><strong>Preparing installation</strong><small>PACKAGE DOWNLOADED · SIGNATURE VERIFIED</small></div>}</div>}
+  {update&&updatePhase==="error"&&<div className="update-shade"><section className="update-panel" role="dialog" aria-modal="true"><p className="card-kicker">UPDATE INTERRUPTED</p><h2>Could not complete update.</h2><p role="alert" className="update-error">{updateError}</p><div className="update-actions"><button onClick={()=>{void update.close();onDismissUpdate();}}>Close</button><button onClick={()=>{setUpdateError("");setUpdatePhase("idle");}}>Try again</button></div></section></div>}
  </main>;
 }
