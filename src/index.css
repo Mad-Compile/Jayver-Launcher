@@ -873,3 +873,92 @@ button { font: inherit; }
   .jayver-dialog-heading h2 { font-size: 20px; }
   .jayver-version-cell strong { font-size: 20px; }
 }
+
+
+/* Jayver modal system — sculpted monochrome surfaces and tactile controls. */
+.jayver-dialog-scrim {
+  background: radial-gradient(ellipse at 50% 44%, rgba(255,255,255,.045), transparent 48%), rgba(0,0,0,.86);
+  backdrop-filter: blur(9px) saturate(.55);
+  -webkit-backdrop-filter: blur(9px) saturate(.55);
+}
+.jayver-update-dialog {
+  width: min(548px, calc(100vw - 34px));
+  padding: 23px 29px 25px;
+  border: 1px solid #3a3c3e;
+  border-radius: 10px;
+  background: radial-gradient(ellipse at 50% 24%, rgba(255,255,255,.065), transparent 42%), linear-gradient(155deg,#151718 0%,#0d0f10 48%,#090a0b 100%);
+  box-shadow: 0 38px 110px rgba(0,0,0,.78), 0 1px 0 rgba(255,255,255,.075) inset, 0 -1px 0 rgba(255,255,255,.018) inset;
+  animation: jayver-luxury-enter 560ms cubic-bezier(.16,1,.3,1) both;
+}
+.jayver-update-dialog::before { left:29px;right:29px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.32),transparent); }
+.jayver-dialog-topline { padding-bottom:17px;border-bottom-color:rgba(255,255,255,.10); }
+.jayver-dialog-brand { gap:11px; }
+.jayver-dialog-context { display:inline-flex;align-items:center;gap:9px;margin-left:2px;color:#777d80;font-size:8px;letter-spacing:.13em; }
+.jayver-dialog-context::before { content:"";width:3px;height:3px;border-radius:50%;background:#7d8285; }
+.jayver-dialog-close { width:34px;height:34px;border:1px solid #414548;border-radius:50%;transition:transform 360ms cubic-bezier(.2,.8,.2,1),color 220ms ease,border-color 220ms ease,background 220ms ease; }
+.jayver-dialog-close:hover { transform:rotate(90deg);border-color:#aeb3b6;background:rgba(255,255,255,.08);color:#fff; }
+.jayver-update-visual { position:relative;height:184px;display:grid;place-items:center;overflow:hidden;isolation:isolate; }
+.jayver-update-visual-halo { position:absolute;width:230px;height:150px;border-radius:50%;background:radial-gradient(ellipse,rgba(224,230,235,.15),rgba(190,200,210,.045) 42%,transparent 72%);filter:blur(13px);animation:jayver-halo-breathe 5.5s ease-in-out infinite alternate; }
+.jayver-update-visual-disc {
+  position:relative;z-index:2;width:118px;height:118px;display:grid;place-items:center;border:1px solid rgba(225,231,235,.35);border-radius:50%;color:#f0f2f3;
+  background:radial-gradient(circle at 36% 27%,rgba(255,255,255,.22),transparent 43%),radial-gradient(circle at 60% 78%,rgba(255,255,255,.075),transparent 58%),linear-gradient(145deg,#33383c 0%,#191d20 48%,#0c0f11 100%);
+  box-shadow:0 18px 35px rgba(0,0,0,.55),0 1px 0 rgba(255,255,255,.32) inset,0 -5px 15px rgba(0,0,0,.4) inset,0 0 45px rgba(230,235,240,.10);
+  animation:jayver-disc-float 6s ease-in-out infinite;
+}
+.jayver-update-visual-disc svg { filter:drop-shadow(0 0 12px rgba(255,255,255,.24)); }
+.jayver-update-orbit { position:absolute;z-index:1;width:168px;height:168px;border:1px solid rgba(220,228,234,.12);border-radius:50%;transform:rotate(-28deg) scaleY(.35); }
+.jayver-update-orbit-a { animation:jayver-orbit-turn 18s linear infinite; }
+.jayver-update-orbit-b { width:205px;height:205px;border-color:rgba(220,228,234,.07);transform:rotate(48deg) scaleY(.28);animation:jayver-orbit-turn 26s linear infinite reverse; }
+.jayver-update-visual.is-error .jayver-update-visual-disc { color:#cfd3d6; }
+.jayver-dialog-heading { display:block;padding:0 0 19px; }
+.jayver-dialog-heading h2 { font-size:23px;font-weight:570;letter-spacing:-.045em; }
+.jayver-dialog-heading p { max-width:420px;margin-top:8px;color:#92989c;font-size:12px;line-height:1.65; }
+.jayver-version-comparison { min-height:82px;padding:14px 16px;border-radius:5px;border-color:#34393c;background:rgba(0,0,0,.23); }
+.jayver-version-cell strong { font-size:21px; }
+.jayver-update-meta { padding:11px 1px 12px; }
+.jayver-release-notes { border-color:rgba(255,255,255,.12); }
+.jayver-preservation-note { margin-top:13px; }
+.jayver-dialog-actions { align-items:center;padding-top:22px;gap:12px; }
+.jayver-dialog-actions button {
+  position:relative;isolation:isolate;overflow:hidden;min-width:112px;height:44px;border-radius:999px;font-size:11px;
+  transition:transform 420ms cubic-bezier(.2,.85,.25,1),box-shadow 420ms cubic-bezier(.2,.85,.25,1),border-color 260ms ease,background 260ms ease,color 260ms ease;
+}
+.jayver-dialog-actions button::before {
+  content:"";position:absolute;z-index:-1;inset:0;border-radius:inherit;background:linear-gradient(110deg,transparent 20%,rgba(255,255,255,.55) 48%,transparent 72%);
+  transform:translateX(-130%) skewX(-18deg);transition:transform 760ms cubic-bezier(.16,1,.3,1);
+}
+.jayver-dialog-actions button:hover::before { transform:translateX(130%) skewX(-18deg); }
+.jayver-dialog-actions button:active { transform:translateY(1px) scale(.965);transition-duration:90ms; }
+.jayver-button-secondary { border-color:#464b4f;background:rgba(255,255,255,.015);color:#c7cccf; }
+.jayver-button-secondary:hover { transform:translateY(-2px);border-color:#92999e;background:rgba(255,255,255,.075);color:#fff;box-shadow:0 9px 24px rgba(0,0,0,.24); }
+.jayver-button-primary {
+  min-width:154px!important;padding:0 21px!important;border:1px solid #f3f4f4!important;border-radius:999px!important;
+  background:linear-gradient(180deg,#fff 0%,#e5e8e9 100%)!important;color:#101213!important;
+  box-shadow:0 1px 0 rgba(255,255,255,.95) inset,0 5px 18px rgba(255,255,255,.075);
+}
+.jayver-button-primary:hover { transform:translateY(-3px) scale(1.025);border-color:#fff!important;background:#fff!important;box-shadow:0 11px 30px rgba(255,255,255,.14),0 1px 0 #fff inset; }
+.jayver-button-primary:active { transform:translateY(0) scale(.965);box-shadow:0 2px 8px rgba(255,255,255,.08); }
+.jayver-button-primary svg { transition:transform 360ms cubic-bezier(.2,.8,.2,1); }
+.jayver-button-primary:hover svg { transform:translateY(2px); }
+.jayver-release-notes>button { transition:color 220ms ease,padding 220ms ease; }
+.jayver-release-notes>button:hover { padding-left:5px;color:#fff; }
+.jayver-release-notes>button svg { transition:transform 300ms cubic-bezier(.2,.8,.2,1); }
+.jayver-dialog-actions button:focus-visible,.jayver-dialog-close:focus-visible,.jayver-release-notes button:focus-visible { outline:2px solid #f1f3f4;outline-offset:4px; }
+@keyframes jayver-luxury-enter { from{opacity:0;transform:translateY(16px) scale(.975);filter:blur(5px)}to{opacity:1;transform:translateY(0) scale(1);filter:blur(0)} }
+@keyframes jayver-halo-breathe { from{opacity:.52;transform:scale(.88)}to{opacity:.95;transform:scale(1.08)} }
+@keyframes jayver-disc-float { 0%,100%{transform:translateY(0) rotateX(0deg)}50%{transform:translateY(-4px) rotateX(2deg)} }
+@keyframes jayver-orbit-turn { to{rotate:360deg} }
+@media(max-width:520px) {
+  .jayver-update-dialog { padding:18px 18px 20px; }
+  .jayver-update-visual { height:155px; }
+  .jayver-update-visual-disc { width:100px;height:100px; }
+  .jayver-dialog-heading h2 { font-size:20px; }
+  .jayver-dialog-actions { gap:8px; }
+  .jayver-dialog-actions button { min-width:0;flex:1; }
+  .jayver-button-primary { min-width:0!important;padding:0 13px!important; }
+}
+@media(prefers-reduced-motion:reduce) {
+  .jayver-update-dialog { animation:none; }
+  .jayver-update-visual-halo,.jayver-update-visual-disc,.jayver-update-orbit-a,.jayver-update-orbit-b { animation:none; }
+  .jayver-dialog-actions button,.jayver-dialog-actions button::before,.jayver-dialog-close,.jayver-release-notes>button,.jayver-release-notes>button svg { transition:none; }
+}
