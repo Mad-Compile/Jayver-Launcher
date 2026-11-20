@@ -6,6 +6,7 @@ import HomeScreen from "@/components/home/HomeScreen";
 import { jayver } from "@/lib/jayver";
 import type { Update } from "@tauri-apps/plugin-updater";
 import { checkForJayverUpdate, installJayverUpdate } from "@/lib/updates";
+import type { MinecraftInstance } from "@/lib/jayver";
 import SingularityVortexBackground from "@/components/startup/SingularityVortexBackground";
 
 type StartupState = "starting" | "ready" | "error" | "preview";
@@ -20,6 +21,7 @@ export default function StartupScreen() {
   const [updateProgress, setUpdateProgress] = useState(0);
   const [updateError, setUpdateError] = useState("");
   const [startupElapsed, setStartupElapsed] = useState(false);
+  const [instances, setInstances] = useState<MinecraftInstance[]>([]);
   const [logoActivated, setLogoActivated] = useState(false);
 
   const initialize = useCallback(async () => {
@@ -39,7 +41,8 @@ export default function StartupScreen() {
       await jayver.getAppInfo();
       setProgress(48);
       setStatus("Reading local instances");
-      await jayver.listInstances();
+      const localInstances = await jayver.listInstances();
+      setInstances(localInstances);
       setProgress(82);
       setStatus("Checking for updates");
       try {
@@ -72,7 +75,7 @@ export default function StartupScreen() {
   }, []);
 
   if (state === "ready" && startupElapsed) {
-    return <HomeScreen update={availableUpdate} onDismissUpdate={() => setAvailableUpdate(null)} />;
+    return <HomeScreen update={availableUpdate} onDismissUpdate={() => setAvailableUpdate(null)} instances={instances} />;
   }
 
   return (
