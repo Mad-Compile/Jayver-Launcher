@@ -115,7 +115,7 @@ function ButtonLight() {
     const vs=gl.createShader(gl.VERTEX_SHADER),fs=gl.createShader(gl.FRAGMENT_SHADER);
     if(!vs||!fs)return;
     gl.shaderSource(vs,"attribute vec2 p; varying vec2 uv; void main(){uv=p*.5+.5;gl_Position=vec4(p,0.,1.);}");
-    gl.shaderSource(fs,`precision mediump float; varying vec2 uv; uniform vec2 res; uniform vec2 mouse; uniform float t; uniform float on; void main(){vec2 d=uv-mouse;d.x*=res.x/max(res.y,1.);float spot=exp(-dot(d,d)*38.);float sweep=pow(max(0.,1.-abs(uv.y-(.5+sin(t*.7)*.08))*3.5),8.);float a=(spot*.22+sweep*.045)*on;gl_FragColor=vec4(vec3(.92,.95,.98)*a,a);}`);
+    gl.shaderSource(fs,`precision mediump float; varying vec2 uv; uniform vec2 res; uniform vec2 mouse; uniform float t; uniform float on; uniform float pulse; void main(){vec2 d=uv-mouse;d.x*=res.x/max(res.y,1.);float dist=length(d);float bloom=exp(-dot(d,d)*34.);float sweepY=.5+sin(t*.62)*.12+(uv.x-.5)*.12;float sweep=exp(-pow((uv.y-sweepY)*34.,2.));float brushed=.5+.5*sin(uv.x*19.-uv.y*8.-t*1.25);float grain=fract(sin(dot(gl_FragCoord.xy,vec2(12.9898,78.233)))*43758.5453);float rim=pow(max(0.,1.-abs(uv.y-.5)*2.),7.);float ring=exp(-pow((dist-(.78-pulse*.62))*42.,2.))*pulse;float a=(bloom*.16+sweep*(.025+brushed*.035)+rim*.018+ring*.11)*on;vec3 metal=vec3(.78,.85,.91)*(0.84+brushed*.16)+vec3(.10,.13,.16)*grain*.025;gl_FragColor=vec4(metal*a,a);}`);
     for(const s of [vs,fs]){gl.compileShader(s);if(!gl.getShaderParameter(s,gl.COMPILE_STATUS)){gl.deleteShader(vs);gl.deleteShader(fs);return;}}
     const program=gl.createProgram();if(!program)return;
     gl.attachShader(program,vs);gl.attachShader(program,fs);gl.linkProgram(program);
@@ -124,16 +124,16 @@ function ButtonLight() {
     const buffer=gl.createBuffer();if(!buffer)return;
     gl.bindBuffer(gl.ARRAY_BUFFER,buffer);gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1,3,-1,-1,3]),gl.STATIC_DRAW);
     gl.useProgram(program);const loc=gl.getAttribLocation(program,"p");gl.enableVertexAttribArray(loc);gl.vertexAttribPointer(loc,2,gl.FLOAT,false,0,0);
-    const res=gl.getUniformLocation(program,"res"),mouse=gl.getUniformLocation(program,"mouse"),time=gl.getUniformLocation(program,"t"),on=gl.getUniformLocation(program,"on");
-    let cursor:[number,number]=[.5,.5],active=false,raf=0,start=0,dead=false;
+    const res=gl.getUniformLocation(program,"res"),mouse=gl.getUniformLocation(program,"mouse"),time=gl.getUniformLocation(program,"t"),on=gl.getUniformLocation(program,"on"),pulseLoc=gl.getUniformLocation(program,"pulse");
+    let cursor:[number,number]=[.5,.5],active=false,raf=0,start=0,clickAt=0,dead=false;
     const resize=()=>{const r=button.getBoundingClientRect(),d=Math.min(devicePixelRatio||1,1.5),w=Math.max(1,Math.floor(r.width*d)),h=Math.max(1,Math.floor(r.height*d));if(canvas.width!==w||canvas.height!==h){canvas.width=w;canvas.height=h;gl.viewport(0,0,w,h);}};
     const move=(e:PointerEvent)=>{const r=button.getBoundingClientRect();cursor=[(e.clientX-r.left)/r.width,1-(e.clientY-r.top)/r.height];};
-    const draw=(now:number)=>{if(dead||!active){raf=0;return;}resize();gl.clear(gl.COLOR_BUFFER_BIT);gl.uniform2f(res,canvas.width,canvas.height);gl.uniform2f(mouse,cursor[0],cursor[1]);gl.uniform1f(time,(now-start)/1000);gl.uniform1f(on,1);gl.drawArrays(gl.TRIANGLES,0,3);raf=requestAnimationFrame(draw);};
-    const enter=()=>{active=true;start=performance.now();if(!raf)raf=requestAnimationFrame(draw);};
+    const draw=(now:number)=>{if(dead||!active){raf=0;return;}resize();gl.clearColor(0,0,0,0);gl.clear(gl.COLOR_BUFFER_BIT);gl.uniform2f(res,canvas.width,canvas.height);gl.uniform2f(mouse,cursor[0],cursor[1]);gl.uniform1f(time,(now-start)/1000);gl.uniform1f(on,1);gl.uniform1f(pulseLoc,clickAt?Math.max(0,1-(now-clickAt)/680):0);gl.drawArrays(gl.TRIANGLES,0,3);raf=requestAnimationFrame(draw);};
+    const enter=()=>{active=true;start=performance.now();if(!raf)raf=requestAnimationFrame(draw);};\n    const press=()=>{clickAt=performance.now();if(active&&!raf)raf=requestAnimationFrame(draw);};
     const leave=()=>{active=false;cancelAnimationFrame(raf);raf=0;gl.clear(gl.COLOR_BUFFER_BIT);};
-    button.addEventListener("pointerenter",enter);button.addEventListener("pointermove",move);button.addEventListener("pointerleave",leave);
+    button.addEventListener("pointerenter",enter);button.addEventListener("pointermove",move);button.addEventListener("pointerleave",leave);button.addEventListener("pointerdown",press);
     const observer=new ResizeObserver(resize);observer.observe(button);resize();
-    return()=>{dead=true;cancelAnimationFrame(raf);observer.disconnect();button.removeEventListener("pointerenter",enter);button.removeEventListener("pointermove",move);button.removeEventListener("pointerleave",leave);gl.deleteBuffer(buffer);gl.deleteProgram(program);};
+    return()=>{dead=true;cancelAnimationFrame(raf);observer.disconnect();button.removeEventListener("pointerenter",enter);button.removeEventListener("pointermove",move);button.removeEventListener("pointerleave",leave);button.removeEventListener("pointerdown",press);gl.deleteBuffer(buffer);gl.deleteProgram(program);};
   },[]);
   return <canvas ref={canvasRef} className="jayver-button-webgl" aria-hidden="true" />;
 }
