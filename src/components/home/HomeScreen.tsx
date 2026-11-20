@@ -6,6 +6,7 @@ import SkinHero from "./SkinHero";
 import type { Update } from "@tauri-apps/plugin-updater";
 import { downloadJayverUpdate, installDownloadedJayverUpdate } from "@/lib/updates";
 import UpdateDialog from "./UpdateDialog";
+import DownloadAtmosphere from "./DownloadAtmosphere";
 import type { MinecraftInstance } from "@/lib/jayver";
 
 interface Props { update: Update | null; onDismissUpdate: () => void; instances: MinecraftInstance[]; }
