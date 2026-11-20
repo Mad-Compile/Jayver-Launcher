@@ -1866,3 +1866,46 @@ button { font: inherit; }
   .jayver-version-comparison { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
   .jayver-version-cell.is-latest { padding-left: 12px; }
 }
+
+
+/* Profile identity: the gamertag is the single inline name-editing surface. */
+.jayver-player-name-edit {
+  min-width:0;display:inline-flex;align-items:center;gap:9px;padding:0;border:0;background:transparent;
+  color:inherit;text-align:left;cursor:text;
+}
+.jayver-player-name-edit h1 {
+  overflow:hidden;margin:0;color:#f3f5f6;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
+  font-size:clamp(24px,2.3vw,29px);font-weight:560;letter-spacing:-.045em;text-overflow:ellipsis;white-space:nowrap;
+}
+.jayver-player-name-edit>svg { flex:none;color:#8e989f;opacity:0;transition:opacity 150ms ease; }
+.jayver-player-name-edit:hover>svg,.jayver-player-name-edit:focus-visible>svg { opacity:1; }
+.jayver-player-name-input {
+  width:min(100%,260px);min-width:0;padding:2px 0 4px;border:0;border-bottom:1px solid rgba(230,238,243,.62);
+  outline:0;background:transparent;color:#f3f5f6;font:560 clamp(24px,2.3vw,29px)/1.15 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
+  letter-spacing:-.045em;
+}
+.jayver-player-uuid-label {
+  margin-top:14px;color:#aeb7bd;font:500 11px/1.4 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
+  letter-spacing:0;text-transform:none;
+}
+.jayver-player-uuid {
+  margin-top:5px;color:#d2d8dd;font:400 12px/1.5 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
+  letter-spacing:0;
+}
+.jayver-player-card-footer {
+  margin-top:19px;padding-top:12px;border-top:1px solid rgba(255,255,255,.12);color:#a4adb3;
+  font:500 11px/1.4 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;letter-spacing:0;
+}
+/* A separate profile light language: fractured vertical mineral planes, not the launcher's home scene. */
+.jayver-profile-skin-stage::before { display:none; }
+.jayver-profile-skin-light { display:none; }
+.jayver-profile-webgl { opacity:.82;mix-blend-mode:screen; }
+.jayver-profile-skin-floor {
+  left:29%;right:29%;bottom:5%;height:14px;
+  background:radial-gradient(ellipse,rgba(202,216,226,.17),rgba(116,133,146,.035) 55%,transparent 78%);
+  filter:blur(11px);
+}
+@media(max-width:520px) {
+  .jayver-player-name-edit h1,.jayver-player-name-input { font-size:24px; }
+  .jayver-player-card-footer { font-size:10px; }
+}
