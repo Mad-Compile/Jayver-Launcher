@@ -723,7 +723,6 @@ button { font: inherit; }
   color: #dfe2e5;
   stroke-width: 1.15;
   filter: drop-shadow(0 0 8px rgba(235,239,245,.12));
-  animation: spin 1s linear infinite;
 }
 .jayver-download-progress-panel strong {
   color: #ededed;
@@ -737,16 +736,6 @@ button { font: inherit; }
   font-weight: 400;
   letter-spacing: .015em;
 }
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}
-@media (prefers-reduced-motion: reduce) {
-  .jayver-source-loader { animation-duration: 2.5s; }
-}
-  .jayver-loader-value { transition: none; }
-}
-
-
 /* Update dialog refinement: hierarchy from type and spacing, not decorative UI. */
 .jayver-dialog-scrim {
   background: rgba(0,0,0,.82);
