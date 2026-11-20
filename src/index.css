@@ -1482,3 +1482,243 @@ button { font: inherit; }
   .jayver-loader-circle,.jayver-loader-letters span { animation:none; }
   .jayver-loader-letters span { opacity:.85; }
 }
+
+
+/* Player identity and skin studio — obsidian surfaces, editorial hierarchy, restrained motion. */
+.home-account-menu-wrap { position:relative; }
+.home-account-trigger {
+  display:flex;align-items:center;gap:10px;min-height:40px;padding:4px 7px 4px 4px;
+  border:1px solid transparent;background:transparent;color:#d5d8da;cursor:pointer;
+  transition:background 220ms ease,border-color 220ms ease;
+}
+.home-account-trigger:hover,.home-account-trigger[aria-expanded="true"] {
+  border-color:rgba(230,236,241,.15);background:rgba(255,255,255,.055);
+}
+.home-account-avatar {
+  width:34px;height:34px;display:grid;place-items:center;border:1px solid rgba(225,232,238,.28);
+  border-radius:50%;color:#f0f2f4;background:radial-gradient(circle at 35% 25%,#42484d 0%,#1c2023 48%,#0c0e10 100%);
+  box-shadow:0 0 0 3px rgba(255,255,255,.025),0 4px 16px rgba(0,0,0,.32),0 0 18px rgba(218,229,238,.06);
+}
+.home-account-name { max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:11px;font-weight:560; }
+.home-account-chevron { color:#858b90;transition:transform 220ms ease; }
+.home-account-chevron.is-open { transform:rotate(180deg); }
+.home-account-dropdown {
+  position:absolute;z-index:30;top:calc(100% + 12px);right:0;width:244px;padding:8px;
+  border:1px solid rgba(222,230,236,.17);border-radius:7px;
+  background:linear-gradient(155deg,rgba(25,28,30,.98),rgba(9,11,12,.985));
+  box-shadow:0 24px 70px rgba(0,0,0,.58),0 1px 0 rgba(255,255,255,.06) inset;
+  backdrop-filter:blur(22px);animation:jayver-account-enter 180ms cubic-bezier(.2,.8,.2,1) both;
+}
+.home-account-dropdown-heading { display:flex;flex-direction:column;gap:5px;padding:11px 11px 13px; }
+.home-account-dropdown-heading span { color:#858d93;font-size:8px;font-weight:650;letter-spacing:.16em; }
+.home-account-dropdown-heading strong { overflow:hidden;color:#eef1f3;font-size:13px;font-weight:560;text-overflow:ellipsis; }
+.home-account-dropdown button {
+  width:100%;min-height:38px;display:flex;align-items:center;gap:10px;padding:0 11px;
+  border:0;border-radius:4px;background:transparent;color:#c8cdd1;text-align:left;font-size:11px;cursor:pointer;
+  transition:background 180ms ease,color 180ms ease;
+}
+.home-account-dropdown button:hover:not(:disabled) { background:rgba(255,255,255,.075);color:#fff; }
+.home-account-dropdown button:disabled { color:#747b80;cursor:not-allowed; }
+.home-account-dropdown button small { margin-left:auto;color:#656c71;font-size:8px; }
+.home-account-dropdown-rule { height:1px;margin:6px 5px;background:rgba(255,255,255,.09); }
+@keyframes jayver-account-enter { from{opacity:0;transform:translateY(-5px) scale(.985)}to{opacity:1;transform:translateY(0) scale(1)} }
+
+.jayver-profile-overlay {
+  position:fixed;z-index:80;inset:0;display:grid;place-items:center;padding:34px;
+  overflow:auto;background:radial-gradient(ellipse at 50% 42%,rgba(196,208,219,.075),transparent 44%),rgba(3,4,5,.91);
+  backdrop-filter:blur(18px);animation:jayver-profile-overlay-in 280ms ease both;
+}
+.jayver-profile-shell {
+  width:min(100%,1040px);max-height:calc(100dvh - 68px);display:flex;flex-direction:column;
+  border:1px solid rgba(224,232,238,.14);border-radius:9px;
+  background:linear-gradient(150deg,rgba(20,23,25,.98),rgba(8,10,11,.99));
+  box-shadow:0 35px 110px rgba(0,0,0,.65),0 1px 0 rgba(255,255,255,.055) inset;
+  overflow:hidden;animation:jayver-profile-shell-in 460ms cubic-bezier(.16,1,.3,1) both;
+}
+.jayver-profile-header {
+  min-height:58px;display:flex;align-items:center;justify-content:space-between;gap:20px;padding:0 22px;
+  border-bottom:1px solid rgba(255,255,255,.09);
+}
+.jayver-profile-back,.jayver-profile-exit {
+  display:flex;align-items:center;gap:7px;border:0;background:transparent;color:#aeb5ba;font-size:10px;cursor:pointer;
+  transition:color 180ms ease,background 180ms ease;
+}
+.jayver-profile-back:hover { color:#fff; }
+.jayver-profile-header-label { display:flex;align-items:center;gap:9px;color:#7e878d;font-size:8px;font-weight:650;letter-spacing:.18em; }
+.jayver-profile-header-label i { width:5px;height:5px;border-radius:50%;background:#d8e0e5;box-shadow:0 0 9px rgba(230,240,248,.45); }
+.jayver-profile-exit { width:30px;height:30px;justify-content:center;border:1px solid rgba(255,255,255,.14);border-radius:50%; }
+.jayver-profile-exit:hover { border-color:rgba(255,255,255,.45);background:rgba(255,255,255,.07);color:#fff; }
+.jayver-profile-layout {
+  min-height:0;flex:1;display:grid;grid-template-columns:minmax(300px,390px) minmax(0,1fr);gap:0;padding:24px;
+  overflow:auto;
+}
+.jayver-player-card {
+  position:relative;isolation:isolate;min-height:590px;max-height:680px;overflow:hidden;
+  display:flex;flex-direction:column;justify-content:space-between;
+  border:1px solid rgba(230,237,242,.19);border-radius:24px;
+  background:
+    radial-gradient(ellipse at 50% 36%,rgba(219,230,239,.11),transparent 47%),
+    linear-gradient(158deg,#303538 0%,#171b1e 40%,#0a0c0e 100%);
+  box-shadow:0 24px 65px rgba(0,0,0,.42),0 1px 0 rgba(255,255,255,.13) inset;
+  transition:transform 520ms cubic-bezier(.2,.85,.25,1),box-shadow 520ms ease;
+}
+.jayver-player-card-edge { position:absolute;z-index:3;inset:7px;border:1px solid rgba(255,255,255,.055);border-radius:18px;pointer-events:none; }
+.jayver-player-card-top { position:relative;z-index:5;display:flex;align-items:center;justify-content:space-between;padding:18px 18px 0; }
+.jayver-player-card-label { display:flex;align-items:center;gap:8px;color:#a9b1b7;font-size:8px;font-weight:650;letter-spacing:.16em; }
+.jayver-player-card-label i { width:3px;height:3px;border-radius:50%;background:#cbd3d9; }
+.jayver-profile-more-wrap { position:relative; }
+.jayver-profile-more,.jayver-profile-editor-close,.jayver-switcher-heading>button {
+  width:32px;height:32px;display:grid;place-items:center;border:1px solid rgba(238,244,248,.17);border-radius:50%;
+  background:rgba(6,8,9,.32);color:#d7dde1;cursor:pointer;backdrop-filter:blur(10px);
+  transition:background 200ms ease,border-color 200ms ease,transform 200ms ease;
+}
+.jayver-profile-more:hover,.jayver-profile-editor-close:hover,.jayver-switcher-heading>button:hover { transform:rotate(5deg);border-color:rgba(255,255,255,.48);background:rgba(255,255,255,.1); }
+.jayver-profile-menu {
+  position:absolute;z-index:20;top:40px;right:0;width:190px;padding:6px;border:1px solid rgba(235,241,246,.16);border-radius:6px;
+  background:rgba(13,16,18,.97);box-shadow:0 18px 44px rgba(0,0,0,.5);backdrop-filter:blur(18px);
+  animation:jayver-account-enter 160ms ease both;
+}
+.jayver-profile-menu button {
+  width:100%;height:36px;display:flex;align-items:center;gap:9px;padding:0 9px;border:0;border-radius:3px;
+  background:transparent;color:#c8cfd4;text-align:left;font-size:10px;cursor:pointer;
+}
+.jayver-profile-menu button:hover:not(:disabled) { background:rgba(255,255,255,.08);color:#fff; }
+.jayver-profile-menu button:disabled { opacity:.4;cursor:not-allowed; }
+.jayver-profile-menu-rule { height:1px;margin:5px 3px;background:rgba(255,255,255,.09); }
+.jayver-profile-skin-stage {
+  position:absolute;z-index:1;inset:42px 0 125px;display:grid;place-items:center;overflow:hidden;isolation:isolate;
+}
+.jayver-profile-skin-stage::before {
+  content:"";position:absolute;z-index:-1;inset:7% 13% 2%;border-radius:50%;
+  background:radial-gradient(ellipse,rgba(207,220,231,.16),rgba(157,174,189,.055) 44%,transparent 73%);
+  filter:blur(22px);animation:jayver-skin-halo 8s ease-in-out infinite alternate;
+}
+.jayver-profile-skin-light {
+  position:absolute;z-index:0;inset:0;pointer-events:none;
+  background:linear-gradient(115deg,transparent 17%,rgba(239,245,249,.035) 46%,transparent 70%);
+  mix-blend-mode:screen;
+}
+.jayver-profile-webgl { position:absolute;z-index:0;inset:0;width:100%;height:100%;pointer-events:none;opacity:.95;mix-blend-mode:screen; }
+.jayver-profile-skin-stage canvas:not(.jayver-profile-webgl) { position:relative;z-index:2;width:100%;height:100%;display:block;touch-action:pan-y; }
+.jayver-profile-skin-floor {
+  position:absolute;z-index:1;left:22%;right:22%;bottom:4%;height:23px;border-radius:50%;
+  background:radial-gradient(ellipse,rgba(224,234,242,.24),rgba(160,177,190,.06) 48%,transparent 73%);
+  filter:blur(13px);pointer-events:none;
+}
+.jayver-profile-skin-error { position:absolute;z-index:4;bottom:8px;color:#c2c8cd;font-size:9px; }
+.jayver-player-card-info {
+  position:relative;z-index:4;margin-top:auto;padding:22px 22px 19px;
+  background:linear-gradient(180deg,transparent,rgba(6,8,9,.74) 17%,rgba(6,8,9,.96) 100%);
+}
+.jayver-player-name-row { display:flex;align-items:center;gap:9px;min-width:0; }
+.jayver-player-name-row h1 { overflow:hidden;margin:0;color:#f3f5f6;font-size:clamp(24px,2.3vw,29px);font-weight:530;letter-spacing:-.055em;text-overflow:ellipsis;white-space:nowrap; }
+.jayver-profile-verified { display:grid;place-items:center;color:#e2e8ec;filter:drop-shadow(0 0 7px rgba(255,255,255,.22)); }
+.jayver-player-uuid-label { margin-top:14px;color:#8b949b;font-size:7px;font-weight:680;letter-spacing:.17em; }
+.jayver-player-uuid {
+  width:100%;display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:5px;padding:0;border:0;
+  background:transparent;color:#d2d8dd;text-align:left;font-family:inherit;font-size:9px;letter-spacing:.025em;cursor:pointer;
+}
+.jayver-player-uuid span { overflow-wrap:anywhere; }
+.jayver-player-uuid:disabled { color:#8d959b;cursor:default; }
+.jayver-player-uuid svg { flex:none;color:#9ba4aa; }
+.jayver-player-card-footer { display:flex;justify-content:space-between;gap:10px;margin-top:19px;padding-top:12px;border-top:1px solid rgba(255,255,255,.12);color:#79838a;font-size:7px;font-weight:650;letter-spacing:.12em; }
+.jayver-profile-editor {
+  min-width:0;display:flex;flex-direction:column;justify-content:space-between;gap:24px;padding:24px 18px 18px 32px;
+  opacity:0;transform:translateX(28px);pointer-events:none;
+  transition:opacity 320ms ease,transform 520ms cubic-bezier(.2,.85,.25,1);
+}
+.jayver-profile-editor.is-visible { opacity:1;transform:translateX(0);pointer-events:auto; }
+.jayver-profile-layout.is-editing .jayver-player-card { transform:translateX(-8px) scale(.985);box-shadow:0 30px 80px rgba(0,0,0,.55),0 0 34px rgba(214,228,239,.055); }
+.jayver-profile-editor-heading { display:flex;align-items:flex-start;justify-content:space-between;gap:15px; }
+.jayver-profile-eyebrow { color:#929ca3;font-size:8px;font-weight:680;letter-spacing:.19em; }
+.jayver-profile-editor-heading h2,.jayver-switcher-heading h2 { margin:9px 0 0;color:#f0f2f4;font-size:25px;font-weight:520;letter-spacing:-.05em; }
+.jayver-profile-editor-heading p { margin:8px 0 0;color:#929ba1;font-size:11px;line-height:1.6; }
+.jayver-profile-editor-close { flex:none; }
+.jayver-profile-editor-options { display:flex;flex-direction:column;gap:18px; }
+.jayver-skin-option {
+  width:100%;min-height:67px;display:flex;align-items:center;gap:13px;padding:10px 13px;
+  border:1px solid rgba(222,231,238,.15);border-radius:5px;background:linear-gradient(120deg,rgba(255,255,255,.055),rgba(255,255,255,.018));
+  color:#dce1e5;text-align:left;cursor:pointer;transition:border-color 200ms ease,background 200ms ease,transform 200ms ease;
+}
+.jayver-skin-option:hover:not(:disabled) { transform:translateY(-2px);border-color:rgba(230,239,246,.38);background:rgba(255,255,255,.07); }
+.jayver-skin-option:disabled { opacity:.55;cursor:wait; }
+.jayver-skin-option-icon { width:36px;height:36px;display:grid;place-items:center;border:1px solid rgba(255,255,255,.13);border-radius:4px;background:rgba(255,255,255,.045); }
+.jayver-skin-option>span:nth-child(2) { display:flex;flex:1;flex-direction:column;gap:5px; }
+.jayver-skin-option strong { font-size:11px;font-weight:570; }
+.jayver-skin-option small { color:#89939a;font-size:9px; }
+.jayver-skin-option-arrow { color:#89939a;transform:rotate(-90deg); }
+.jayver-profile-field { display:flex;flex-direction:column;gap:8px; }
+.jayver-profile-field>label { color:#8c969d;font-size:8px;font-weight:680;letter-spacing:.15em; }
+.jayver-profile-input-row {
+  min-height:43px;display:flex;align-items:center;gap:9px;padding:0 8px 0 12px;
+  border:1px solid rgba(222,231,238,.16);border-radius:4px;background:rgba(0,0,0,.22);color:#929ba1;
+  transition:border-color 200ms ease,box-shadow 200ms ease;
+}
+.jayver-profile-input-row:focus-within { border-color:rgba(223,233,241,.5);box-shadow:0 0 0 3px rgba(224,234,242,.045); }
+.jayver-profile-input-row input { width:100%;min-width:0;height:40px;border:0;outline:0;background:transparent;color:#eef1f3;font:inherit;font-size:10px; }
+.jayver-profile-input-row input::placeholder { color:#626c73; }
+.jayver-profile-input-row>button { min-width:51px;height:28px;padding:0 11px;border:1px solid rgba(236,242,246,.2);border-radius:3px;background:rgba(255,255,255,.08);color:#edf0f2;font-size:9px;cursor:pointer;transition:background 180ms ease,border-color 180ms ease; }
+.jayver-profile-input-row>button:hover:not(:disabled) { border-color:rgba(255,255,255,.55);background:rgba(255,255,255,.16); }
+.jayver-profile-input-row>button:disabled { opacity:.35;cursor:not-allowed; }
+.jayver-profile-field>small { color:#737e85;font-size:9px;line-height:1.5; }
+.jayver-skin-model { display:grid;grid-template-columns:1fr 1fr;gap:7px; }
+.jayver-skin-model button { height:34px;border:1px solid rgba(255,255,255,.12);border-radius:3px;background:rgba(255,255,255,.025);color:#9ca5ab;font-size:10px;cursor:pointer; }
+.jayver-skin-model button.active { border-color:rgba(237,243,247,.42);background:rgba(255,255,255,.1);color:#f2f4f5;box-shadow:0 0 16px rgba(220,232,240,.045) inset; }
+.jayver-skin-reset { align-self:flex-start;display:flex;align-items:center;gap:8px;padding:4px 0;border:0;background:transparent;color:#a4adb3;font-size:9px;cursor:pointer; }
+.jayver-skin-reset:hover { color:#fff; }
+.jayver-profile-status { display:flex;align-items:center;gap:8px;color:#b9c1c6;font-size:9px; }
+.jayver-profile-status span { width:6px;height:6px;border-radius:50%;background:#e4ebef;box-shadow:0 0 9px rgba(230,240,247,.55);animation:jayver-status-pulse 1s ease-in-out infinite alternate; }
+.jayver-profile-message { margin:0;color:#cbd4da;font-size:9px;line-height:1.55; }
+.jayver-profile-message.is-error { color:#d5a9a9; }
+.jayver-profile-editor-foot { display:flex;align-items:center;justify-content:space-between;padding-top:14px;border-top:1px solid rgba(255,255,255,.1);color:#717b82;font-size:7px;font-weight:650;letter-spacing:.13em; }
+.jayver-profile-editor-foot svg { color:#aeb9c0; }
+.jayver-switcher-scrim { position:fixed;z-index:90;inset:0;display:grid;place-items:center;padding:20px;background:rgba(0,0,0,.52);backdrop-filter:blur(8px); }
+.jayver-switcher-panel { width:min(390px,100%);padding:22px;border:1px solid rgba(230,238,244,.17);border-radius:7px;background:linear-gradient(145deg,#1a1e21,#0b0d0f);box-shadow:0 24px 80px rgba(0,0,0,.62);animation:jayver-profile-shell-in 280ms cubic-bezier(.16,1,.3,1) both; }
+.jayver-switcher-heading { display:flex;align-items:center;justify-content:space-between; }
+.jayver-switcher-heading h2 { font-size:21px; }
+.jayver-switcher-current { display:flex;align-items:center;gap:12px;margin-top:22px;padding:13px;border:1px solid rgba(255,255,255,.13);background:rgba(255,255,255,.035);color:#e3e8eb; }
+.jayver-switcher-current>span { display:flex;flex:1;flex-direction:column;gap:4px; }
+.jayver-switcher-current strong { font-size:11px;font-weight:560; }
+.jayver-switcher-current small { color:#8c969d;font-size:9px; }
+.jayver-switcher-note { margin:16px 0 20px;color:#909aa1;font-size:10px;line-height:1.65; }
+.jayver-switcher-done { width:100%;height:38px;border:1px solid rgba(255,255,255,.18);border-radius:3px;background:#e9edef;color:#101315;font-size:10px;font-weight:600;cursor:pointer; }
+.jayver-switcher-done:hover { background:#fff; }
+@keyframes jayver-profile-overlay-in { from{opacity:0}to{opacity:1} }
+@keyframes jayver-profile-shell-in { from{opacity:0;transform:translateY(12px) scale(.985);filter:blur(3px)}to{opacity:1;transform:translateY(0) scale(1);filter:blur(0)} }
+@keyframes jayver-skin-halo { from{opacity:.55;transform:scale(.88)}to{opacity:1;transform:scale(1.1)} }
+@keyframes jayver-status-pulse { from{opacity:.4;transform:scale(.8)}to{opacity:1;transform:scale(1.25)} }
+@media(max-width:850px) {
+  .jayver-profile-overlay { padding:16px; }
+  .jayver-profile-shell { max-height:calc(100dvh - 32px); }
+  .jayver-profile-layout { grid-template-columns:minmax(250px,330px) minmax(0,1fr);padding:15px; }
+  .jayver-player-card { min-height:540px; }
+  .jayver-profile-editor { padding:18px 8px 14px 20px; }
+}
+@media(max-width:640px) {
+  .home-account-name { display:none; }
+  .home-account-trigger { gap:5px;padding-right:4px; }
+  .home-account-avatar { width:32px;height:32px; }
+  .home-account-dropdown { right:-4px; }
+  .jayver-profile-overlay { padding:8px;align-items:start; }
+  .jayver-profile-shell { max-height:calc(100dvh - 16px); }
+  .jayver-profile-header { min-height:48px;padding:0 13px; }
+  .jayver-profile-layout { display:flex;flex-direction:column;gap:0;padding:10px;overflow:auto; }
+  .jayver-player-card { width:min(100%,390px);min-height:570px;max-height:650px;align-self:center;flex:none; }
+  .jayver-profile-editor { display:none;min-height:470px;padding:22px 8px 12px; }
+  .jayver-profile-layout.is-editing .jayver-player-card { transform:translateY(-5px) scale(.99); }
+  .jayver-profile-layout.is-editing .jayver-profile-editor { display:flex;opacity:1;transform:none;pointer-events:auto;animation:jayver-profile-shell-in 420ms cubic-bezier(.16,1,.3,1) both; }
+  .jayver-profile-header-label { font-size:7px; }
+}
+@media(max-height:700px) and (min-width:641px) {
+  .jayver-profile-overlay { padding:12px; }
+  .jayver-profile-shell { max-height:calc(100dvh - 24px); }
+  .jayver-profile-layout { padding:14px; }
+  .jayver-player-card { min-height:490px; }
+}
+@media(prefers-reduced-motion:reduce) {
+  .home-account-trigger,.home-account-dropdown,.home-account-dropdown button,.jayver-profile-overlay,.jayver-profile-shell,
+  .jayver-profile-more,.jayver-profile-editor,.jayver-skin-option,.jayver-profile-input-row,.jayver-profile-input-row>button,
+  .jayver-skin-model button,.jayver-profile-status span,.jayver-switcher-panel,.jayver-switcher-done { animation:none!important;transition:none!important; }
+  .jayver-player-card,.jayver-player-card::before,.jayver-profile-skin-stage::before { animation:none!important;transition:none!important; }
+  .jayver-profile-webgl { display:none; }
+}
