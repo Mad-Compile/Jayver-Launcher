@@ -1746,3 +1746,114 @@ button { font: inherit; }
 @media(prefers-reduced-motion:reduce) {
   .jayver-profile-layout.is-editing .jayver-profile-editor { animation:none; }
 }
+
+
+/* Jayver updater — obsidian material pass. Reflective edges, not glowing glass. */
+.jayver-update-dialog {
+  border-color: #353a3e;
+  border-radius: 6px;
+  background:
+    linear-gradient(118deg, rgba(255,255,255,.035), transparent 22% 72%, rgba(255,255,255,.012)),
+    linear-gradient(160deg, #15191c 0%, #0d1012 54%, #080a0b 100%);
+  box-shadow: 0 28px 76px rgba(0,0,0,.72), 0 1px 0 rgba(255,255,255,.07) inset, 0 -1px 0 rgba(0,0,0,.8) inset;
+}
+.jayver-update-dialog::before {
+  left: 27px; right: 27px;
+  background: linear-gradient(90deg, transparent, rgba(229,237,242,.22), transparent);
+}
+.jayver-update-visual {
+  height: 138px;
+  margin: 0 -2px 4px;
+  overflow: hidden;
+  background: radial-gradient(ellipse at 50% 72%, rgba(126,143,154,.075), transparent 58%);
+}
+.jayver-obsidian-shard {
+  position: relative;
+  z-index: 1;
+  width: 174px;
+  height: 128px;
+  overflow: visible;
+  filter: drop-shadow(0 15px 18px rgba(0,0,0,.72));
+  animation: jayver-shard-settle 700ms cubic-bezier(.2,.7,.2,1) both;
+}
+.shard-body { fill: #090c0e; }
+.shard-facet { stroke: rgba(221,231,237,.045); stroke-width: .65; }
+.shard-facet-a { fill: #1d252b; }
+.shard-facet-b { fill: #11171b; }
+.shard-facet-c { fill: #090d10; }
+.shard-facet-d { fill: #151c21; }
+.shard-facet-e { fill: #080b0d; }
+.shard-facet-f { fill: #10171c; }
+.shard-facet-g { fill: #20282e; }
+.shard-edge { stroke: rgba(210,222,230,.32); stroke-width: .8; stroke-linejoin: bevel; }
+.shard-glint { stroke: rgba(239,245,248,.48); stroke-width: 1.1; stroke-linecap: round; }
+.shard-glint-low { stroke: rgba(151,167,178,.18); stroke-width: .8; }
+.jayver-update-visual.is-error .jayver-obsidian-shard { opacity: .55; }
+@keyframes jayver-shard-settle {
+  from { opacity: 0; transform: translateY(7px) scale(.97); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+.jayver-version-comparison {
+  position: relative;
+  min-height: 86px;
+  grid-template-columns: minmax(0,1fr) 34px minmax(0,1fr);
+  padding: 14px 17px;
+  border: 1px solid #343b40;
+  border-radius: 4px;
+  background:
+    linear-gradient(112deg, rgba(255,255,255,.035), transparent 30% 72%, rgba(255,255,255,.018)),
+    linear-gradient(180deg, #101417, #090c0e);
+  box-shadow: 0 1px 0 rgba(255,255,255,.055) inset, 0 -1px 0 rgba(0,0,0,.75) inset;
+}
+.jayver-version-cell { gap: 7px; }
+.jayver-version-cell span {
+  color: #89939a;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: .015em;
+  text-transform: none;
+}
+.jayver-version-cell strong {
+  color: #aeb8be;
+  font-size: 25px;
+  font-weight: 430;
+  letter-spacing: -.055em;
+  line-height: 1;
+  font-variant-numeric: tabular-nums lining-nums;
+}
+.jayver-version-cell.is-latest {
+  position: relative;
+  padding-left: 11px;
+}
+.jayver-version-cell.is-latest::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 1px;
+  bottom: 0;
+  width: 1px;
+  background: linear-gradient(180deg, rgba(226,236,242,.62), rgba(226,236,242,.08));
+}
+.jayver-version-cell.is-latest span { color: #b0bbc2; }
+.jayver-version-cell.is-latest strong {
+  color: #f0f3f5;
+  text-shadow: 0 0 18px rgba(214,228,237,.09);
+}
+.jayver-version-divider { color: #7f8a91; font-size: 14px; }
+.jayver-button-primary {
+  border-color: #dfe5e8 !important;
+  border-radius: 4px !important;
+  background: linear-gradient(180deg, #e8edef, #cbd3d8) !important;
+  box-shadow: 0 1px 0 rgba(255,255,255,.7) inset, 0 -1px 0 rgba(20,28,32,.12) inset !important;
+}
+.jayver-button-primary:hover { background: #f4f6f7 !important; }
+.jayver-button-secondary { border-radius: 4px !important; }
+@media(max-width:520px) {
+  .jayver-update-visual { height: 112px; }
+  .jayver-obsidian-shard { width: 150px; height: 112px; }
+  .jayver-version-comparison { grid-template-columns:minmax(0,1fr) 25px minmax(0,1fr); }
+  .jayver-version-cell strong { font-size: 22px; }
+}
+@media(prefers-reduced-motion:reduce) {
+  .jayver-obsidian-shard { animation: none; }
+}
