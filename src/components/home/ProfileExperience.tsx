@@ -53,6 +53,60 @@ async function resolveMinecraftProfile(name: string) {
   return { name: identity.name, uuid, skin, model } satisfies PlayerProfile;
 }
 
+function ProfileLightField() {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const gl = canvas.getContext("webgl", { alpha: true, antialias: false, depth: false, powerPreference: "low-power" });
+    if (!gl) return;
+    const vertexSource = "attribute vec2 p; varying vec2 uv; void main(){uv=p*.5+.5;gl_Position=vec4(p,0.,1.);}";
+    const fragmentSource = `
+      precision mediump float;
+      varying vec2 uv;
+      uniform vec2 res;
+      uniform float t;
+      float hash(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
+      float noise(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);return mix(mix(hash(i),hash(i+vec2(1.,0.)),f.x),mix(hash(i+vec2(0.,1.)),hash(i+1.),f.x),f.y);}
+      float fbm(vec2 p){float v=0.,a=.5;for(int i=0;i<4;i++){v+=a*noise(p);p=p*1.8+vec2(3.1,-2.4);a*=.5;}return v;}
+      void main(){
+        vec2 p=(uv-.5)*vec2(res.x/max(res.y,1.),1.);
+        float n=fbm(p*4.+vec2(t*.045,-t*.032));
+        float a=atan(p.y,p.x);
+        float r=length(p);
+        float wave=sin(a*2.+t*.22+n*4.)*.035+sin(a*5.-t*.13)*.014+(n-.5)*.09;
+        float d=abs(r-(.30+wave));
+        float rim=exp(-d*34.);
+        float haze=exp(-d*8.);
+        float center=exp(-dot(p,p)*7.);
+        float vertical=exp(-pow((p.x+sin(t*.12)*.025)*3.2,2.))*exp(-pow(p.y*1.5,2.));
+        float vignette=1.-smoothstep(.28,.82,length(p));
+        float alpha=(rim*.095+haze*.027+center*.028+vertical*.018)*vignette;
+        vec3 silver=vec3(.76,.82,.88)*(rim*.7+haze*.4)+vec3(.91,.94,.97)*(center*.3+vertical*.4);
+        gl_FragColor=vec4(silver*alpha,alpha);
+      }`;
+    const compile=(type:number,source:string)=>{const shader=gl.createShader(type);if(!shader)return null;gl.shaderSource(shader,source);gl.compileShader(shader);if(!gl.getShaderParameter(shader,gl.COMPILE_STATUS)){gl.deleteShader(shader);return null;}return shader;};
+    const vs=compile(gl.VERTEX_SHADER,vertexSource),fs=compile(gl.FRAGMENT_SHADER,fragmentSource);
+    if(!vs||!fs){if(vs)gl.deleteShader(vs);if(fs)gl.deleteShader(fs);return;}
+    const program=gl.createProgram();if(!program)return;
+    gl.attachShader(program,vs);gl.attachShader(program,fs);gl.linkProgram(program);gl.deleteShader(vs);gl.deleteShader(fs);
+    if(!gl.getProgramParameter(program,gl.LINK_STATUS)){gl.deleteProgram(program);return;}
+    const buffer=gl.createBuffer();if(!buffer){gl.deleteProgram(program);return;}
+    gl.bindBuffer(gl.ARRAY_BUFFER,buffer);gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1,3,-1,-1,3]),gl.STATIC_DRAW);
+    gl.useProgram(program);const p=gl.getAttribLocation(program,"p");gl.enableVertexAttribArray(p);gl.vertexAttribPointer(p,2,gl.FLOAT,false,0,0);
+    const res=gl.getUniformLocation(program,"res"),time=gl.getUniformLocation(program,"t");
+    const reduced=window.matchMedia("(prefers-reduced-motion: reduce)");
+    let frame=0,start=0,disposed=false,visible=!document.hidden;
+    const resize=()=>{const ratio=Math.min(window.devicePixelRatio||1,1.5),w=Math.max(1,Math.floor(canvas.clientWidth*ratio)),h=Math.max(1,Math.floor(canvas.clientHeight*ratio));if(canvas.width!==w||canvas.height!==h){canvas.width=w;canvas.height=h;gl.viewport(0,0,w,h);}};
+    const draw=(now:number)=>{if(disposed||!visible)return;if(!start)start=now;resize();gl.clearColor(0,0,0,0);gl.clear(gl.COLOR_BUFFER_BIT);gl.uniform2f(res,canvas.width,canvas.height);gl.uniform1f(time,reduced.matches?0:(now-start)/1000);gl.drawArrays(gl.TRIANGLES,0,3);if(!reduced.matches)frame=requestAnimationFrame(draw);};
+    const onVisibility=()=>{visible=!document.hidden;if(visible){start=0;frame=requestAnimationFrame(draw);}else cancelAnimationFrame(frame);};
+    const onMotion=()=>{cancelAnimationFrame(frame);start=0;if(visible)frame=requestAnimationFrame(draw);};
+    const observer=new ResizeObserver(resize);observer.observe(canvas);document.addEventListener("visibilitychange",onVisibility);reduced.addEventListener("change",onMotion);resize();frame=requestAnimationFrame(draw);
+    return()=>{disposed=true;cancelAnimationFrame(frame);observer.disconnect();document.removeEventListener("visibilitychange",onVisibility);reduced.removeEventListener("change",onMotion);gl.deleteBuffer(buffer);gl.deleteProgram(program);};
+  },[]);
+  return <canvas ref={canvasRef} className="jayver-profile-webgl" aria-hidden="true" />;
+}
+
 function SkinStage({ skin, model }: { skin: string; model: "classic" | "slim" }) {
   const canvas = useRef<HTMLCanvasElement>(null);
   const viewer = useRef<SkinViewer | null>(null);
@@ -97,7 +151,7 @@ function SkinStage({ skin, model }: { skin: string; model: "classic" | "slim" })
   }, [skin, model]);
 
   return <div className="jayver-profile-skin-stage">
-    <div className="jayver-profile-skin-light" aria-hidden="true" />
+    <div className="jayver-profile-skin-light" aria-hidden="true" /><ProfileLightField />
     <canvas ref={canvas} aria-label="Rotating 3D Minecraft character preview" />
     {skinError && <span className="jayver-profile-skin-error">Skin preview unavailable</span>}
     <span className="jayver-profile-skin-floor" aria-hidden="true" />
