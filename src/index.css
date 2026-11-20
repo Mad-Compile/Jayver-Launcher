@@ -1909,3 +1909,13 @@ button { font: inherit; }
   .jayver-player-name-edit h1,.jayver-player-name-input { font-size:24px; }
   .jayver-player-card-footer { font-size:10px; }
 }
+
+
+/* Fluid particle field sits behind the profile model and never intercepts input. */
+.jayver-profile-fluid {
+  position:absolute;z-index:0;inset:0;width:100%;height:100%;display:block;
+  pointer-events:none;opacity:.76;mix-blend-mode:screen;
+}
+.jayver-profile-skin-stage canvas.jayver-profile-skin-canvas {
+  position:relative;z-index:2;width:100%;height:100%;display:block;touch-action:pan-y;
+}
