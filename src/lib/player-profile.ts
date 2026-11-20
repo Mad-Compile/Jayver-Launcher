@@ -24,7 +24,7 @@ function readStoredProfile(): PlayerProfile {
     return {
       name: typeof parsed.name === "string" && parsed.name.trim() ? parsed.name : DEFAULT_PLAYER_PROFILE.name,
       uuid: typeof parsed.uuid === "string" ? parsed.uuid : "",
-      skin: typeof parsed.skin === "string" && parsed.skin ? parsed.skin : DEFAULT_PLAYER_PROFILE.skin,
+      skin: typeof parsed.skin === "string" && parsed.skin && parsed.skin !== "/skins/default.png" ? parsed.skin : DEFAULT_PLAYER_PROFILE.skin,
       model: parsed.model === "slim" ? "slim" : "classic",
     };
   } catch {
