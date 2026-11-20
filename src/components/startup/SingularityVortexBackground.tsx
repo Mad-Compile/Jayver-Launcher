@@ -262,6 +262,7 @@ function SingularityVortexBackground({ progress, quality = "auto", paused = fals
       mouseRef.current.y = -((event.clientY - rect.top) / rect.height - .5) * 2 * mouseInfluence;
     };
     const stop = () => { cancelAnimationFrame(frame); };
+    let tick: (now: number) => void = () => undefined;
     const start = () => { if (visible && !reduced.matches && !lost) frame = requestAnimationFrame(tick); };
 
     try {
@@ -305,9 +306,12 @@ function SingularityVortexBackground({ progress, quality = "auto", paused = fals
         gl.bindFramebuffer(gl.FRAMEBUFFER, null);
       }
 
+      const activeSceneProgram = sceneProgram;
+      const activeParticleProgram = particleProgram;
+      if (!activeSceneProgram || !activeParticleProgram) throw new Error("WebGL renderer setup did not complete");
       const uniform = (p: WebGLProgram, name: string) => gl.getUniformLocation(p, name);
       const sceneUniforms = {
-        resolution: uniform(sceneProgram, "uResolution"), time: uniform(sceneProgram, "uTime"),
+        resolution: uniform(activeSceneProgram, "uResolution"), time: uniform(sceneProgram, "uTime"),
         progress: uniform(sceneProgram, "uProgress"), intensity: uniform(sceneProgram, "uIntensity"),
         mouse: uniform(sceneProgram, "uMouse"), trail: uniform(sceneProgram, "uTrail"), useTrail: uniform(sceneProgram, "uUseTrail"),
       };
@@ -317,7 +321,7 @@ function SingularityVortexBackground({ progress, quality = "auto", paused = fals
         progress: uniform(simProgram, "uProgress"), intensity: uniform(simProgram, "uIntensity"),
       } : null;
       const particleUniforms = {
-        position: uniform(particleProgram, "uPosition"), resolution: uniform(particleProgram, "uResolution"),
+        position: uniform(activeParticleProgram, "uPosition"), resolution: uniform(particleProgram, "uResolution"),
         time: uniform(particleProgram, "uTime"), intensity: uniform(particleProgram, "uIntensity"),
         progress: uniform(particleProgram, "uProgress"), scale: uniform(particleProgram, "uPointScale"),
       };
@@ -332,7 +336,7 @@ function SingularityVortexBackground({ progress, quality = "auto", paused = fals
       observer.observe(canvas);
       resize();
 
-      const tick = (now: number) => {
+      tick = (now: number) => {
         if (!visible || lost) return;
         const rawDelta = (now - last) / 1000;
         last = now;
@@ -342,9 +346,9 @@ function SingularityVortexBackground({ progress, quality = "auto", paused = fals
         gl.viewport(0, 0, canvas.width, canvas.height);
         gl.disable(gl.DEPTH_TEST);
         gl.disable(gl.BLEND);
-        gl.useProgram(sceneProgram);
+        gl.useProgram(activeSceneProgram);
         gl.bindBuffer(gl.ARRAY_BUFFER, quad);
-        const scenePos = gl.getAttribLocation(sceneProgram, "aPosition");
+        const scenePos = gl.getAttribLocation(activeSceneProgram, "aPosition");
         gl.enableVertexAttribArray(scenePos);
         gl.vertexAttribPointer(scenePos, 2, gl.FLOAT, false, 0, 0);
         gl.uniform2f(sceneUniforms.resolution, canvas.width, canvas.height);
@@ -355,7 +359,7 @@ function SingularityVortexBackground({ progress, quality = "auto", paused = fals
         gl.uniform1f(sceneUniforms.useTrail, 0);
         gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
 
-        if (simulationEnabled && simProgram && simUniforms && particleProgram && positionTextures.length === 2) {
+        if (simulationEnabled && simProgram && simUniforms && activeParticleProgram && positionTextures.length === 2) {
           const next = 1 - current;
           gl.bindFramebuffer(gl.FRAMEBUFFER, particleFbo[next]);
           gl.viewport(0, 0, size, size);
@@ -379,7 +383,7 @@ function SingularityVortexBackground({ progress, quality = "auto", paused = fals
           gl.viewport(0, 0, canvas.width, canvas.height);
           gl.enable(gl.BLEND);
           gl.blendFunc(gl.SRC_ALPHA, gl.ONE);
-          gl.useProgram(particleProgram);
+          gl.useProgram(activeParticleProgram);
           gl.activeTexture(gl.TEXTURE0); gl.bindTexture(gl.TEXTURE_2D, positionTextures[current]);
           gl.uniform1i(particleUniforms.position, 0);
           gl.uniform2f(particleUniforms.resolution, canvas.width, canvas.height);
