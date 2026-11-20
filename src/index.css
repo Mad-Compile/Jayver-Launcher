@@ -1722,3 +1722,27 @@ button { font: inherit; }
   .jayver-player-card,.jayver-player-card::before,.jayver-profile-skin-stage::before { animation:none!important;transition:none!important; }
   .jayver-profile-webgl { display:none; }
 }
+
+
+/* Center the identity card until the skin editor is explicitly requested. */
+.jayver-profile-layout:not(.is-editing) {
+  grid-template-columns:minmax(300px,390px);
+  justify-content:center;
+}
+.jayver-profile-layout:not(.is-editing) .jayver-profile-editor { display:none; }
+.jayver-profile-layout.is-editing .jayver-profile-editor {
+  display:flex;
+  animation:jayver-profile-editor-in 520ms cubic-bezier(.16,1,.3,1) both;
+}
+@keyframes jayver-profile-editor-in {
+  from { opacity:0;transform:translateX(30px);filter:blur(3px); }
+  to { opacity:1;transform:translateX(0);filter:blur(0); }
+}
+@media(max-width:640px) {
+  .jayver-profile-layout:not(.is-editing) { display:flex;align-items:center; }
+  .jayver-profile-layout:not(.is-editing) .jayver-profile-editor { display:none; }
+  .jayver-profile-layout.is-editing .jayver-profile-editor { display:flex; }
+}
+@media(prefers-reduced-motion:reduce) {
+  .jayver-profile-layout.is-editing .jayver-profile-editor { animation:none; }
+}
