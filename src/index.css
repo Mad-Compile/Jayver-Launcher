@@ -1290,3 +1290,126 @@ button { font: inherit; }
 @media(prefers-reduced-motion:reduce) {
   .jayver-button-webgl { display:none; }
 }
+
+
+/* Update dialog: compact single-card composition, with intentional overflow only on short viewports. */
+.jayver-dialog-scrim {
+  padding:16px;
+  overflow:hidden;
+  overscroll-behavior:contain;
+}
+.jayver-update-dialog {
+  width:min(520px, calc(100vw - 32px));
+  max-height:calc(100vh - 32px);
+  max-height:calc(100dvh - 32px);
+  overflow-x:hidden;
+  overflow-y:auto;
+  overscroll-behavior:contain;
+  scrollbar-width:thin;
+  scrollbar-color:rgba(205,213,220,.42) rgba(255,255,255,.035);
+  padding:17px 24px 18px;
+  border-radius:9px;
+  background:
+    radial-gradient(ellipse at 50% 18%,rgba(218,228,236,.055),transparent 48%),
+    linear-gradient(155deg,#151819 0%,#0e1011 52%,#090a0b 100%);
+}
+.jayver-update-dialog::-webkit-scrollbar { width:8px; }
+.jayver-update-dialog::-webkit-scrollbar-track {
+  margin:10px 0;
+  border-radius:20px;
+  background:rgba(255,255,255,.025);
+}
+.jayver-update-dialog::-webkit-scrollbar-thumb {
+  border:2px solid transparent;
+  border-radius:20px;
+  background:linear-gradient(180deg,rgba(224,231,236,.52),rgba(132,142,150,.34)) padding-box;
+}
+.jayver-update-dialog::-webkit-scrollbar-thumb:hover {
+  background:linear-gradient(180deg,rgba(245,248,250,.78),rgba(165,176,184,.52)) padding-box;
+}
+.jayver-dialog-topline {
+  min-height:34px;
+  padding-bottom:12px;
+}
+.jayver-dialog-brand-mark {
+  width:26px!important;
+  height:26px!important;
+  max-width:26px;
+  max-height:26px;
+  flex:0 0 26px;
+  object-fit:contain;
+  padding:0;
+}
+.jayver-dialog-brand { gap:10px; }
+.jayver-dialog-brand > span:first-of-type { font-size:10px;letter-spacing:.18em; }
+.jayver-dialog-context { font-size:7px; }
+.jayver-dialog-close { width:31px;height:31px; }
+.jayver-update-visual {
+  height:116px;
+  min-height:116px;
+}
+.jayver-update-visual-halo {
+  width:170px;
+  height:105px;
+  filter:blur(12px);
+}
+.jayver-update-visual-disc {
+  width:84px;
+  height:84px;
+}
+.jayver-update-visual-disc svg { width:43px;height:43px; }
+.jayver-update-orbit { width:126px;height:126px; }
+.jayver-update-orbit-b { width:154px;height:154px; }
+.jayver-dialog-heading { padding:0 0 14px; }
+.jayver-dialog-heading h2 { font-size:21px;line-height:1.22; }
+.jayver-dialog-heading p { margin-top:6px;font-size:11px;line-height:1.5; }
+.jayver-version-comparison {
+  min-height:72px;
+  padding:11px 14px;
+}
+.jayver-version-cell { gap:6px; }
+.jayver-version-cell strong { font-size:20px; }
+.jayver-update-meta { min-height:34px;padding:8px 1px 9px; }
+.jayver-release-notes > button { padding:9px 1px;font-size:10px; }
+.jayver-release-notes p {
+  max-height:min(112px,18vh);
+  overflow:auto;
+  overscroll-behavior:contain;
+  scrollbar-width:thin;
+  scrollbar-color:rgba(205,213,220,.34) transparent;
+  padding-right:7px;
+  font-size:10px;
+  line-height:1.55;
+}
+.jayver-preservation-note { margin-top:10px;font-size:9px; }
+.jayver-dialog-actions { padding-top:15px;gap:10px; }
+.jayver-dialog-actions button { height:40px;font-size:10px; }
+.jayver-button-primary { min-width:148px!important; }
+.jayver-button-webgl { mix-blend-mode:screen; }
+.jayver-dialog-actions button:focus-visible,
+.jayver-dialog-close:focus-visible,
+.jayver-release-notes button:focus-visible {
+  outline:1px solid rgba(238,243,247,.9);
+  outline-offset:3px;
+}
+@media(max-height:700px) {
+  .jayver-update-dialog { padding-top:13px;padding-bottom:14px; }
+  .jayver-dialog-topline { padding-bottom:9px; }
+  .jayver-update-visual { height:88px;min-height:88px; }
+  .jayver-update-visual-disc { width:68px;height:68px; }
+  .jayver-update-visual-disc svg { width:36px;height:36px; }
+  .jayver-update-orbit { width:108px;height:108px; }
+  .jayver-update-orbit-b { width:130px;height:130px; }
+  .jayver-dialog-heading { padding-bottom:10px; }
+  .jayver-dialog-actions { padding-top:11px; }
+}
+@media(max-width:520px) {
+  .jayver-dialog-scrim { padding:10px; }
+  .jayver-update-dialog { width:calc(100vw - 20px);max-height:calc(100dvh - 20px);padding:14px 16px 15px; }
+  .jayver-dialog-actions { gap:8px; }
+  .jayver-dialog-actions button { min-width:0;flex:1; }
+  .jayver-button-primary { min-width:0!important;padding:0 13px!important; }
+}
+@media(prefers-reduced-motion:reduce) {
+  .jayver-dialog-actions button { transition:none!important; }
+}
