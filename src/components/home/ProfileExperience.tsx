@@ -2,19 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { Check, ChevronDown, ChevronLeft, CircleUserRound, Copy, ImagePlus, Link2, LogOut, MoreHorizontal, Pencil, RotateCcw, Search, ShieldCheck, Users, X } from "lucide-react";
 import { IdleAnimation, SkinViewer } from "skinview3d";
 import { DEFAULT_SKIN_URL } from "@/lib/skin";
-
-type PlayerProfile = { name: string; uuid: string; skin: string; model: "classic" | "slim" };
-const STORAGE_KEY = "jayver.player-profile.v1";
-const DEFAULT_PROFILE: PlayerProfile = { name: "Local profile", uuid: "", skin: DEFAULT_SKIN_URL, model: "classic" };
-
-function readProfile(): PlayerProfile {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return DEFAULT_PROFILE;
-    const parsed = JSON.parse(raw) as Partial<PlayerProfile>;
-    return { ...DEFAULT_PROFILE, ...parsed };
-  } catch { return DEFAULT_PROFILE; }
-}
+import { DEFAULT_PLAYER_PROFILE, updatePlayerProfile, usePlayerProfile } from "@/lib/player-profile";
 
 function formatUuid(uuid: string) {
   const clean = uuid.replace(/-/g, "");
@@ -51,7 +39,7 @@ async function resolveMinecraftProfile(name: string) {
       }
     }
   } catch { /* A valid identity can still use the bundled fallback skin. */ }
-  return { name: identity.name, uuid, skin, model } satisfies PlayerProfile;
+  return { name: identity.name, uuid, skin, model } satisfies import("@/lib/player-profile").PlayerProfile;
 }
 
 function ProfileLightField() {
@@ -163,7 +151,7 @@ function SkinStage({ skin, model }: { skin: string; model: "classic" | "slim" })
 }
 
 export default function ProfileExperience({ onClose, initialSwitcher = false }: { onClose: () => void; initialSwitcher?: boolean }) {
-  const [profile, setProfile] = useState<PlayerProfile>(readProfile);
+  const profile = usePlayerProfile();
   const [menuOpen, setMenuOpen] = useState(false);
   const [editing, setEditing] = useState(false);
   const [switcherOpen, setSwitcherOpen] = useState(initialSwitcher);
@@ -176,12 +164,10 @@ export default function ProfileExperience({ onClose, initialSwitcher = false }: 
   const [messageError, setMessageError] = useState(false);
   const fileInput = useRef<HTMLInputElement>(null);
 
-  useEffect(() => { localStorage.setItem(STORAGE_KEY, JSON.stringify(profile)); }, [profile]);
-
   const saveDisplayName = () => {
     const nextName = nameDraft.trim();
     if (!nextName) { setNameDraft(profile.name); setNameEditing(false); return; }
-    setProfile(current => ({ ...current, name: nextName.slice(0, 16) }));
+    updatePlayerProfile(current => ({ ...current, name: nextName.slice(0, 16) }));
     setNameEditing(false);
   };
 
@@ -195,7 +181,7 @@ export default function ProfileExperience({ onClose, initialSwitcher = false }: 
         probe.src = source;
       });
       if (probe.width !== 64 || (probe.height !== 64 && probe.height !== 32)) throw new Error("Use a standard Minecraft skin PNG (64×64 or legacy 64×32).");
-      setProfile(current => ({ ...current, skin: source, model }));
+      updatePlayerProfile(current => ({ ...current, skin: source, model }));
       setMessage("Skin preview updated.");
     } catch (error) {
       setMessage(error instanceof Error ? error.message : "Could not load that skin.");
@@ -217,7 +203,7 @@ export default function ProfileExperience({ onClose, initialSwitcher = false }: 
     setBusy(true); setMessage(""); setMessageError(false);
     try {
       const next = await resolveMinecraftProfile(nameInput);
-      setProfile(next);
+      updatePlayerProfile(next);
       setMessage(`Loaded ${next.name}'s Minecraft profile.`);
       setNameInput("");
     } catch (error) {
@@ -239,7 +225,7 @@ export default function ProfileExperience({ onClose, initialSwitcher = false }: 
   };
 
   const resetLocal = () => {
-    setProfile(DEFAULT_PROFILE);
+    updatePlayerProfile(DEFAULT_PLAYER_PROFILE);
     setEditing(false); setMenuOpen(false); setMessage("Local profile reset.");
   };
 
@@ -294,8 +280,8 @@ export default function ProfileExperience({ onClose, initialSwitcher = false }: 
             <input ref={fileInput} type="file" accept="image/png,.png" hidden onChange={event => { void onUpload(event.target.files?.[0]); event.currentTarget.value = ""; }} />
             <div className="jayver-profile-field"><label htmlFor="jayver-skin-url">SKIN IMAGE URL</label><div className="jayver-profile-input-row"><Link2 size={15} /><input id="jayver-skin-url" value={urlInput} onChange={event => setUrlInput(event.target.value)} onKeyDown={event => { if (event.key === "Enter") useSkinUrl(); }} placeholder="https://…/skin.png" /><button type="button" onClick={useSkinUrl} disabled={busy || !urlInput.trim()}>Load</button></div></div>
             <div className="jayver-profile-field"><label htmlFor="jayver-mojang-name">MOJANG PLAYER NAME</label><div className="jayver-profile-input-row"><Search size={15} /><input id="jayver-mojang-name" value={nameInput} onChange={event => setNameInput(event.target.value)} onKeyDown={event => { if (event.key === "Enter") void lookupName(); }} placeholder="Minecraft username" maxLength={16} /><button type="button" onClick={() => void lookupName()} disabled={busy || !nameInput.trim()}>Find</button></div><small>Looks up the current Java Edition name, UUID and public skin.</small></div>
-            <div className="jayver-profile-field"><label>SKIN MODEL</label><div className="jayver-skin-model"><button type="button" className={profile.model === "classic" ? "active" : ""} onClick={() => setProfile(current => ({ ...current, model: "classic" }))}>Classic</button><button type="button" className={profile.model === "slim" ? "active" : ""} onClick={() => setProfile(current => ({ ...current, model: "slim" }))}>Slim</button></div></div>
-            <button type="button" className="jayver-skin-reset" onClick={() => { setProfile(current => ({ ...current, skin: DEFAULT_SKIN_URL, model: "classic" })); setMessage("Bundled Jayver skin restored."); setMessageError(false); }}><RotateCcw size={14} /> Restore bundled default skin</button>
+            <div className="jayver-profile-field"><label>SKIN MODEL</label><div className="jayver-skin-model"><button type="button" className={profile.model === "classic" ? "active" : ""} onClick={() => updatePlayerProfile(current => ({ ...current, model: "classic" }))}>Classic</button><button type="button" className={profile.model === "slim" ? "active" : ""} onClick={() => updatePlayerProfile(current => ({ ...current, model: "slim" }))}>Slim</button></div></div>
+            <button type="button" className="jayver-skin-reset" onClick={() => { updatePlayerProfile(current => ({ ...current, skin: DEFAULT_SKIN_URL, model: "classic" })); setMessage("Bundled Jayver skin restored."); setMessageError(false); }}><RotateCcw size={14} /> Restore bundled default skin</button>
             {busy && <div className="jayver-profile-status"><span /> Loading skin…</div>}
             {message && <p className={`jayver-profile-message ${messageError ? "is-error" : ""}`}>{message}</p>}
           </div>
