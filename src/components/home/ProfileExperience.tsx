@@ -79,7 +79,7 @@ function ProfileLightField() {
         float edgeA=exp(-seamA*115.)*smoothstep(-.72,.52,p.y);
         float edgeB=exp(-seamB*145.)*smoothstep(-.58,.62,p.y);
         float edgeC=exp(-seamC*125.)*smoothstep(-.35,.7,p.y);
-        float plane= smoothstep(.02,.0,abs(p.x+.12*p.y-.02))*.025;
+        float plane= (1.-smoothstep(0.,.02,abs(p.x+.12*p.y-.02)))*.025;
         float scan=pow(max(0.,sin((p.y*res.y)*.075+time*2.)),18.)*.012;
         float vignette=1.-smoothstep(.42,.86,length(p*vec2(.9,1.)));
         float light=(edgeA*.075+edgeB*.052+edgeC*.035+plane+scan+grain*.006)*vignette;
