@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { getVersion } from "@tauri-apps/api/app";
-import { Home, LibraryBig, Puzzle, Server, Palette, Settings, ChevronDown, Download } from "lucide-react";
+import { Home, LibraryBig, Puzzle, Server, Palette, Settings, ChevronDown, Download, LoaderCircle } from "lucide-react";
 import ObsidianScene from "./ObsidianScene";
 import SkinHero from "./SkinHero";
 import type { Update } from "@tauri-apps/plugin-updater";
@@ -80,21 +80,7 @@ export default function HomeScreen({ update, onDismissUpdate }: Props) {
         <div className="jayver-download-progress" role="status" aria-live="polite">
           <div className="jayver-download-progress-panel">
             {updatePhase !== "error" ? (
-              <div className="jayver-loader" aria-hidden="true">
-                <svg viewBox="0 0 100 100">
-                  <circle className="jayver-loader-track" cx="50" cy="50" r="42" />
-                  <circle
-                    className="jayver-loader-value"
-                    cx="50"
-                    cy="50"
-                    r="42"
-                    strokeDasharray="263.9"
-                    strokeDashoffset={263.9 * (1 - (updatePhase === "charging" ? percent : 100) / 100)}
-                  />
-                  <circle className="jayver-loader-inner" cx="50" cy="50" r="34" />
-                </svg>
-                <span className="jayver-loader-core" />
-              </div>
+              <LoaderCircle className="jayver-source-loader animate-spin" aria-label="Loading" role="status" />
             ) : (
               <div className="jayver-download-error-mark" aria-hidden="true">!</div>
             )}
