@@ -1,15 +1,15 @@
 {
-  "version": "0.1.44",
-  "notes": "Signed automated development build from main.\n\nCommit: c25fa67bbb8302de3ed4b0408d9b55d66e34ee86\n\nThis is a testing build, not a production release.",
-  "pub_date": "2026-11-20T06:41:22.561Z",
+  "version": "0.1.47",
+  "notes": "Signed automated development build from main.\n\nCommit: 649ee27d21940c9c7a0573e08649de36297e95bb\n\nThis is a testing build, not a production release.",
+  "pub_date": "2026-11-20T07:47:15.242Z",
   "platforms": {
     "windows-x86_64": {
-      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVSWUw5YXJETXBjTGtleHdaV2V6R3o3NitpQjJXTlAxRWlVTDNydzFpWmJ3VXlNRVh4dnpnUWsyKytyOGMwbXB3U0oyc0tFNmlwblp2YW1mSVJVMlVudHhXNitBSHg4UUF3PQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzk1MTU2ODc5CWZpbGU6SmF5dmVyIExhdW5jaGVyXzAuMS40NF94NjQtc2V0dXAuZXhlCXZlcnNpb246MC4xLjQ0CjhTWVRPaUV3dkYxQ1IxQ2JXbXB6LzFlL0s2QVhnSmhLMXpDMnRKbWZjWFcvTEFjN1B1REs3Zk00b2IwSGxKWUhxRlJRODNNRHhmNFpBemMrNWNCUkJRPT0K",
-      "url": "https://api.github.com/repos/Mad-Compile/Jayver-Launcher/releases/assets/770768327"
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVSWUw5YXJETXBjTHNhbXh1aUhUWmVIdUpVb2tvNzZrVEV2SVI1TTFwaVpHWm5kNERTR2pCcVF6WGFncTc0WjdNUWRlU29CajFjSGxoV3JtODEzdnN1NlUzZWdRcjEzcHdFPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzk1MTYwODMxCWZpbGU6SmF5dmVyIExhdW5jaGVyXzAuMS40N194NjQtc2V0dXAuZXhlCXZlcnNpb246MC4xLjQ3CnFoNTYzT2FmVUh2L1NkMnI3REVmcCtoRHZBd3RLYmNBdzE1L2VxSVlxbkxwbCs3MjVHNGJzQnR1L0NDbkUyQ0tuMTFDSUpzS3VIQzNkQkg0OUtqRkJnPT0K",
+      "url": "https://api.github.com/repos/Mad-Compile/Jayver-Launcher/releases/assets/770939143"
     },
     "windows-x86_64-nsis": {
-      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVSWUw5YXJETXBjTGtleHdaV2V6R3o3NitpQjJXTlAxRWlVTDNydzFpWmJ3VXlNRVh4dnpnUWsyKytyOGMwbXB3U0oyc0tFNmlwblp2YW1mSVJVMlVudHhXNitBSHg4UUF3PQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzk1MTU2ODc5CWZpbGU6SmF5dmVyIExhdW5jaGVyXzAuMS40NF94NjQtc2V0dXAuZXhlCXZlcnNpb246MC4xLjQ0CjhTWVRPaUV3dkYxQ1IxQ2JXbXB6LzFlL0s2QVhnSmhLMXpDMnRKbWZjWFcvTEFjN1B1REs3Zk00b2IwSGxKWUhxRlJRODNNRHhmNFpBemMrNWNCUkJRPT0K",
-      "url": "https://api.github.com/repos/Mad-Compile/Jayver-Launcher/releases/assets/770768327"
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVSWUw5YXJETXBjTHNhbXh1aUhUWmVIdUpVb2tvNzZrVEV2SVI1TTFwaVpHWm5kNERTR2pCcVF6WGFncTc0WjdNUWRlU29CajFjSGxoV3JtODEzdnN1NlUzZWdRcjEzcHdFPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzk1MTYwODMxCWZpbGU6SmF5dmVyIExhdW5jaGVyXzAuMS40N194NjQtc2V0dXAuZXhlCXZlcnNpb246MC4xLjQ3CnFoNTYzT2FmVUh2L1NkMnI3REVmcCtoRHZBd3RLYmNBdzE1L2VxSVlxbkxwbCs3MjVHNGJzQnR1L0NDbkUyQ0tuMTFDSUpzS3VIQzNkQkg0OUtqRkJnPT0K",
+      "url": "https://api.github.com/repos/Mad-Compile/Jayver-Launcher/releases/assets/770939143"
     }
   }
 }
