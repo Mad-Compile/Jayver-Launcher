@@ -7,7 +7,6 @@ import { jayver } from "@/lib/jayver";
 import type { Update } from "@tauri-apps/plugin-updater";
 import { checkForJayverUpdate, installJayverUpdate } from "@/lib/updates";
 import type { MinecraftInstance } from "@/lib/jayver";
-import SingularityVortexBackground from "@/components/startup/SingularityVortexBackground";
 
 type StartupState = "starting" | "ready" | "error" | "preview";
 
@@ -80,10 +79,12 @@ export default function StartupScreen() {
 
   return (
     <main className="startup-screen">
-      <SingularityVortexBackground intensity={0.9} activated={logoActivated} />
+      <div className="startup-ambience" aria-hidden="true" />
       <div className="startup-vignette" aria-hidden="true" />
-      <section className="startup-mark" aria-label="Jayver startup" onPointerEnter={() => setLogoActivated(true)} onPointerLeave={() => setLogoActivated(false)} onFocus={() => setLogoActivated(true)} onBlur={() => setLogoActivated(false)} tabIndex={0}>
-        <img src="/brand/jayver-mark.svg" alt="Jayver" draggable={false} />
+      <section className="startup-mark" aria-label="Jayver startup">
+        <img src="/brand/jayver-mark.svg" alt="Jayver mark" draggable={false} />
+        <div className="startup-brand-name">JAYVER</div>
+        <div className="startup-brand-caption">A MAD COMPILE PRODUCT</div>
       </section>
 
       <section className="startup-progress" aria-live="polite" aria-atomic="true">
