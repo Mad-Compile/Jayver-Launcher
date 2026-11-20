@@ -1509,17 +1509,17 @@ button { font: inherit; }
   box-shadow:0 24px 70px rgba(0,0,0,.58),0 1px 0 rgba(255,255,255,.06) inset;
   backdrop-filter:blur(22px);animation:jayver-account-enter 180ms cubic-bezier(.2,.8,.2,1) both;
 }
-.home-account-dropdown-heading { display:flex;flex-direction:column;gap:5px;padding:11px 11px 13px; }
+.home-account-dropdown-heading { display:flex;flex-direction:column;gap:0;padding:10px 11px 12px; }
 .home-account-dropdown-heading span { color:#858d93;font-size:8px;font-weight:650;letter-spacing:.16em; }
-.home-account-dropdown-heading strong { overflow:hidden;color:#eef1f3;font-size:13px;font-weight:560;text-overflow:ellipsis; }
+.home-account-dropdown-heading strong { overflow:hidden;color:#eef1f3;font-family:inherit;font-size:15px;font-weight:600;letter-spacing:-.02em;text-overflow:ellipsis; }
 .home-account-dropdown button {
   width:100%;min-height:38px;display:flex;align-items:center;gap:10px;padding:0 11px;
-  border:0;border-radius:4px;background:transparent;color:#c8cdd1;text-align:left;font-size:11px;cursor:pointer;
+  border:0;border-radius:4px;background:transparent;color:#c8cdd1;text-align:left;font-family:inherit;font-size:13px;font-weight:450;letter-spacing:0;cursor:pointer;
   transition:background 180ms ease,color 180ms ease;
 }
 .home-account-dropdown button:hover:not(:disabled) { background:rgba(255,255,255,.075);color:#fff; }
 .home-account-dropdown button:disabled { color:#747b80;cursor:not-allowed; }
-.home-account-dropdown button small { margin-left:auto;color:#656c71;font-size:8px; }
+.home-account-dropdown button small { margin-left:auto;color:#858d93;font-size:10px;font-weight:400;letter-spacing:0; }
 .home-account-dropdown-rule { height:1px;margin:6px 5px;background:rgba(255,255,255,.09); }
 @keyframes jayver-account-enter { from{opacity:0;transform:translateY(-5px) scale(.985)}to{opacity:1;transform:translateY(0) scale(1)} }
 
@@ -1544,8 +1544,8 @@ button { font: inherit; }
   transition:color 180ms ease,background 180ms ease;
 }
 .jayver-profile-back:hover { color:#fff; }
-.jayver-profile-header-label { display:flex;align-items:center;gap:9px;color:#7e878d;font-size:8px;font-weight:650;letter-spacing:.18em; }
-.jayver-profile-header-label i { width:5px;height:5px;border-radius:50%;background:#d8e0e5;box-shadow:0 0 9px rgba(230,240,248,.45); }
+.jayver-profile-header-label { display:flex;align-items:center;color:#c0c7cc;font-family:inherit;font-size:13px;font-weight:500;letter-spacing:0;text-transform:none; }
+
 .jayver-profile-exit { width:30px;height:30px;justify-content:center;border:1px solid rgba(255,255,255,.14);border-radius:50%; }
 .jayver-profile-exit:hover { border-color:rgba(255,255,255,.45);background:rgba(255,255,255,.07);color:#fff; }
 .jayver-profile-layout {
