@@ -1,5 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { isTauri } from "@tauri-apps/api/core";
+import { getVersion } from "@tauri-apps/api/app";
+import { getCurrentWindow } from "@tauri-apps/api/window";
+import HomeScreen from "@/components/home/HomeScreen";
 import { jayver } from "@/lib/jayver";
 import type { Update } from "@tauri-apps/plugin-updater";
 import { checkForJayverUpdate, installJayverUpdate } from "@/lib/updates";
@@ -17,13 +20,11 @@ out float vShade;
 
 void main() {
   float seed = aParticle.x;
-  float lane = floor(aParticle.z * 9.0) - 4.0;
-  float t = fract(aParticle.y + (uReducedMotion > 0.5 ? 0.0 : uTime * (0.035 + seed * 0.018)));
-  float spread = smoothstep(0.02, 0.96, t);
-  float bend = sin(t * 4.1 + lane * 0.62 + seed * 5.0) * (0.025 + spread * 0.10);
-  float drift = sin(uTime * 0.17 + seed * 18.0 + lane) * 0.012 * (1.0 - uReducedMotion);
-  float x = lane * (0.012 + spread * 0.018) + bend + drift;
-  float y = -0.52 + t * 1.48;
+  float t = aParticle.y * 6.2831853 + (uReducedMotion > 0.5 ? 0.0 : uTime * (0.10 + seed * 0.08));
+  float radius = 0.22 + aParticle.z * 0.20 + sin(t * 2.0 + seed * 8.0) * 0.025;
+  float warp = sin(t * 3.0 + seed * 12.0) * 0.035 + cos(t * 5.0 - seed * 7.0) * 0.018;
+  float x = cos(t) * (radius + warp) + sin(t * 2.0 + seed * 9.0) * 0.025;
+  float y = sin(t) * (radius * 0.78 + warp) + cos(t * 3.0 + seed * 5.0) * 0.025;
   vec2 pos = vec2(x, y);
   pos.x *= uResolution.y / uResolution.x;
   gl_Position = vec4(pos, 0.0, 1.0);
@@ -222,7 +223,12 @@ export default function StartupScreen() {
 
   useEffect(() => {
     void initialize();
+    void getVersion().then((version) => getCurrentWindow().setTitle(`Jayver ${version}`)).catch(() => undefined);
   }, [initialize]);
+
+  if (state === "ready") {
+    return <HomeScreen update={availableUpdate} onDismissUpdate={() => setAvailableUpdate(null)} />;
+  }
 
   return (
     <main className="startup-screen">
