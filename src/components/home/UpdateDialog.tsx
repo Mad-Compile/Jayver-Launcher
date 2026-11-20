@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { ArrowDownToLine, Check, ChevronDown, ShieldCheck, X } from "lucide-react";
+import { ArrowDownToLine, ArrowRight, Check, ChevronDown, ShieldCheck, X } from "lucide-react";
 import type { Update } from "@tauri-apps/plugin-updater";
 
 type Props = { update: Update; currentVersion: string; onLater: () => void; onInstall: () => void; error?: string; errorMode?: boolean; };
@@ -70,6 +70,7 @@ export default function UpdateDialog({ update, currentVersion, onLater, onInstal
         {errorMode ? <div className="jayver-dialog-error" role="alert">{error}</div> : <>
           <div className="jayver-version-comparison" aria-label={"Installed version " + currentVersion + "; available version " + update.version}>
             <div className="jayver-version-cell"><span>INSTALLED VERSION</span><strong>{currentVersion}</strong></div>
+            <span className="jayver-version-divider" aria-hidden="true"><ArrowRight size={17} strokeWidth={1.7} /></span>
             <div className="jayver-version-cell is-latest"><span>AVAILABLE VERSION</span><strong>{update.version}</strong></div>
           </div>
           <div className="jayver-update-meta">
