@@ -735,3 +735,63 @@ button { font: inherit; }
 @keyframes jayver-dialog-in{from{opacity:0;transform:translateY(7px) scale(.992)}to{opacity:1;transform:translateY(0) scale(1)}}
 @media(max-width:520px){.jayver-update-dialog{padding:20px 18px 15px}.jayver-dialog-heading h2{font-size:19px}.jayver-version-comparison{padding:13px 11px}.jayver-version-cell strong{font-size:19px}.jayver-dialog-actions button{min-width:0;flex:1}}
 @media(prefers-reduced-motion:reduce){.jayver-dialog-scrim,.jayver-update-dialog{animation:none}.jayver-dialog-close,.jayver-dialog-actions button,.jayver-release-notes>button svg{transition:none}}
+
+
+/* Transparent navigation layer — the original WebGL scene remains the only backdrop. */
+.home-topbar{
+  height:88px;
+  padding:0 clamp(24px,3.2vw,52px);
+  background:transparent;
+  border-bottom:1px solid rgba(235,239,245,.055);
+  backdrop-filter:none;
+  -webkit-backdrop-filter:none;
+}
+.home-brand{gap:12px;font-size:13px;letter-spacing:.2em}
+.home-brand img{width:30px;height:30px;filter:none;opacity:.96}
+.home-nav{
+  position:absolute;left:50%;top:7px;bottom:0;transform:translateX(-50%);
+  display:flex;align-items:stretch;justify-content:center;gap:clamp(8px,1.8vw,28px);
+}
+.home-nav button{
+  position:relative;min-width:68px;height:100%;padding:7px 7px 10px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;
+  border:0;border-radius:0;background:transparent;color:rgba(226,230,236,.66);
+  font-size:11px;font-weight:500;letter-spacing:.005em;
+  transition:color 150ms ease,opacity 150ms ease;
+}
+.home-nav button::after{
+  content:"";position:absolute;left:9px;right:9px;bottom:0;height:2px;
+  background:transparent;transform:scaleX(.45);transition:background 150ms ease,transform 150ms ease;
+}
+.home-nav button:hover:not(:disabled){color:#fff;background:transparent}
+.home-nav button.active{color:#fff;border:0;background:transparent}
+.home-nav button.active::after{background:rgba(245,247,250,.94);transform:scaleX(1)}
+.home-nav button:disabled{opacity:.58;cursor:default}
+.home-nav button svg{flex:none}
+.home-account{display:flex;align-items:center;gap:12px;color:#e1e3e7;font-size:12px;white-space:nowrap}
+.home-updater-indicator{width:42px;height:42px;display:grid;place-items:center;color:#e1e3e7;opacity:.9}
+.home-account-divider{width:1px;height:36px;background:rgba(235,239,245,.13);margin:0 9px 0 1px}
+.account-avatar{width:36px;height:36px;display:grid;place-items:center;border:1px solid rgba(235,239,245,.28);background:rgba(5,6,9,.42);color:#f4f5f6;font-size:13px}
+.home-account-name{font-size:12px;font-weight:550}
+.home-account-chevron{color:#a5a9af;margin-left:1px}
+.home-hero{inset:88px 0 48px}
+@media(max-width:900px){
+ .home-topbar{padding:0 20px}
+ .home-nav{gap:4px}
+ .home-nav button{min-width:54px;padding-left:4px;padding-right:4px;font-size:10px}
+ .home-account{gap:8px}
+ .home-account-divider{margin-left:2px;margin-right:3px}
+}
+@media(max-width:700px){
+ .home-topbar{height:72px;padding:0 14px}
+ .home-brand img{width:25px;height:25px}
+ .home-brand{font-size:11px}
+ .home-nav{top:3px;gap:0}
+ .home-nav button{min-width:38px;gap:5px;padding:5px 3px 8px;font-size:0}
+ .home-nav button svg{width:18px;height:18px}
+ .home-account-name,.home-account-chevron,.home-account-divider{display:none}
+ .home-updater-indicator{width:30px;height:36px}
+ .account-avatar{width:30px;height:30px}
+ .home-hero{inset:72px 0 48px}
+}
+@media(prefers-reduced-motion:reduce){.home-nav button,.home-nav button::after{transition:none}}
