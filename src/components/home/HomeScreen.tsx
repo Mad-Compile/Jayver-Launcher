@@ -57,7 +57,7 @@ export default function HomeScreen({ update, onDismissUpdate }: Props) {
           <span className="home-updater-indicator" title={update ? "Update available" : "Updater ready"}><Download size={21} strokeWidth={1.8} /></span>
           <span className="home-account-divider" />
           <div className="home-account-menu-wrap">
-            <button className="home-account-trigger" type="button" aria-haspopup="menu" aria-expanded={accountMenuOpen} onClick={() => setAccountMenuOpen(value => !value)}>
+            <button className="home-account-trigger" type="button" aria-expanded={accountMenuOpen} onClick={() => setAccountMenuOpen(value => !value)}>
               <span className="home-account-avatar"><UserRound size={17} strokeWidth={1.7} /></span>
               <span className="home-account-name">{profileName}</span>
               <ChevronDown size={14} className={`home-account-chevron ${accountMenuOpen ? "is-open" : ""}`} />
