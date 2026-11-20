@@ -369,3 +369,9 @@ button { font: inherit; }
  .startup-update{max-height:calc(100vh - 32px);overflow-y:auto;min-height:0;padding:22px 24px}
  .startup-update-actions{padding-top:16px}
 }
+
+/* Quiet orbital loading composition: keep the planet as the single focal point. */
+.startup-particles{opacity:1}
+.startup-vignette{background:radial-gradient(ellipse at 50% 47%,transparent 0%,rgba(0,0,0,.12) 52%,rgba(0,0,0,.72) 100%),linear-gradient(180deg,rgba(0,0,0,.12),transparent 25%,transparent 72%,rgba(0,0,0,.45))}
+.startup-mark{top:46%;width:clamp(170px,18vw,220px);opacity:.0}
+.startup-progress{width:min(280px,calc(100vw - 44px))}

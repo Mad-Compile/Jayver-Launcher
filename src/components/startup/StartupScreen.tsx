@@ -19,6 +19,7 @@ export default function StartupScreen() {
   const [installingUpdate, setInstallingUpdate] = useState(false);
   const [updateProgress, setUpdateProgress] = useState(0);
   const [updateError, setUpdateError] = useState("");
+  const [startupElapsed, setStartupElapsed] = useState(false);
 
   const initialize = useCallback(async () => {
     setState("starting");
@@ -57,20 +58,22 @@ export default function StartupScreen() {
   }, []);
 
   useEffect(() => {
+    const startedAt = performance.now();
+    const minimumDisplay = window.setTimeout(() => setStartupElapsed(true), 2600);
     void initialize();
-    void getVersion().then(async (version) => {
+    return () => window.clearTimeout(minimumDisplay);\n  }, [initialize]);\n\n  useEffect(() => {\n    void getVersion().then(async (version) => {
       try { await getCurrentWindow().setTitle(`Jayver ${version}`); }
       catch (cause) { console.error("Could not set Jayver window title:", cause); }
     }).catch((cause) => console.error("Could not read Jayver version:", cause));
   }, [initialize]);
 
-  if (state === "ready") {
+  if (state === "ready" && startupElapsed) {
     return <HomeScreen update={availableUpdate} onDismissUpdate={() => setAvailableUpdate(null)} />;
   }
 
   return (
     <main className="startup-screen">
-      <SingularityVortexBackground progress={progress} quality="auto" intensity={1} mouseInfluence={0.7} />
+      <SingularityVortexBackground progress={progress} quality="auto" intensity={0.88} mouseInfluence={0.25} />
       <div className="startup-vignette" aria-hidden="true" />
       <section className="startup-mark" aria-label="Jayver startup">
         <img src="/brand/jayver-mark.svg" alt="Jayver" draggable={false} />
