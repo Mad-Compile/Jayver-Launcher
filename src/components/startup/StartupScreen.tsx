@@ -110,7 +110,9 @@ function ParticleField() {
     if (!gl) return;
 
     let program: WebGLProgram | null = null;
+    let backgroundProgram: WebGLProgram | null = null;
     let buffer: WebGLBuffer | null = null;
+    let quadBuffer: WebGLBuffer | null = null;
     let frame = 0;
     let start = performance.now();
     let visible = !document.hidden;
@@ -180,6 +182,18 @@ function ParticleField() {
 
       const draw = (now: number) => {
         gl.clear(gl.COLOR_BUFFER_BIT);
+        gl.disable(gl.BLEND);
+        gl.useProgram(backgroundProgram!);
+        gl.bindBuffer(gl.ARRAY_BUFFER, quadBuffer!);
+        const bgLocation = gl.getAttribLocation(backgroundProgram!, "aPosition");
+        gl.enableVertexAttribArray(bgLocation);
+        gl.vertexAttribPointer(bgLocation, 2, gl.FLOAT, false, 0, 0);
+        gl.uniform2f(gl.getUniformLocation(backgroundProgram!, "uResolution"), canvas.width, canvas.height);
+        gl.uniform1f(gl.getUniformLocation(backgroundProgram!, "uTime"), (now - start) / 1000);
+        gl.uniform1f(gl.getUniformLocation(backgroundProgram!, "uReducedMotion"), reduced.matches ? 1 : 0);
+        gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+        gl.enable(gl.BLEND);
+        gl.blendFunc(gl.SRC_ALPHA, gl.ONE);
         gl.useProgram(activeProgram);
         gl.uniform1f(gl.getUniformLocation(activeProgram, "uTime"), (now - start) / 1000);
         gl.uniform1f(gl.getUniformLocation(activeProgram, "uReducedMotion"), reduced.matches ? 1 : 0);
@@ -215,11 +229,15 @@ function ParticleField() {
         document.removeEventListener("visibilitychange", onVisibility);
         reduced.removeEventListener("change", onMotion);
         if (buffer) gl.deleteBuffer(buffer);
+        if (quadBuffer) gl.deleteBuffer(quadBuffer);
         if (program) gl.deleteProgram(program);
+        if (backgroundProgram) gl.deleteProgram(backgroundProgram);
       };
     } catch {
       if (buffer) gl.deleteBuffer(buffer);
+      if (quadBuffer) gl.deleteBuffer(quadBuffer);
       if (program) gl.deleteProgram(program);
+      if (backgroundProgram) gl.deleteProgram(backgroundProgram);
       return;
     }
   }, []);
