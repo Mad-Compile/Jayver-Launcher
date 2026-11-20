@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import { getVersion } from "@tauri-apps/api/app";
 import { useEffect } from "react";
-import { Box, ChevronDown, Download, Gamepad2, Settings2, ShieldCheck, Clock3, Folder, HardDrive, AlertCircle } from "lucide-react";
+import { Home, LibraryBig, Puzzle, Server, Palette, Settings, Download, ChevronDown, Box, Gamepad2, Settings2, ShieldCheck, Clock3, Folder, HardDrive, AlertCircle } from "lucide-react";
 import SkinHero from "./SkinHero";
 import type { Update } from "@tauri-apps/plugin-updater";
 import type { MinecraftInstance } from "@/lib/jayver";
@@ -26,11 +26,18 @@ export default function HomeScreen({update,onDismissUpdate,instances}:Props){
   <header className="home-topbar">
    <a className="home-brand" href="#" aria-label="Jayver home"><img src="/brand/jayver-mark.svg" alt=""/><span>JAYVER</span></a>
    <nav className="home-nav" aria-label="Main navigation">
-    <button className={tab==="play"?"active":""} onClick={()=>setTab("play")}><Gamepad2 size={15}/> Play</button>
-    <button className={tab==="instances"?"active":""} onClick={()=>setTab("instances")}><Box size={15}/> Instances</button>
-    <button className={tab==="settings"?"active":""} onClick={()=>setTab("settings")}><Settings2 size={15}/> Settings</button>
+    <button className={tab==="play"?"active":""} onClick={()=>setTab("play")}><Home size={20} strokeWidth={1.8}/><span>Home</span></button>
+    <button className={tab==="instances"?"active":""} onClick={()=>setTab("instances")}><LibraryBig size={20} strokeWidth={1.8}/><span>Library</span></button>
+    <button type="button" disabled aria-label="Addons coming soon"><Puzzle size={20} strokeWidth={1.8}/><span>Addons</span></button>
+    <button type="button" disabled aria-label="Servers coming soon"><Server size={20} strokeWidth={1.8}/><span>Servers</span></button>
+    <button type="button" disabled aria-label="Customization coming soon"><Palette size={20} strokeWidth={1.8}/><span>Customization</span></button>
+    <button className={tab==="settings"?"active":""} onClick={()=>setTab("settings")}><Settings size={20} strokeWidth={1.8}/><span>Settings</span></button>
    </nav>
-   <div className="home-account"><span className="account-avatar">J</span><span>Local profile</span></div>
+   <div className="home-account">
+    <span className="home-updater-indicator" title={update ? "Update available" : "Updater ready"}><Download size={21} strokeWidth={1.8}/></span>
+    <span className="home-account-divider"/>
+    <span className="account-avatar">J</span><span className="home-account-name">Local profile</span><ChevronDown size={14} className="home-account-chevron"/>
+   </div>
   </header>
   <section className="workspace-main"><div className="workspace-content">
    {tab==="play"&&<>
