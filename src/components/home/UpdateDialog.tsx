@@ -5,7 +5,7 @@ import type { Update } from "@tauri-apps/plugin-updater";
 type Props = { update: Update; currentVersion: string; onLater: () => void; onInstall: () => void; error?: string; errorMode?: boolean; };
 
 function parseVersion(value: string) {
-  const match = value.trim().replace(/^v/i, "").match(/^(\d+)\\.(\d+)\\.(\d+)(?:[-+].*)?$/);
+  const match = value.trim().replace(/^v/i, "").match(/^(\d+)\.(\d+)\.(\d+)(?:[-+].*)?$/);
   return match ? match.slice(1).map(Number) : null;
 }
 function buildsBehind(current: string, latest: string): number | null {
