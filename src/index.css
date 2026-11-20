@@ -377,7 +377,7 @@ button { font: inherit; }
 .startup-vignette{background:radial-gradient(ellipse at 50% 47%,transparent 0%,rgba(0,0,0,.12) 52%,rgba(0,0,0,.72) 100%),linear-gradient(180deg,rgba(0,0,0,.12),transparent 25%,transparent 72%,rgba(0,0,0,.45))}
 .startup-mark{top:46%;width:clamp(170px,18vw,220px);opacity:.0}
 .startup-progress{width:min(280px,calc(100vw - 44px))}
-@media(prefers-reduced-motion:reduce){.update-cinematic,.update-install-status{animation:none}}
+@media(prefers-reduced-motion:reduce){}
 
 /* Jayver desktop workspace — functional surfaces and restrained monochrome hierarchy. */
 .home-workspace{background:#08090a;color:#e9e9e9}
@@ -559,8 +559,6 @@ button { font: inherit; }
   .startup-ambience::after { animation:none; }
 }
 @media(prefers-reduced-motion:reduce) {
-  .update-orbit-highlight { animation: none; }
-  .update-cinematic { animation: none; }
 }
 
 
@@ -686,7 +684,7 @@ button { font: inherit; }
 .jayver-version-comparison{background:#050505;border-color:#303030}
 .jayver-dialog-topline{border-bottom-color:#292929}
 .jayver-dialog-footer{border-top-color:#242424}
-@media(prefers-reduced-motion:reduce){.update-cinematic{animation:none}}
+@media(prefers-reduced-motion:reduce){}
 
 
 /* Home, intentionally reduced to navigation and the player skin. */
