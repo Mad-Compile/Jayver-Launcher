@@ -233,7 +233,7 @@ export default function ProfileExperience({ onClose, initialSwitcher = false }: 
     <div className="jayver-profile-shell">
       <header className="jayver-profile-header">
         <button className="jayver-profile-back" onClick={onClose} type="button"><ChevronLeft size={16} /> Back to launcher</button>
-        <span className="jayver-profile-header-label">PLAYER IDENTITY <i /></span>
+        <span className="jayver-profile-header-label">Player profile</span>
         <button className="jayver-profile-exit" onClick={onClose} type="button" aria-label="Close profile"><X size={17} /></button>
       </header>
 
