@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { Box, ChevronDown, CircleHelp, Download, Gamepad2, Settings2, ShieldCheck, Clock3, Folder, HardDrive, AlertCircle } from "lucide-react";
+import { Box, ChevronDown, Download, Gamepad2, Settings2, ShieldCheck, Clock3, Folder, HardDrive, AlertCircle } from "lucide-react";
 import SkinHero from "./SkinHero";
 import type { Update } from "@tauri-apps/plugin-updater";
 import type { MinecraftInstance } from "@/lib/jayver";
