@@ -105,6 +105,39 @@ function UpdateMaterial() {
   return <canvas ref={canvasRef} className="jayver-update-webgl" aria-hidden="true" />;
 }
 
+function ButtonLight() {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  useEffect(() => {
+    const canvas=canvasRef.current, button=canvas?.parentElement;
+    if(!canvas||!button)return;
+    const gl=canvas.getContext("webgl",{alpha:true,antialias:false,depth:false,stencil:false,powerPreference:"low-power"});
+    if(!gl)return;
+    const vs=gl.createShader(gl.VERTEX_SHADER),fs=gl.createShader(gl.FRAGMENT_SHADER);
+    if(!vs||!fs)return;
+    gl.shaderSource(vs,"attribute vec2 p; varying vec2 uv; void main(){uv=p*.5+.5;gl_Position=vec4(p,0.,1.);}");
+    gl.shaderSource(fs,`precision mediump float; varying vec2 uv; uniform vec2 res; uniform vec2 mouse; uniform float t; uniform float on; void main(){vec2 d=uv-mouse;d.x*=res.x/max(res.y,1.);float spot=exp(-dot(d,d)*38.);float sweep=pow(max(0.,1.-abs(uv.y-(.5+sin(t*.7)*.08))*3.5),8.);float a=(spot*.22+sweep*.045)*on;gl_FragColor=vec4(vec3(.92,.95,.98)*a,a);}`);
+    for(const s of [vs,fs]){gl.compileShader(s);if(!gl.getShaderParameter(s,gl.COMPILE_STATUS)){gl.deleteShader(vs);gl.deleteShader(fs);return;}}
+    const program=gl.createProgram();if(!program)return;
+    gl.attachShader(program,vs);gl.attachShader(program,fs);gl.linkProgram(program);
+    gl.deleteShader(vs);gl.deleteShader(fs);
+    if(!gl.getProgramParameter(program,gl.LINK_STATUS))return;
+    const buffer=gl.createBuffer();if(!buffer)return;
+    gl.bindBuffer(gl.ARRAY_BUFFER,buffer);gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1,3,-1,-1,3]),gl.STATIC_DRAW);
+    gl.useProgram(program);const loc=gl.getAttribLocation(program,"p");gl.enableVertexAttribArray(loc);gl.vertexAttribPointer(loc,2,gl.FLOAT,false,0,0);
+    const res=gl.getUniformLocation(program,"res"),mouse=gl.getUniformLocation(program,"mouse"),time=gl.getUniformLocation(program,"t"),on=gl.getUniformLocation(program,"on");
+    let cursor:[number,number]=[.5,.5],active=false,raf=0,start=0,dead=false;
+    const resize=()=>{const r=button.getBoundingClientRect(),d=Math.min(devicePixelRatio||1,1.5),w=Math.max(1,Math.floor(r.width*d)),h=Math.max(1,Math.floor(r.height*d));if(canvas.width!==w||canvas.height!==h){canvas.width=w;canvas.height=h;gl.viewport(0,0,w,h);}};
+    const move=(e:PointerEvent)=>{const r=button.getBoundingClientRect();cursor=[(e.clientX-r.left)/r.width,1-(e.clientY-r.top)/r.height];};
+    const draw=(now:number)=>{if(dead||!active){raf=0;return;}resize();gl.clear(gl.COLOR_BUFFER_BIT);gl.uniform2f(res,canvas.width,canvas.height);gl.uniform2f(mouse,cursor[0],cursor[1]);gl.uniform1f(time,(now-start)/1000);gl.uniform1f(on,1);gl.drawArrays(gl.TRIANGLES,0,3);raf=requestAnimationFrame(draw);};
+    const enter=()=>{active=true;start=performance.now();if(!raf)raf=requestAnimationFrame(draw);};
+    const leave=()=>{active=false;cancelAnimationFrame(raf);raf=0;gl.clear(gl.COLOR_BUFFER_BIT);};
+    button.addEventListener("pointerenter",enter);button.addEventListener("pointermove",move);button.addEventListener("pointerleave",leave);
+    const observer=new ResizeObserver(resize);observer.observe(button);resize();
+    return()=>{dead=true;cancelAnimationFrame(raf);observer.disconnect();button.removeEventListener("pointerenter",enter);button.removeEventListener("pointermove",move);button.removeEventListener("pointerleave",leave);gl.deleteBuffer(buffer);gl.deleteProgram(program);};
+  },[]);
+  return <canvas ref={canvasRef} className="jayver-button-webgl" aria-hidden="true" />;
+}
+
 function UpdateGlyph() {
   return (
     <svg className="jayver-update-glyph" viewBox="0 0 80 80" fill="none" aria-hidden="true">
@@ -178,8 +211,8 @@ export default function UpdateDialog({ update, currentVersion, onLater, onInstal
           <p className="jayver-preservation-note"><Check size={14} /> Your launcher data and settings stay in place.</p>
         </>}
         <div className="jayver-dialog-actions">
-          <button className="jayver-button-secondary" type="button" onPointerMove={(event) => { const r=event.currentTarget.getBoundingClientRect(); event.currentTarget.style.setProperty("--pointer-x", `${event.clientX-r.left}px`); event.currentTarget.style.setProperty("--pointer-y", `${event.clientY-r.top}px`); }} onPointerLeave={(event) => { event.currentTarget.style.setProperty("--pointer-x","50%"); event.currentTarget.style.setProperty("--pointer-y","50%"); }} onClick={onLater}>{errorMode ? "Close" : "Not now"}</button>
-          <button className="jayver-button-primary" type="button" onPointerMove={(event) => { const r=event.currentTarget.getBoundingClientRect(); event.currentTarget.style.setProperty("--pointer-x", `${event.clientX-r.left}px`); event.currentTarget.style.setProperty("--pointer-y", `${event.clientY-r.top}px`); }} onPointerLeave={(event) => { event.currentTarget.style.setProperty("--pointer-x","50%"); event.currentTarget.style.setProperty("--pointer-y","50%"); }} onClick={onInstall}><span>{errorMode ? "Try again" : "Install update"}</span>{!errorMode && <ArrowDownToLine size={16} />}</button>
+          <button className="jayver-button-secondary" type="button" onPointerMove={(event) => { const r=event.currentTarget.getBoundingClientRect(); event.currentTarget.style.setProperty("--pointer-x", `${event.clientX-r.left}px`); event.currentTarget.style.setProperty("--pointer-y", `${event.clientY-r.top}px`); }} onPointerLeave={(event) => { event.currentTarget.style.setProperty("--pointer-x","50%"); event.currentTarget.style.setProperty("--pointer-y","50%"); }} onClick={onLater}><ButtonLight /><span>{errorMode ? "Close" : "Not now"}</span></button>
+          <button className="jayver-button-primary" type="button" onPointerMove={(event) => { const r=event.currentTarget.getBoundingClientRect(); event.currentTarget.style.setProperty("--pointer-x", `${event.clientX-r.left}px`); event.currentTarget.style.setProperty("--pointer-y", `${event.clientY-r.top}px`); }} onPointerLeave={(event) => { event.currentTarget.style.setProperty("--pointer-x","50%"); event.currentTarget.style.setProperty("--pointer-y","50%"); }} onClick={onInstall}><ButtonLight /><span>{errorMode ? "Try again" : "Install update"}</span>{!errorMode && <ArrowDownToLine size={16} />}</button>
         </div>
       </section>
     </div>
