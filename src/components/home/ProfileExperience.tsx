@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Check, ChevronDown, ChevronLeft, CircleUserRound, Copy, ExternalLink, ImagePlus, Link2, LogOut, MoreHorizontal, RotateCcw, Search, ShieldCheck, UserRound, Users, X } from "lucide-react";
+import { Check, ChevronDown, ChevronLeft, CircleUserRound, Copy, ImagePlus, Link2, LogOut, MoreHorizontal, RotateCcw, Search, ShieldCheck, Users, X } from "lucide-react";
 import { IdleAnimation, SkinViewer } from "skinview3d";
 import { DEFAULT_SKIN_URL } from "@/lib/skin";
 
@@ -158,11 +158,11 @@ function SkinStage({ skin, model }: { skin: string; model: "classic" | "slim" })
   </div>;
 }
 
-export default function ProfileExperience({ onClose }: { onClose: () => void }) {
+export default function ProfileExperience({ onClose, initialSwitcher = false }: { onClose: () => void; initialSwitcher?: boolean }) {
   const [profile, setProfile] = useState<PlayerProfile>(readProfile);
   const [menuOpen, setMenuOpen] = useState(false);
   const [editing, setEditing] = useState(false);
-  const [switcherOpen, setSwitcherOpen] = useState(false);
+  const [switcherOpen, setSwitcherOpen] = useState(initialSwitcher);
   const [nameInput, setNameInput] = useState("");
   const [urlInput, setUrlInput] = useState("");
   const [busy, setBusy] = useState(false);
@@ -250,7 +250,7 @@ export default function ProfileExperience({ onClose }: { onClose: () => void }) 
                 <button type="button" onClick={() => { setSwitcherOpen(true); setMenuOpen(false); }}><Users size={15} /> Switch account</button>
                 <button type="button" onClick={() => { void copyUuid(); setMenuOpen(false); }} disabled={!profile.uuid}><Copy size={15} /> Copy UUID</button>
                 <div className="jayver-profile-menu-rule" />
-                <button type="button" onClick={() => { resetLocal(); }}><LogOut size={15} /> Log out / reset local</button>
+                <button type="button" onClick={() => { resetLocal(); }}><LogOut size={15} /> Reset local profile</button>
               </div>}
             </div>
           </div>
