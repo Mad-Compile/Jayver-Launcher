@@ -78,14 +78,23 @@ export default function HomeScreen({ update, onDismissUpdate }: Props) {
       {update && (updatePhase === "charging" || updatePhase === "installing") && (
         <div className="jayver-download-progress" role="status" aria-live="polite">
           <div className="jayver-download-progress-panel">
-            <span className="jayver-download-kicker">JAYVER · UPDATE</span>
-            <strong>{updatePhase === "charging" ? "Downloading update" : "Preparing installation"}</strong>
-            {updatePhase === "charging" ? (
-              <>
-                <div className="jayver-download-track"><span style={{ width: `${percent}%` }} /></div>
-                <small>{Math.round(percent)}% · Downloading signed package</small>
-              </>
-            ) : <small>Download complete · Installing update</small>}
+            <div className="jayver-loader" aria-hidden="true">
+              <svg viewBox="0 0 100 100">
+                <circle className="jayver-loader-track" cx="50" cy="50" r="42" />
+                <circle
+                  className="jayver-loader-value"
+                  cx="50"
+                  cy="50"
+                  r="42"
+                  strokeDasharray="263.9"
+                  strokeDashoffset={263.9 * (1 - (updatePhase === "charging" ? percent : 100) / 100)}
+                />
+                <circle className="jayver-loader-inner" cx="50" cy="50" r="34" />
+              </svg>
+              <span className="jayver-loader-core" />
+            </div>
+            <strong>{updatePhase === "charging" ? "Downloading your update..." : "Preparing installation..."}</strong>
+            <small>{updatePhase === "charging" ? `${Math.round(percent)}% · Secure download` : "Download complete · Installing update"}</small>
           </div>
         </div>
       )}
