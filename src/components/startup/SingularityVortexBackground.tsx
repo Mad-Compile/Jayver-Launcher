@@ -58,7 +58,7 @@ void main(){
  float planeDenom=dot(rayDirection,ringNormal);
  float ringT=-dot(rayOrigin,ringNormal)/planeDenom;
  vec3 ringPoint=rayOrigin+rayDirection*ringT;
- float ringRadius=length(ringPoint.xz);
+ float ringRadius=length(ringPoint);
  float ringFront=step(0.,planeDenom);
  float ringValid=step(.01,ringT)*step(abs(planeDenom),.98);
  // The central shadow occludes the far-side ring, creating real front/back layering.
@@ -307,13 +307,16 @@ function SingularityVortexBackground({ progress, quality = "auto", paused = fals
         for (let i = 0; i < count; i++) {
           const a = random() * Math.PI * 2;
           const radius = .19 + Math.pow(random(), .72) * .57;
-          positions[i * 4] = Math.cos(a) * radius;
-          positions[i * 4 + 1] = (random() - .5) * .12;
-          positions[i * 4 + 2] = Math.sin(a) * radius;
+          const ringNormal = [0, .78, .625];
+          const ringU = [1, 0, 0];
+          const ringV = [0, ringNormal[2], -ringNormal[1]];
+          positions[i * 4] = (ringU[0] * Math.cos(a) + ringV[0] * Math.sin(a)) * radius;
+          positions[i * 4 + 1] = (ringU[1] * Math.cos(a) + ringV[1] * Math.sin(a)) * radius + (random() - .5) * .018;
+          positions[i * 4 + 2] = (ringU[2] * Math.cos(a) + ringV[2] * Math.sin(a)) * radius;
           positions[i * 4 + 3] = random() * 22;
-          velocities[i * 4] = -Math.sin(a) * (.001 + random() * .001);
-          velocities[i * 4 + 1] = (random() - .5) * .0004;
-          velocities[i * 4 + 2] = Math.cos(a) * (.001 + random() * .001);
+          velocities[i * 4] = -ringU[0] * Math.sin(a) * .001 + ringV[0] * Math.cos(a) * .001;
+          velocities[i * 4 + 1] = -ringU[1] * Math.sin(a) * .001 + ringV[1] * Math.cos(a) * .001;
+          velocities[i * 4 + 2] = -ringU[2] * Math.sin(a) * .001 + ringV[2] * Math.cos(a) * .001;
           velocities[i * 4 + 3] = random();
         }
         for (let i = 0; i < 2; i++) {
