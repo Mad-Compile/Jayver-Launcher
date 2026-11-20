@@ -21,7 +21,6 @@ export default function StartupScreen() {
   const [updateError, setUpdateError] = useState("");
   const [startupElapsed, setStartupElapsed] = useState(false);
   const [instances, setInstances] = useState<MinecraftInstance[]>([]);
-  const [logoActivated, setLogoActivated] = useState(false);
 
   const initialize = useCallback(async () => {
     setState("starting");
