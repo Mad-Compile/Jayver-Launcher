@@ -79,6 +79,7 @@ export default function HomeScreen({ update, onDismissUpdate }: Props) {
 
       {update && updatePhase !== "idle" && (
         <div className="jayver-download-progress" role="status" aria-live="polite">
+          <DownloadAtmosphere />
           <div className="jayver-download-progress-panel">
             {updatePhase !== "error" ? (
               <div className="jayver-progress-engine" role="img" aria-label={`Downloading update: ${Math.round(percent)} percent`}>
