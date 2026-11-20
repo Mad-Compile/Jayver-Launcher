@@ -123,9 +123,11 @@ export default function FluidParticlesBackground({
         return;
       }
       lastFrame = now;
-      // A low-alpha wash creates short, soft trails without painting an opaque panel.
-      context.fillStyle = "rgba(5, 8, 10, 0.115)";
+      // Fade previous particle marks while preserving transparency over the card material.
+      context.globalCompositeOperation = "destination-out";
+      context.fillStyle = "rgba(0, 0, 0, 0.12)";
       context.fillRect(0, 0, width, height);
+      context.globalCompositeOperation = "source-over";
 
       const time = now * .0001;
       for (const particle of particles) {
