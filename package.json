@@ -8,7 +8,7 @@
     "build": "tsc -b && vite build",
     "preview": "vite preview",
     "tauri": "tauri",
-    "tauri:build:nsis": "powershell -NoProfile -ExecutionPolicy Bypass -File src-tauri/installer/Generate-Assets.ps1; tauri build --bundles nsis"
+    "tauri:build:nsis": "powershell -NoProfile -ExecutionPolicy Bypass -File src-tauri/installer/Generate-Assets.ps1 && tauri build --bundles nsis"
   },
   "dependencies": {
     "@tauri-apps/api": "^2.0.0",
