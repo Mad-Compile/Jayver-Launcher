@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from "react";
+import { invoke } from "@tauri-apps/api/core";
 import { Check, ChevronDown, ChevronLeft, CircleUserRound, Copy, ImagePlus, Link2, LogOut, MoreHorizontal, Pencil, RotateCcw, Search, ShieldCheck, Users, X } from "lucide-react";
 import { IdleAnimation, SkinViewer } from "skinview3d";
 import { DEFAULT_SKIN_URL } from "@/lib/skin";
-import { DEFAULT_PLAYER_PROFILE, updatePlayerProfile, usePlayerProfile } from "@/lib/player-profile";
+import { DEFAULT_PLAYER_PROFILE, getPlayerProfile, updatePlayerProfile, usePlayerProfile } from "@/lib/player-profile";
 import FluidParticlesBackground from "./FluidParticlesBackground";
 
 function formatUuid(uuid: string) {
@@ -12,35 +13,21 @@ function formatUuid(uuid: string) {
     : "";
 }
 
-async function resolveMinecraftProfile(name: string) {
-  const safeName = name.trim();
-  if (!/^[A-Za-z0-9_]{3,16}$/.test(safeName)) throw new Error("Enter a valid Java Edition username (3–16 letters, numbers or underscores).");
-  let response = await fetch(`https://api.mojang.com/users/profiles/minecraft/${encodeURIComponent(safeName)}`);
-  if (response.status === 403 || response.status === 404) {
-    response = await fetch(`https://api.minecraftservices.com/minecraft/profile/lookup/name/${encodeURIComponent(safeName)}`);
-  }
-  if (response.status === 204 || response.status === 404) throw new Error("No Minecraft profile was found for that name.");
-  if (!response.ok) throw new Error("Mojang's profile service is unavailable. Try again shortly.");
-  const identity = await response.json() as { id?: string; name?: string };
-  if (!identity.id || !identity.name) throw new Error("The profile response was incomplete.");
-  const uuid = formatUuid(identity.id);
-  if (!uuid) throw new Error("Minecraft returned an invalid profile ID.");
-  let skin = DEFAULT_SKIN_URL;
-  let model: "classic" | "slim" = "classic";
-  try {
-    const profileResponse = await fetch(`https://sessionserver.mojang.com/session/minecraft/profile/${identity.id}`);
-    if (profileResponse.ok) {
-      const profile = await profileResponse.json() as { properties?: Array<{ name: string; value: string }> };
-      const encoded = profile.properties?.find(property => property.name === "textures")?.value;
-      if (encoded) {
-        const textures = JSON.parse(atob(encoded)) as { textures?: { SKIN?: { url?: string; metadata?: { model?: string } } } };
-        const skinUrl = textures.textures?.SKIN?.url;
-        if (skinUrl?.startsWith("http")) skin = skinUrl;
-        model = textures.textures?.SKIN?.metadata?.model === "slim" ? "slim" : "classic";
-      }
-    }
-  } catch { /* A valid identity can still use the bundled fallback skin. */ }
-  return { name: identity.name, uuid, skin, model } satisfies import("@/lib/player-profile").PlayerProfile;
+type MinecraftProfileLookup = {
+  name: string;
+  uuid: string;
+  skin: string | null;
+  model: "classic" | "slim";
+};
+
+async function resolveMinecraftProfile(name: string): Promise<import("@/lib/player-profile").PlayerProfile> {
+  const resolved = await invoke<MinecraftProfileLookup>("lookup_minecraft_profile", { username: name.trim() });
+  return {
+    name: resolved.name,
+    uuid: formatUuid(resolved.uuid),
+    skin: resolved.skin || DEFAULT_SKIN_URL,
+    model: resolved.model === "slim" ? "slim" : "classic",
+  };
 }
 
 function SkinStage({ skin, model }: { skin: string; model: "classic" | "slim" }) {
@@ -57,8 +44,8 @@ function SkinStage({ skin, model }: { skin: string; model: "classic" | "slim" })
       instance = new SkinViewer({ canvas: element, width: 520, height: 620, skin, model: model === "slim" ? "slim" : "default", zoom: 0.86, pixelRatio: Math.min(window.devicePixelRatio || 1, 1.5), enableControls: true });
       viewer.current = instance;
       instance.background = null;
-      instance.camera.position.set(0, 0, 40);
-      instance.camera.lookAt(0, 0, 0);
+      // Keep skinview3d's own zoom-derived camera distance. Overriding Z here
+      // bypasses its zoom calculation and makes the avatar unexpectedly large.
       instance.playerObject.position.set(0, 0, 0);
       instance.autoRotate = true;
       instance.autoRotateSpeed = 0.34;
@@ -69,25 +56,24 @@ function SkinStage({ skin, model }: { skin: string; model: "classic" | "slim" })
       const resize = () => {
         if (!instance) return;
         const rect = element.getBoundingClientRect();
-        const width = Math.max(1, Math.floor(rect.width));
-        const height = Math.max(1, Math.floor(rect.height));
-        instance.width = width;
-        instance.height = height;
-
-        // Keep the avatar optically centered inside the visible card stage.
-        // skinview3d's default framing leaves this narrow portrait composition
-        // slightly right-heavy, so shift the camera target by 9% of the view width.
-        const halfFov = (instance.camera.fov * Math.PI) / 360;
-        const viewWidth = 2 * instance.camera.position.z * Math.tan(halfFov) * (width / height);
-        const horizontalOffset = viewWidth * 0.09;
-        instance.camera.position.x = horizontalOffset;
-        instance.controls.target.set(horizontalOffset, 0, 0);
-        instance.camera.lookAt(horizontalOffset, 0, 0);
-        instance.controls.update();
+        instance.width = Math.max(1, Math.floor(rect.width));
+        instance.height = Math.max(1, Math.floor(rect.height));
       };
       const observer = new ResizeObserver(resize);
       observer.observe(element);
       resize();
+
+      // Apply a small horizontal camera translation only. Move camera and
+      // orbit target together so distance/zoom and character scale stay intact.
+      const stageRect = element.getBoundingClientRect();
+      const aspect = Math.max(1, stageRect.width) / Math.max(1, stageRect.height);
+      const distance = instance.camera.position.distanceTo(instance.controls.target);
+      const halfFov = (instance.camera.fov * Math.PI) / 360;
+      const visibleWidth = 2 * distance * Math.tan(halfFov) * aspect;
+      const horizontalOffset = visibleWidth * 0.035;
+      instance.camera.position.x += horizontalOffset;
+      instance.controls.target.x += horizontalOffset;
+      instance.controls.update();
       return () => { active = false; observer.disconnect(); instance?.dispose(); viewer.current = null; };
     } catch {
       instance?.dispose();
@@ -124,10 +110,47 @@ export default function ProfileExperience({ onClose, initialSwitcher = false }: 
   const [messageError, setMessageError] = useState(false);
   const fileInput = useRef<HTMLInputElement>(null);
 
+  // Resolve the displayed Java username automatically when the profile has
+  // no valid UUID. Debouncing avoids duplicate requests while names are edited.
+  useEffect(() => {
+    const username = profile.name.trim();
+    if (formatUuid(profile.uuid) || !/^[A-Za-z0-9_]{3,16}$/.test(username)) return;
+
+    let cancelled = false;
+    const timer = window.setTimeout(async () => {
+      try {
+        const resolved = await resolveMinecraftProfile(username);
+        if (cancelled) return;
+        const current = getPlayerProfile();
+        if (current.name !== username || formatUuid(current.uuid)) return;
+        updatePlayerProfile(latest => ({
+          ...latest,
+          name: resolved.name,
+          uuid: resolved.uuid,
+          skin: latest.skin === DEFAULT_SKIN_URL && resolved.skin !== DEFAULT_SKIN_URL ? resolved.skin : latest.skin,
+          model: latest.skin === DEFAULT_SKIN_URL && resolved.skin !== DEFAULT_SKIN_URL ? resolved.model : latest.model,
+        }));
+      } catch {
+        // An unknown/offline/custom display name remains a local profile.
+        // The explicit Find action below reports lookup failures to the user.
+      }
+    }, 400);
+
+    return () => {
+      cancelled = true;
+      window.clearTimeout(timer);
+    };
+  }, [profile.name, profile.uuid]);
+
   const saveDisplayName = () => {
     const nextName = nameDraft.trim();
     if (!nextName) { setNameDraft(profile.name); setNameEditing(false); return; }
-    updatePlayerProfile(current => ({ ...current, name: nextName.slice(0, 16) }));
+    const identityChanged = profile.name.toLowerCase() !== nextName.slice(0, 16).toLowerCase();
+    updatePlayerProfile(current => ({
+      ...current,
+      name: nextName.slice(0, 16),
+      uuid: identityChanged ? "" : current.uuid,
+    }));
     setNameEditing(false);
   };
 
