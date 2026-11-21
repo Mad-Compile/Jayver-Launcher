@@ -14,11 +14,11 @@ const failures = [];
 if (packageJson.devDependencies?.["@tauri-apps/cli"] !== expected.cli) {
   failures.push(`@tauri-apps/cli must be pinned to ${expected.cli}`);
 }
-if (!new RegExp(`tauri\\s*=\\s*\\{\\s*version\\s*=\\s*"${expected.tauri.replace(/[.*+?^${}()|[\\]\\\\]/g, "\\$&")}"`).test(cargoToml)) {
-  failures.push(`Rust tauri must be pinned to ${expected.tauri}`);
+if (!cargoToml.includes('tauri = { version = "=2.12.7"')) {
+  failures.push("Rust tauri must be pinned to =2.12.7");
 }
-if (!new RegExp(`tauri-build\\s*=\\s*\\{\\s*version\\s*=\\s*"${expected.tauriBuild.replace(/[.*+?^${}()|[\\]\\\\]/g, "\\$&")}"`).test(cargoToml)) {
-  failures.push(`tauri-build must be pinned to ${expected.tauriBuild}`);
+if (!cargoToml.includes('tauri-build = { version = "=2.7.6"')) {
+  failures.push("tauri-build must be pinned to =2.7.6");
 }
 if (!/^Unicode true\\r?\\n/m.test(template)) failures.push("NSIS Unicode directive must be the first compiler directive");
 if (/^Target\\s*$/m.test(template) || template.includes("{{installer_target}}")) {
