@@ -1,8 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import type { WebGLRenderer } from "three";
 
-const vertexShader = `#version 300 es
-in vec3 position;
+const vertexShader = `in vec3 position;
 in vec2 uv;
 out vec2 vUv;
 
@@ -11,8 +10,7 @@ void main() {
   gl_Position = vec4(position, 1.0);
 }`;
 
-const fragmentShader = `#version 300 es
-precision highp float;
+const fragmentShader = `precision highp float;
 
 uniform float uTime;
 uniform float uAspect;
