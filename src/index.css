@@ -1859,11 +1859,14 @@ button { font: inherit; }
 }
 
 
-/* Version comparison: paired columns, separated by the latest-version bevel. */
-.jayver-version-comparison { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+/* Keep installed version, directional arrow and available version in one row. */
+.jayver-version-comparison {
+  grid-template-columns: minmax(0, 1fr) 34px minmax(0, 1fr);
+  align-items: center;
+}
 .jayver-version-cell.is-latest { padding-left: 16px; }
 @media (max-width: 520px) {
-  .jayver-version-comparison { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+  .jayver-version-comparison { grid-template-columns: minmax(0, 1fr) 25px minmax(0, 1fr); }
   .jayver-version-cell.is-latest { padding-left: 12px; }
 }
 
