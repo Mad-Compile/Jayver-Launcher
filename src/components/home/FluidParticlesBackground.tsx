@@ -151,7 +151,7 @@ export default function FluidParticlesBackground({
         if (particle.y < 0) particle.y = height;
         else if (particle.y > height) particle.y = 0;
 
-        context.fillStyle = `rgba(211, 222, 230, ${opacity})`;
+        context.fillStyle = `rgba(190, 215, 232, ${opacity})`;
         context.beginPath();
         context.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
         context.fill();
