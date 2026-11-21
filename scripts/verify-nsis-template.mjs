@@ -20,7 +20,7 @@ if (!cargoToml.includes('tauri = { version = "=2.12.7"')) {
 if (!cargoToml.includes('tauri-build = { version = "=2.7.6"')) {
   failures.push("tauri-build must be pinned to =2.7.6");
 }
-if (!/^Unicode true\\r?\\n/m.test(template)) failures.push("NSIS Unicode directive must be the first compiler directive");
+if (!/^Unicode true\r?\n/m.test(template)) failures.push("NSIS Unicode directive must be the first compiler directive");
 if (/^Target\\s*$/m.test(template) || template.includes("{{installer_target}}")) {
   failures.push("Incompatible empty NSIS Target directive detected");
 }
