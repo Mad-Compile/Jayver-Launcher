@@ -13,7 +13,8 @@ pub fn run() {
         .manage(AppState::new())
         .invoke_handler(tauri::generate_handler![
             commands::app::get_app_info,
-            commands::instances::list_instances
+            commands::instances::list_instances,
+            commands::minecraft::lookup_minecraft_profile
         ])
         .run(tauri::generate_context!())
         .expect("error while running Jayver");
