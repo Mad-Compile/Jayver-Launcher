@@ -30,6 +30,11 @@ jobs:
       - name: Install frontend dependencies
         run: npm install
 
+      - name: Verify NSIS template compatibility
+        run: |
+          npx tauri --version
+          node scripts/verify-nsis-template.mjs
+
       - name: Set up stable Rust
         uses: dtolnay/rust-toolchain@stable
 
