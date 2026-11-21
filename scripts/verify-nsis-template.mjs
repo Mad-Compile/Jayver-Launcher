@@ -2,7 +2,7 @@ import { readFileSync } from "node:fs";
 
 const packageJson = JSON.parse(readFileSync(new URL("../package.json", import.meta.url), "utf8"));
 const cargoToml = readFileSync(new URL("../src-tauri/Cargo.toml", import.meta.url), "utf8");
-const template = readFileSync(new URL("../src-tauri/installer/jayver-installer.nsi", import.meta.url), "utf8");
+const template = readFileSync(new URL("../src-tauri/installer/jayver-installer.nsi", import.meta.url), "utf8").replace(/^\\uFEFF/, "");
 
 const expected = {
   cli: "2.12.6",
