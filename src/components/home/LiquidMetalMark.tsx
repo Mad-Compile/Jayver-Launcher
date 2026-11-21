@@ -110,7 +110,8 @@ float softBox(vec3 r, vec3 center, vec3 spread) {
 vec3 studioEnvironment(vec3 r) {
   vec3 horizon = mix(vec3(0.012, 0.015, 0.02), vec3(0.20, 0.23, 0.27),
                      smoothstep(-0.48, 0.56, r.y));
-  horizon = mix(horizon, vec3(0.012, 0.014, 0.018), smoothstep(0.0, -0.7, r.y));
+  float floorFade = 1.0 - smoothstep(-0.7, 0.0, r.y);
+  horizon = mix(horizon, vec3(0.012, 0.014, 0.018), floorFade);
 
   float topStrip = softBox(r, vec3(-0.08, 0.91, 0.25), vec3(0.30, 0.10, 0.55));
   float leftStrip = softBox(r, vec3(-0.82, 0.18, 0.25), vec3(0.075, 0.48, 0.45));
@@ -244,9 +245,15 @@ export default function LiquidMetalMark({ className = "" }: LiquidMetalMarkProps
         observer.observe(host);
         resize();
 
-        renderer.setAnimationLoop((_, delta) => {
-          if (!visible || !renderer) return;
-          if (motionAllowed) frameTime += Math.min(delta, 0.05);
+        let lastFrameTime = 0;
+        renderer.setAnimationLoop((timestamp) => {
+          if (!visible || !renderer) {
+            lastFrameTime = 0;
+            return;
+          }
+          const delta = lastFrameTime === 0 ? 0 : Math.min((timestamp - lastFrameTime) / 1000, 0.05);
+          lastFrameTime = timestamp;
+          if (motionAllowed) frameTime += delta;
           uniforms.uTime.value = frameTime;
           renderer.render(scene, camera);
         });
