@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { ArrowDownToLine, ArrowRight, Check, ChevronDown, ShieldCheck, X } from "lucide-react";
 import type { Update } from "@tauri-apps/plugin-updater";
+import LiquidMetalMark from "./LiquidMetalMark";
 
 type Props = { update: Update; currentVersion: string; onLater: () => void; onInstall: () => void; error?: string; errorMode?: boolean; };
 
@@ -49,19 +50,7 @@ export default function UpdateDialog({ update, currentVersion, onLater, onInstal
           <button className="jayver-dialog-close" type="button" aria-label="Close update dialog" onClick={onLater}><X size={16} /></button>
         </div>
         <div className={"jayver-update-visual" + (errorMode ? " is-error" : "")} aria-hidden="true">
-          <svg className="jayver-obsidian-shard" viewBox="0 0 180 132" fill="none">
-            <path className="shard-body" d="M89 5 142 29 166 76 128 121 61 127 18 91 30 39Z"/>
-            <path className="shard-facet shard-facet-a" d="M89 5 92 64 30 39Z"/>
-            <path className="shard-facet shard-facet-b" d="M89 5 142 29 92 64Z"/>
-            <path className="shard-facet shard-facet-c" d="M142 29 166 76 92 64Z"/>
-            <path className="shard-facet shard-facet-d" d="M166 76 128 121 92 64Z"/>
-            <path className="shard-facet shard-facet-e" d="M128 121 61 127 92 64Z"/>
-            <path className="shard-facet shard-facet-f" d="M61 127 18 91 92 64Z"/>
-            <path className="shard-facet shard-facet-g" d="M18 91 30 39 92 64Z"/>
-            <path className="shard-edge" d="M89 5 142 29 166 76 128 121 61 127 18 91 30 39Z"/>
-            <path className="shard-glint" d="M89 5 142 29 166 76"/>
-            <path className="shard-glint shard-glint-low" d="m18 91 43 36 67-6"/>
-          </svg>
+          <LiquidMetalMark />
         </div>
         <div className="jayver-dialog-heading">
           <h2 id="jayver-update-title">{errorMode ? "The update wasn't completed." : "A newer version is ready."}</h2>
