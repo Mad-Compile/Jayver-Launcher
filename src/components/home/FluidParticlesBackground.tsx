@@ -137,7 +137,7 @@ export default function FluidParticlesBackground({
           particle.x = Math.random() * width;
           particle.y = Math.random() * height;
         }
-        const opacity = Math.sin((particle.life / particle.maxLife) * Math.PI) * .115;
+        const opacity = Math.sin((particle.life / particle.maxLife) * Math.PI) * .28;
         const n = sampleNoise(particle.x * .003, particle.y * .003, time);
         const angle = n * Math.PI * 4;
         // Same noise-steered flow as the supplied implementation, with a calmer
