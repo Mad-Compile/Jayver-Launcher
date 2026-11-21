@@ -1859,14 +1859,14 @@ button { font: inherit; }
 }
 
 
-/* Keep installed version, directional arrow and available version in one row. */
+/* Two version columns; the fine vertical rule is the only separator. */
 .jayver-version-comparison {
-  grid-template-columns: minmax(0, 1fr) 34px minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   align-items: center;
 }
 .jayver-version-cell.is-latest { padding-left: 16px; }
 @media (max-width: 520px) {
-  .jayver-version-comparison { grid-template-columns: minmax(0, 1fr) 25px minmax(0, 1fr); }
+  .jayver-version-comparison { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
   .jayver-version-cell.is-latest { padding-left: 12px; }
 }
 
