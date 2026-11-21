@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import type { WebGLRenderer } from "three";
 
 // ShaderMaterial injects the built-in position and uv attributes itself.
@@ -159,6 +159,7 @@ type LiquidMetalMarkProps = { className?: string };
 
 export default function LiquidMetalMark({ className = "" }: LiquidMetalMarkProps) {
   const hostRef = useRef<HTMLDivElement>(null);
+  const gradientId = useId().replace(/:/g, "");
   const [supported, setSupported] = useState(true);
 
   useEffect(() => {
@@ -293,7 +294,58 @@ export default function LiquidMetalMark({ className = "" }: LiquidMetalMarkProps
 
   return (
     <div className={`jayver-liquid-metal-stage ${className}`} ref={hostRef}>
-      {!supported && <img src="/brand/jayver-mark.svg" alt="" className="jayver-liquid-metal-fallback" />}
+      {/* Always-visible SVG foundation: the identity never disappears if WebGL,
+          a GPU driver, shader compilation, or context creation fails. */}
+      <svg className="jayver-liquid-metal-art" viewBox="0 0 1200 420" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+        <defs>
+          <linearGradient id={`jayver-chrome-${gradientId}`} x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stopColor="#66717B" />
+            <stop offset=".16" stopColor="#F7FAFC" />
+            <stop offset=".28" stopColor="#7F8B96" />
+            <stop offset=".43" stopColor="#FFFFFF" />
+            <stop offset=".58" stopColor="#59636D" />
+            <stop offset=".76" stopColor="#E8EEF3" />
+            <stop offset="1" stopColor="#697681" />
+            <animate attributeName="x1" values="-1;1;-1" dur="8s" repeatCount="indefinite" />
+            <animate attributeName="x2" values="1;-1;1" dur="8s" repeatCount="indefinite" />
+          </linearGradient>
+          <linearGradient id={`jayver-ribbon-${gradientId}`} x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stopColor="#F7FBFF" stopOpacity=".08" />
+            <stop offset=".32" stopColor="#EAF1F7" stopOpacity=".95" />
+            <stop offset=".5" stopColor="#66737F" stopOpacity=".8" />
+            <stop offset=".68" stopColor="#FFFFFF" stopOpacity=".9" />
+            <stop offset="1" stopColor="#8D9AA5" stopOpacity=".12" />
+          </linearGradient>
+          <filter id={`jayver-chrome-glow-${gradientId}`} x="-30%" y="-60%" width="160%" height="220%">
+            <feGaussianBlur stdDeviation="5" result="blur" />
+            <feComposite in="SourceGraphic" in2="blur" operator="over" />
+          </filter>
+          <g id={`jayver-j-shape-${gradientId}`}>
+            <path d="M 820.8,313.1 L 786.6,327.8 L 735.8,353.7 L 725.7,357.4 L 623.2,407.2 L 576.2,652.8 L 570.6,687.8 L 560.5,737.7 L 553.1,765.4 L 542.0,795.8 L 529.1,820.8 L 511.5,844.8 L 489.4,866.0 L 470.0,878.9 L 456.2,885.4 L 434.0,890.9 L 418.3,890.0 L 405.4,881.7 L 397.1,872.5 L 390.6,860.5 L 386.9,847.5 L 386.0,832.8 L 389.7,810.6 L 439.5,657.4 L 446.0,634.3 L 445.1,632.5 L 265.1,754.3 L 50.0,904.8 L 457.1,904.8 L 494.0,902.9 L 529.1,895.5 L 566.9,880.8 L 602.0,862.3 L 661.1,821.7 L 689.7,797.7 L 713.7,773.7 L 730.3,749.7 L 740.5,724.8 L 749.7,686.0 L 780.2,532.8 Z M 949.1,50 L 918.6,65.7 L 765.4,154.3 L 497.7,304.8 L 400.8,402.6 L 278,530.9 L 458.9,444.2 L 503.2,421.1 L 831.8,259.5 Z" />
+          </g>
+          <mask id={`jayver-j-mask-${gradientId}`}>
+            <rect width="1200" height="420" fill="black" />
+            <use href={`#jayver-j-shape-${gradientId}`} transform="translate(360 -84) scale(.43)" fill="white" />
+          </mask>
+        </defs>
+
+        {/* Broad liquid sheets converge into the J rather than sitting beside it. */}
+        <g fill="none" stroke={`url(#jayver-ribbon-${gradientId})`} strokeLinecap="round">
+          <path className="jayver-liquid-ribbon jayver-liquid-ribbon-a" strokeWidth="42" d="M-40 272 C130 128 250 330 420 225 S625 126 790 176" />
+          <path className="jayver-liquid-ribbon jayver-liquid-ribbon-b" strokeWidth="24" d="M-40 300 C140 168 250 360 432 248 S620 160 795 198" />
+          <path className="jayver-liquid-ribbon jayver-liquid-ribbon-c" strokeWidth="38" d="M1240 110 C1060 20 1010 258 850 226 S670 240 585 304" />
+          <path className="jayver-liquid-ribbon jayver-liquid-ribbon-d" strokeWidth="18" d="M1240 145 C1050 74 1002 288 842 252 S680 264 600 326" />
+        </g>
+        <g transform="translate(360 -84) scale(.43)">
+          <use href={`#jayver-j-shape-${gradientId}`} fill={`url(#jayver-chrome-${gradientId})`} filter={`url(#jayver-chrome-glow-${gradientId})`} />
+          <use href={`#jayver-j-shape-${gradientId}`} fill="none" stroke="#FFFFFF" strokeOpacity=".72" strokeWidth="5" />
+        </g>
+        <g mask={`url(#jayver-j-mask-${gradientId})`} opacity=".8">
+          <path className="jayver-liquid-highlight" d="M300 380 C480 180 590 330 760 130 S980 100 1100 30" fill="none" stroke="#FFFFFF" strokeWidth="13" strokeLinecap="round" />
+        </g>
+      </svg>
+      <canvas className="jayver-liquid-metal-canvas" aria-hidden="true" />
+      {!supported && <span className="jayver-liquid-metal-status" aria-hidden="true" />}
     </div>
   );
 }
