@@ -325,7 +325,7 @@ export default function LiquidMetalMark({ className = "" }: LiquidMetalMarkProps
           </g>
           <mask id={`jayver-j-mask-${gradientId}`}>
             <rect width="1200" height="420" fill="black" />
-            <use href={`#jayver-j-shape-${gradientId}`} transform="translate(360 -84) scale(.43)" fill="white" />
+            <use href={`#jayver-j-shape-${gradientId}`} transform="translate(360 -10) scale(.43)" fill="white" />
           </mask>
         </defs>
 
@@ -336,7 +336,7 @@ export default function LiquidMetalMark({ className = "" }: LiquidMetalMarkProps
           <path className="jayver-liquid-ribbon jayver-liquid-ribbon-c" strokeWidth="38" d="M1240 110 C1060 20 1010 258 850 226 S670 240 585 304" />
           <path className="jayver-liquid-ribbon jayver-liquid-ribbon-d" strokeWidth="18" d="M1240 145 C1050 74 1002 288 842 252 S680 264 600 326" />
         </g>
-        <g transform="translate(360 -84) scale(.43)">
+        <g transform="translate(360 -10) scale(.43)">
           <use href={`#jayver-j-shape-${gradientId}`} fill={`url(#jayver-chrome-${gradientId})`} filter={`url(#jayver-chrome-glow-${gradientId})`} />
           <use href={`#jayver-j-shape-${gradientId}`} fill="none" stroke="#FFFFFF" strokeOpacity=".72" strokeWidth="5" />
         </g>
