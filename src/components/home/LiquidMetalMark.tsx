@@ -293,7 +293,7 @@ export default function LiquidMetalMark({ className = "" }: LiquidMetalMarkProps
   }, []);
 
   return (
-    <div className={`jayver-liquid-metal-stage ${className}`} ref={hostRef}>
+    <div className={`jayver-liquid-metal-stage ${className}${supported ? "" : " is-webgl-unavailable"}`} ref={hostRef}>
       {/* Always-visible SVG foundation: the identity never disappears if WebGL,
           a GPU driver, shader compilation, or context creation fails. */}
       <svg className="jayver-liquid-metal-art" viewBox="0 0 1200 420" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
@@ -344,7 +344,6 @@ export default function LiquidMetalMark({ className = "" }: LiquidMetalMarkProps
           <path className="jayver-liquid-highlight" d="M300 380 C480 180 590 330 760 130 S980 100 1100 30" fill="none" stroke="#FFFFFF" strokeWidth="13" strokeLinecap="round" />
         </g>
       </svg>
-      <canvas className="jayver-liquid-metal-canvas" aria-hidden="true" />
       {!supported && <span className="jayver-liquid-metal-status" aria-hidden="true" />}
     </div>
   );
