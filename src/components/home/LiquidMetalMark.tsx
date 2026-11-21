@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import type { WebGLRenderer } from "three";
 
-const vertexShader = `in vec3 position;
-in vec2 uv;
-out vec2 vUv;
+// ShaderMaterial injects the built-in position and uv attributes itself.
+// Redeclaring them here causes duplicate GLSL declarations and a blank canvas.
+const vertexShader = `out vec2 vUv;
 
 void main() {
   vUv = uv;
