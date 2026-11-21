@@ -69,8 +69,21 @@ function SkinStage({ skin, model }: { skin: string; model: "classic" | "slim" })
       const resize = () => {
         if (!instance) return;
         const rect = element.getBoundingClientRect();
-        instance.width = Math.max(1, Math.floor(rect.width));
-        instance.height = Math.max(1, Math.floor(rect.height));
+        const width = Math.max(1, Math.floor(rect.width));
+        const height = Math.max(1, Math.floor(rect.height));
+        instance.width = width;
+        instance.height = height;
+
+        // Keep the avatar optically centered inside the visible card stage.
+        // skinview3d's default framing leaves this narrow portrait composition
+        // slightly right-heavy, so shift the camera target by 9% of the view width.
+        const halfFov = (instance.camera.fov * Math.PI) / 360;
+        const viewWidth = 2 * instance.camera.position.z * Math.tan(halfFov) * (width / height);
+        const horizontalOffset = viewWidth * 0.09;
+        instance.camera.position.x = horizontalOffset;
+        instance.controls.target.set(horizontalOffset, 0, 0);
+        instance.camera.lookAt(horizontalOffset, 0, 0);
+        instance.controls.update();
       };
       const observer = new ResizeObserver(resize);
       observer.observe(element);
