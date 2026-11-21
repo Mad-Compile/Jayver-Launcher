@@ -33,6 +33,10 @@ jobs:
       - name: Set up stable Rust
         uses: dtolnay/rust-toolchain@stable
 
+      - name: Generate Jayver NSIS artwork
+        shell: powershell
+        run: ./src-tauri/installer/Generate-Assets.ps1
+
       - name: Require updater signing configuration
         shell: bash
         env:
