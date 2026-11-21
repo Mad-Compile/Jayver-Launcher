@@ -195,6 +195,16 @@ export default function LiquidMetalMark({ className = "" }: LiquidMetalMarkProps
         renderer.setClearColor(0x000000, 0);
         renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.25));
         renderer.outputColorSpace = THREE.SRGBColorSpace;
+        // Keep a visible fallback if a future shader edit fails to compile.
+        // Three's custom callback replaces its default console diagnostics, so
+        // explicitly report both stage logs here.
+        renderer.debug.onShaderError = (gl, program, vertexShaderObject, fragmentShaderObject) => {
+          const programLog = gl.getProgramInfoLog(program) || "Unknown WebGL program link error";
+          const vertexLog = gl.getShaderInfoLog(vertexShaderObject) || "Vertex shader compiled successfully";
+          const fragmentLog = gl.getShaderInfoLog(fragmentShaderObject) || "Fragment shader compiled successfully";
+          console.error("Jayver liquid-metal shader failed:", { programLog, vertexLog, fragmentLog });
+          setSupported(false);
+        };
         renderer.domElement.className = "jayver-liquid-metal-canvas";
         renderer.domElement.setAttribute("aria-hidden", "true");
         host.appendChild(renderer.domElement);
