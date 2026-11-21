@@ -1563,7 +1563,7 @@ button { font: inherit; }
   transition:transform 520ms cubic-bezier(.2,.85,.25,1),box-shadow 520ms ease;
 }
 .jayver-player-card-edge { position:absolute;z-index:3;inset:7px;border:1px solid rgba(255,255,255,.055);border-radius:18px;pointer-events:none; }
-.jayver-player-card-top { position:relative;z-index:5;display:flex;align-items:center;justify-content:space-between;padding:18px 18px 0; }
+.jayver-player-card-top { position:relative;z-index:5;display:flex;align-items:center;justify-content:flex-end;padding:18px 18px 0; }
 .jayver-player-card-label { display:flex;align-items:center;gap:8px;color:#a9b1b7;font-size:8px;font-weight:650;letter-spacing:.16em; }
 .jayver-player-card-label i { width:3px;height:3px;border-radius:50%;background:#cbd3d9; }
 .jayver-profile-more-wrap { position:relative; }
