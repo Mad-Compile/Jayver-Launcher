@@ -188,7 +188,6 @@ export default function ProfileExperience({ onClose, initialSwitcher = false }: 
         <section className="jayver-player-card">
           <div className="jayver-player-card-edge" aria-hidden="true" />
           <div className="jayver-player-card-top">
-            <span className="jayver-player-card-label">JAYVER <i /> PLAYER PROFILE</span>
             <div className="jayver-profile-more-wrap">
               <button className="jayver-profile-more" type="button" aria-label="Profile options" aria-expanded={menuOpen} onClick={() => setMenuOpen(value => !value)}><MoreHorizontal size={21} /></button>
               {menuOpen && <div className="jayver-profile-menu">
