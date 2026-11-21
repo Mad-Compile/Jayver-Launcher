@@ -1,5 +1,5 @@
-; Jayver template baseline: Tauri v2.12.7 / tauri-bundler v2.10.6.
 Unicode true
+; Jayver template baseline: Tauri v2.12.7 / tauri-bundler v2.10.6.
 ManifestDPIAware true
 ; Add in `dpiAwareness` `PerMonitorV2` to manifest for Windows 10 1607+ (note this should not affect lower versions since they should be able to ignore this and pick up `dpiAware` `true` set by `ManifestDPIAware true`)
 ; Currently undocumented on NSIS's website but is in the Docs folder of source tree, see
