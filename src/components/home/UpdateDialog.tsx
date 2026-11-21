@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { ArrowDownToLine, Check, ChevronDown, ShieldCheck, X } from "lucide-react";
 import type { Update } from "@tauri-apps/plugin-updater";
-import LiquidMetalMark from "./LiquidMetalMark";
 
 type Props = { update: Update; currentVersion: string; onLater: () => void; onInstall: () => void; error?: string; errorMode?: boolean; };
 
@@ -50,7 +49,7 @@ export default function UpdateDialog({ update, currentVersion, onLater, onInstal
           <button className="jayver-dialog-close" type="button" aria-label="Close update dialog" onClick={onLater}><X size={16} /></button>
         </div>
         <div className={"jayver-update-visual" + (errorMode ? " is-error" : "")} aria-hidden="true">
-          <LiquidMetalMark />
+          <img className="jayver-liquid-chrome-art" src="/brand/liquid-chrome-j.png" alt="" />
         </div>
         <div className="jayver-dialog-heading">
           <h2 id="jayver-update-title">{errorMode ? "The update wasn't completed." : "A newer version is ready."}</h2>
