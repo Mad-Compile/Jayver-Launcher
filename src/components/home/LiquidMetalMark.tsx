@@ -22,19 +22,11 @@ float smin(float a, float b, float k) {
   return mix(b, a, h) - k * h * (1.0 - h);
 }
 
-vec2 cubicBezier(vec2 a, vec2 b, vec2 c, vec2 d, float t) {
-  float s = 1.0 - t;
-  return s*s*s*a + 3.0*s*s*t*b + 3.0*s*t*t*c + t*t*t*d;
-}
-
-float sdCurve(vec2 p, vec2 a, vec2 b, vec2 c, vec2 d, float radius) {
-  float nearest = 1e5;
-  for (int i = 0; i <= 32; i++) {
-    float t = float(i) / 32.0;
-    vec2 q = cubicBezier(a, b, c, d, t);
-    nearest = min(nearest, dot(p - q, p - q));
-  }
-  return sqrt(nearest) - radius;
+float sdCapsule(vec2 p, vec2 a, vec2 b, float radius) {
+  vec2 pa = p - a;
+  vec2 ba = b - a;
+  float h = clamp(dot(pa, ba) / max(dot(ba, ba), 0.0001), 0.0, 1.0);
+  return length(pa - ba * h) - radius;
 }
 
 float sdExtruded(float d2, float z, float halfDepth) {
@@ -42,8 +34,8 @@ float sdExtruded(float d2, float z, float halfDepth) {
   return min(max(w.x, w.y), 0.0) + length(max(w, 0.0));
 }
 
-float ribbon(vec3 p, vec2 a, vec2 b, vec2 c, vec2 d, float radius, float depth) {
-  return sdExtruded(sdCurve(p.xy, a, b, c, d, radius), p.z, depth);
+float ribbon(vec3 p, vec2 a, vec2 b, float radius, float depth) {
+  return sdExtruded(sdCapsule(p.xy, a, b, radius), p.z, depth);
 }
 
 float mapScene(vec3 p) {
@@ -56,34 +48,26 @@ float mapScene(vec3 p) {
 
   float d = 1e4;
 
-  // The J is sculpted from the same continuous chrome ribbons as the flow.
-  // Main stem and hooked lower stroke.
-  d = smin(d, ribbon(q,
-    vec2(0.58, 1.02), vec2(0.56, 0.30), vec2(0.43, -0.72), vec2(-0.67, -0.70),
-    0.145, 0.095), 0.105);
+  // One connected J silhouette: stem, hook and upper blade are liquid geometry.
+  d = smin(d, ribbon(q, vec2(0.58, 1.02), vec2(0.56, 0.18), 0.145, 0.095), 0.105);
+  d = smin(d, ribbon(q, vec2(0.56, 0.18), vec2(0.44, -0.62), 0.145, 0.095), 0.105);
+  d = smin(d, ribbon(q, vec2(0.44, -0.62), vec2(0.18, -0.91), 0.145, 0.095), 0.105);
+  d = smin(d, ribbon(q, vec2(0.18, -0.91), vec2(-0.67, -0.70), 0.145, 0.095), 0.105);
+  d = smin(d, ribbon(q, vec2(-0.66, 0.68), vec2(0.77, 1.38), 0.125, 0.09), 0.11);
 
-  // The upper blade flows into the upper shoulder of the J.
-  d = smin(d, ribbon(q,
-    vec2(-0.66, 0.68), vec2(-0.24, 0.79), vec2(0.29, 1.13), vec2(0.77, 1.38),
-    0.125, 0.09), 0.11);
+  // Left streams flow into the hook and the blade.
+  d = smin(d, ribbon(q, vec2(-4.8, -0.28), vec2(-2.8, -0.40), 0.115, 0.075), 0.13);
+  d = smin(d, ribbon(q, vec2(-2.8, -0.40), vec2(-0.67, -0.70), 0.115, 0.075), 0.13);
+  d = smin(d, ribbon(q, vec2(-4.8, 0.55), vec2(-2.8, 0.64), 0.095, 0.07), 0.105);
+  d = smin(d, ribbon(q, vec2(-2.8, 0.64), vec2(-0.66, 0.68), 0.095, 0.07), 0.105);
 
-  // Left-hand liquid streams merge into the lower hook and upper blade.
-  d = smin(d, ribbon(q,
-    vec2(-4.8, -0.28), vec2(-3.15, -0.22), vec2(-2.02, -1.03), vec2(-0.66, -0.70),
-    0.115, 0.075), 0.13);
-  d = smin(d, ribbon(q,
-    vec2(-4.8, 0.55), vec2(-3.35, 0.72), vec2(-2.0, 0.02), vec2(-0.66, 0.68),
-    0.095, 0.07), 0.105);
+  // Right streams fold back into the same continuous metallic form.
+  d = smin(d, ribbon(q, vec2(4.8, 0.42), vec2(2.7, 0.58), 0.105, 0.075), 0.12);
+  d = smin(d, ribbon(q, vec2(2.7, 0.58), vec2(0.77, 1.38), 0.105, 0.075), 0.12);
+  d = smin(d, ribbon(q, vec2(4.8, -0.18), vec2(2.7, -0.16), 0.105, 0.07), 0.12);
+  d = smin(d, ribbon(q, vec2(2.7, -0.16), vec2(0.68, 0.28), 0.105, 0.07), 0.12);
 
-  // Right-hand streams fold into the J rather than ending as separate blobs.
-  d = smin(d, ribbon(q,
-    vec2(4.8, 0.42), vec2(3.35, 0.56), vec2(2.02, 1.02), vec2(0.77, 1.38),
-    0.105, 0.075), 0.12);
-  d = smin(d, ribbon(q,
-    vec2(4.8, -0.18), vec2(3.25, -0.12), vec2(2.0, -0.70), vec2(0.68, 0.28),
-    0.105, 0.07), 0.12);
-
-  // Fine, low-amplitude surface undulation keeps the chrome from looking machined.
+  // Low-amplitude surface undulation gives the chrome a molten, flowing finish.
   d += 0.009 * sin(q.x * 5.4 + q.y * 3.2 + uTime * 1.05)
              * sin(q.y * 7.1 - uTime * 0.72);
   return d;
@@ -131,7 +115,7 @@ void main() {
   float distanceToSurface = 0.0;
   bool hit = false;
 
-  for (int i = 0; i < 112; i++) {
+  for (int i = 0; i < 72; i++) {
     vec3 p = rayOrigin + rayDirection * travel;
     distanceToSurface = mapScene(p);
     if (distanceToSurface < 0.0012) {
@@ -209,7 +193,7 @@ export default function LiquidMetalMark({ className = "" }: LiquidMetalMarkProps
           premultipliedAlpha: false,
         });
         renderer.setClearColor(0x000000, 0);
-        renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.5));
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.25));
         renderer.outputColorSpace = THREE.SRGBColorSpace;
         renderer.domElement.className = "jayver-liquid-metal-canvas";
         renderer.domElement.setAttribute("aria-hidden", "true");
