@@ -44,7 +44,14 @@
         "languages": [
           "English"
         ],
-        "compression": "lzma"
+        "compression": "lzma",
+        "template": "installer/jayver-installer.nsi",
+        "installerIcon": "icons/icon.ico",
+        "uninstallerIcon": "icons/icon.ico",
+        "headerImage": "installer/header.bmp",
+        "sidebarImage": "installer/sidebar.bmp",
+        "uninstallerHeaderImage": "installer/header.bmp",
+        "startMenuFolder": "Jayver"
       }
     }
   },
